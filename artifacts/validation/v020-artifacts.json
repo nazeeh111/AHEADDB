@@ -1,0 +1,839 @@
+{
+  "quality_comparisons": 104,
+  "checks": [
+    {
+      "prefix": "v020-quality",
+      "dataset": "retail",
+      "task": "purchase_30d",
+      "fold": "summer",
+      "backend": "legacy_prior",
+      "rows": 6456
+    },
+    {
+      "prefix": "v020-quality",
+      "dataset": "retail",
+      "task": "purchase_30d",
+      "fold": "summer",
+      "backend": "legacy_historical",
+      "rows": 6456
+    },
+    {
+      "prefix": "v020-quality",
+      "dataset": "retail",
+      "task": "purchase_30d",
+      "fold": "summer",
+      "backend": "legacy_histogram",
+      "rows": 6456
+    },
+    {
+      "prefix": "v020-quality",
+      "dataset": "retail",
+      "task": "purchase_30d",
+      "fold": "summer",
+      "backend": "adaptive",
+      "rows": 6456
+    },
+    {
+      "prefix": "v020-quality",
+      "dataset": "retail",
+      "task": "purchase_30d",
+      "fold": "autumn",
+      "backend": "legacy_prior",
+      "rows": 7569
+    },
+    {
+      "prefix": "v020-quality",
+      "dataset": "retail",
+      "task": "purchase_30d",
+      "fold": "autumn",
+      "backend": "legacy_historical",
+      "rows": 7569
+    },
+    {
+      "prefix": "v020-quality",
+      "dataset": "retail",
+      "task": "purchase_30d",
+      "fold": "autumn",
+      "backend": "legacy_histogram",
+      "rows": 7569
+    },
+    {
+      "prefix": "v020-quality",
+      "dataset": "retail",
+      "task": "purchase_30d",
+      "fold": "autumn",
+      "backend": "adaptive",
+      "rows": 7569
+    },
+    {
+      "prefix": "v020-quality",
+      "dataset": "retail",
+      "task": "purchase_30d",
+      "fold": "later_overlapping_november",
+      "backend": "legacy_prior",
+      "rows": 4046
+    },
+    {
+      "prefix": "v020-quality",
+      "dataset": "retail",
+      "task": "purchase_30d",
+      "fold": "later_overlapping_november",
+      "backend": "legacy_historical",
+      "rows": 4046
+    },
+    {
+      "prefix": "v020-quality",
+      "dataset": "retail",
+      "task": "purchase_30d",
+      "fold": "later_overlapping_november",
+      "backend": "legacy_histogram",
+      "rows": 4046
+    },
+    {
+      "prefix": "v020-quality",
+      "dataset": "retail",
+      "task": "purchase_30d",
+      "fold": "later_overlapping_november",
+      "backend": "adaptive",
+      "rows": 4046
+    },
+    {
+      "prefix": "v020-quality",
+      "dataset": "retail",
+      "task": "gross_spend_30d",
+      "fold": "summer",
+      "backend": "legacy_prior",
+      "rows": 6456
+    },
+    {
+      "prefix": "v020-quality",
+      "dataset": "retail",
+      "task": "gross_spend_30d",
+      "fold": "summer",
+      "backend": "legacy_historical",
+      "rows": 6456
+    },
+    {
+      "prefix": "v020-quality",
+      "dataset": "retail",
+      "task": "gross_spend_30d",
+      "fold": "summer",
+      "backend": "legacy_histogram",
+      "rows": 6456
+    },
+    {
+      "prefix": "v020-quality",
+      "dataset": "retail",
+      "task": "gross_spend_30d",
+      "fold": "summer",
+      "backend": "adaptive",
+      "rows": 6456
+    },
+    {
+      "prefix": "v020-quality",
+      "dataset": "retail",
+      "task": "gross_spend_30d",
+      "fold": "autumn",
+      "backend": "legacy_prior",
+      "rows": 7569
+    },
+    {
+      "prefix": "v020-quality",
+      "dataset": "retail",
+      "task": "gross_spend_30d",
+      "fold": "autumn",
+      "backend": "legacy_historical",
+      "rows": 7569
+    },
+    {
+      "prefix": "v020-quality",
+      "dataset": "retail",
+      "task": "gross_spend_30d",
+      "fold": "autumn",
+      "backend": "legacy_histogram",
+      "rows": 7569
+    },
+    {
+      "prefix": "v020-quality",
+      "dataset": "retail",
+      "task": "gross_spend_30d",
+      "fold": "autumn",
+      "backend": "adaptive",
+      "rows": 7569
+    },
+    {
+      "prefix": "v020-quality",
+      "dataset": "retail",
+      "task": "gross_spend_30d",
+      "fold": "later_overlapping_november",
+      "backend": "legacy_prior",
+      "rows": 4046
+    },
+    {
+      "prefix": "v020-quality",
+      "dataset": "retail",
+      "task": "gross_spend_30d",
+      "fold": "later_overlapping_november",
+      "backend": "legacy_historical",
+      "rows": 4046
+    },
+    {
+      "prefix": "v020-quality",
+      "dataset": "retail",
+      "task": "gross_spend_30d",
+      "fold": "later_overlapping_november",
+      "backend": "legacy_histogram",
+      "rows": 4046
+    },
+    {
+      "prefix": "v020-quality",
+      "dataset": "retail",
+      "task": "gross_spend_30d",
+      "fold": "later_overlapping_november",
+      "backend": "adaptive",
+      "rows": 4046
+    },
+    {
+      "prefix": "v020-quality",
+      "dataset": "beijing",
+      "task": "pm25_over_75_next_day",
+      "fold": "2015",
+      "backend": "legacy_prior",
+      "rows": 216
+    },
+    {
+      "prefix": "v020-quality",
+      "dataset": "beijing",
+      "task": "pm25_over_75_next_day",
+      "fold": "2015",
+      "backend": "legacy_historical",
+      "rows": 216
+    },
+    {
+      "prefix": "v020-quality",
+      "dataset": "beijing",
+      "task": "pm25_over_75_next_day",
+      "fold": "2015",
+      "backend": "legacy_histogram",
+      "rows": 216
+    },
+    {
+      "prefix": "v020-quality",
+      "dataset": "beijing",
+      "task": "pm25_over_75_next_day",
+      "fold": "2015",
+      "backend": "adaptive",
+      "rows": 216
+    },
+    {
+      "prefix": "v020-quality",
+      "dataset": "beijing",
+      "task": "pm25_over_75_next_day",
+      "fold": "2016",
+      "backend": "legacy_prior",
+      "rows": 168
+    },
+    {
+      "prefix": "v020-quality",
+      "dataset": "beijing",
+      "task": "pm25_over_75_next_day",
+      "fold": "2016",
+      "backend": "legacy_historical",
+      "rows": 168
+    },
+    {
+      "prefix": "v020-quality",
+      "dataset": "beijing",
+      "task": "pm25_over_75_next_day",
+      "fold": "2016",
+      "backend": "legacy_histogram",
+      "rows": 168
+    },
+    {
+      "prefix": "v020-quality",
+      "dataset": "beijing",
+      "task": "pm25_over_75_next_day",
+      "fold": "2016",
+      "backend": "adaptive",
+      "rows": 168
+    },
+    {
+      "prefix": "v020-quality",
+      "dataset": "beijing",
+      "task": "pm25_over_75_next_day",
+      "fold": "later_2016_2017",
+      "backend": "legacy_prior",
+      "rows": 216
+    },
+    {
+      "prefix": "v020-quality",
+      "dataset": "beijing",
+      "task": "pm25_over_75_next_day",
+      "fold": "later_2016_2017",
+      "backend": "legacy_historical",
+      "rows": 216
+    },
+    {
+      "prefix": "v020-quality",
+      "dataset": "beijing",
+      "task": "pm25_over_75_next_day",
+      "fold": "later_2016_2017",
+      "backend": "legacy_histogram",
+      "rows": 216
+    },
+    {
+      "prefix": "v020-quality",
+      "dataset": "beijing",
+      "task": "pm25_over_75_next_day",
+      "fold": "later_2016_2017",
+      "backend": "adaptive",
+      "rows": 216
+    },
+    {
+      "prefix": "v020-quality",
+      "dataset": "beijing",
+      "task": "pm25_next_day",
+      "fold": "2015",
+      "backend": "legacy_prior",
+      "rows": 216
+    },
+    {
+      "prefix": "v020-quality",
+      "dataset": "beijing",
+      "task": "pm25_next_day",
+      "fold": "2015",
+      "backend": "legacy_historical",
+      "rows": 216
+    },
+    {
+      "prefix": "v020-quality",
+      "dataset": "beijing",
+      "task": "pm25_next_day",
+      "fold": "2015",
+      "backend": "legacy_histogram",
+      "rows": 216
+    },
+    {
+      "prefix": "v020-quality",
+      "dataset": "beijing",
+      "task": "pm25_next_day",
+      "fold": "2015",
+      "backend": "adaptive",
+      "rows": 216
+    },
+    {
+      "prefix": "v020-quality",
+      "dataset": "beijing",
+      "task": "pm25_next_day",
+      "fold": "2016",
+      "backend": "legacy_prior",
+      "rows": 168
+    },
+    {
+      "prefix": "v020-quality",
+      "dataset": "beijing",
+      "task": "pm25_next_day",
+      "fold": "2016",
+      "backend": "legacy_historical",
+      "rows": 168
+    },
+    {
+      "prefix": "v020-quality",
+      "dataset": "beijing",
+      "task": "pm25_next_day",
+      "fold": "2016",
+      "backend": "legacy_histogram",
+      "rows": 168
+    },
+    {
+      "prefix": "v020-quality",
+      "dataset": "beijing",
+      "task": "pm25_next_day",
+      "fold": "2016",
+      "backend": "adaptive",
+      "rows": 168
+    },
+    {
+      "prefix": "v020-quality",
+      "dataset": "beijing",
+      "task": "pm25_next_day",
+      "fold": "later_2016_2017",
+      "backend": "legacy_prior",
+      "rows": 216
+    },
+    {
+      "prefix": "v020-quality",
+      "dataset": "beijing",
+      "task": "pm25_next_day",
+      "fold": "later_2016_2017",
+      "backend": "legacy_historical",
+      "rows": 216
+    },
+    {
+      "prefix": "v020-quality",
+      "dataset": "beijing",
+      "task": "pm25_next_day",
+      "fold": "later_2016_2017",
+      "backend": "legacy_histogram",
+      "rows": 216
+    },
+    {
+      "prefix": "v020-quality",
+      "dataset": "beijing",
+      "task": "pm25_next_day",
+      "fold": "later_2016_2017",
+      "backend": "adaptive",
+      "rows": 216
+    },
+    {
+      "prefix": "v020-confirmation",
+      "dataset": "retail",
+      "task": "purchase_30d",
+      "fold": "summer",
+      "backend": "legacy_prior",
+      "rows": 6456
+    },
+    {
+      "prefix": "v020-confirmation",
+      "dataset": "retail",
+      "task": "purchase_30d",
+      "fold": "summer",
+      "backend": "legacy_historical",
+      "rows": 6456
+    },
+    {
+      "prefix": "v020-confirmation",
+      "dataset": "retail",
+      "task": "purchase_30d",
+      "fold": "summer",
+      "backend": "legacy_histogram",
+      "rows": 6456
+    },
+    {
+      "prefix": "v020-confirmation",
+      "dataset": "retail",
+      "task": "purchase_30d",
+      "fold": "summer",
+      "backend": "adaptive",
+      "rows": 6456
+    },
+    {
+      "prefix": "v020-confirmation",
+      "dataset": "retail",
+      "task": "purchase_30d",
+      "fold": "autumn",
+      "backend": "legacy_prior",
+      "rows": 7569
+    },
+    {
+      "prefix": "v020-confirmation",
+      "dataset": "retail",
+      "task": "purchase_30d",
+      "fold": "autumn",
+      "backend": "legacy_historical",
+      "rows": 7569
+    },
+    {
+      "prefix": "v020-confirmation",
+      "dataset": "retail",
+      "task": "purchase_30d",
+      "fold": "autumn",
+      "backend": "legacy_histogram",
+      "rows": 7569
+    },
+    {
+      "prefix": "v020-confirmation",
+      "dataset": "retail",
+      "task": "purchase_30d",
+      "fold": "autumn",
+      "backend": "adaptive",
+      "rows": 7569
+    },
+    {
+      "prefix": "v020-confirmation",
+      "dataset": "retail",
+      "task": "purchase_30d",
+      "fold": "later_overlapping_november",
+      "backend": "legacy_prior",
+      "rows": 4046
+    },
+    {
+      "prefix": "v020-confirmation",
+      "dataset": "retail",
+      "task": "purchase_30d",
+      "fold": "later_overlapping_november",
+      "backend": "legacy_historical",
+      "rows": 4046
+    },
+    {
+      "prefix": "v020-confirmation",
+      "dataset": "retail",
+      "task": "purchase_30d",
+      "fold": "later_overlapping_november",
+      "backend": "legacy_histogram",
+      "rows": 4046
+    },
+    {
+      "prefix": "v020-confirmation",
+      "dataset": "retail",
+      "task": "purchase_30d",
+      "fold": "later_overlapping_november",
+      "backend": "adaptive",
+      "rows": 4046
+    },
+    {
+      "prefix": "v020-confirmation",
+      "dataset": "retail",
+      "task": "gross_spend_30d",
+      "fold": "summer",
+      "backend": "legacy_prior",
+      "rows": 6456
+    },
+    {
+      "prefix": "v020-confirmation",
+      "dataset": "retail",
+      "task": "gross_spend_30d",
+      "fold": "summer",
+      "backend": "legacy_historical",
+      "rows": 6456
+    },
+    {
+      "prefix": "v020-confirmation",
+      "dataset": "retail",
+      "task": "gross_spend_30d",
+      "fold": "summer",
+      "backend": "legacy_histogram",
+      "rows": 6456
+    },
+    {
+      "prefix": "v020-confirmation",
+      "dataset": "retail",
+      "task": "gross_spend_30d",
+      "fold": "summer",
+      "backend": "adaptive",
+      "rows": 6456
+    },
+    {
+      "prefix": "v020-confirmation",
+      "dataset": "retail",
+      "task": "gross_spend_30d",
+      "fold": "autumn",
+      "backend": "legacy_prior",
+      "rows": 7569
+    },
+    {
+      "prefix": "v020-confirmation",
+      "dataset": "retail",
+      "task": "gross_spend_30d",
+      "fold": "autumn",
+      "backend": "legacy_historical",
+      "rows": 7569
+    },
+    {
+      "prefix": "v020-confirmation",
+      "dataset": "retail",
+      "task": "gross_spend_30d",
+      "fold": "autumn",
+      "backend": "legacy_histogram",
+      "rows": 7569
+    },
+    {
+      "prefix": "v020-confirmation",
+      "dataset": "retail",
+      "task": "gross_spend_30d",
+      "fold": "autumn",
+      "backend": "adaptive",
+      "rows": 7569
+    },
+    {
+      "prefix": "v020-confirmation",
+      "dataset": "retail",
+      "task": "gross_spend_30d",
+      "fold": "later_overlapping_november",
+      "backend": "legacy_prior",
+      "rows": 4046
+    },
+    {
+      "prefix": "v020-confirmation",
+      "dataset": "retail",
+      "task": "gross_spend_30d",
+      "fold": "later_overlapping_november",
+      "backend": "legacy_historical",
+      "rows": 4046
+    },
+    {
+      "prefix": "v020-confirmation",
+      "dataset": "retail",
+      "task": "gross_spend_30d",
+      "fold": "later_overlapping_november",
+      "backend": "legacy_histogram",
+      "rows": 4046
+    },
+    {
+      "prefix": "v020-confirmation",
+      "dataset": "retail",
+      "task": "gross_spend_30d",
+      "fold": "later_overlapping_november",
+      "backend": "adaptive",
+      "rows": 4046
+    },
+    {
+      "prefix": "v020-confirmation",
+      "dataset": "beijing",
+      "task": "pm25_over_75_next_day",
+      "fold": "2015",
+      "backend": "legacy_prior",
+      "rows": 216
+    },
+    {
+      "prefix": "v020-confirmation",
+      "dataset": "beijing",
+      "task": "pm25_over_75_next_day",
+      "fold": "2015",
+      "backend": "legacy_historical",
+      "rows": 216
+    },
+    {
+      "prefix": "v020-confirmation",
+      "dataset": "beijing",
+      "task": "pm25_over_75_next_day",
+      "fold": "2015",
+      "backend": "legacy_histogram",
+      "rows": 216
+    },
+    {
+      "prefix": "v020-confirmation",
+      "dataset": "beijing",
+      "task": "pm25_over_75_next_day",
+      "fold": "2015",
+      "backend": "adaptive",
+      "rows": 216
+    },
+    {
+      "prefix": "v020-confirmation",
+      "dataset": "beijing",
+      "task": "pm25_over_75_next_day",
+      "fold": "2016",
+      "backend": "legacy_prior",
+      "rows": 168
+    },
+    {
+      "prefix": "v020-confirmation",
+      "dataset": "beijing",
+      "task": "pm25_over_75_next_day",
+      "fold": "2016",
+      "backend": "legacy_historical",
+      "rows": 168
+    },
+    {
+      "prefix": "v020-confirmation",
+      "dataset": "beijing",
+      "task": "pm25_over_75_next_day",
+      "fold": "2016",
+      "backend": "legacy_histogram",
+      "rows": 168
+    },
+    {
+      "prefix": "v020-confirmation",
+      "dataset": "beijing",
+      "task": "pm25_over_75_next_day",
+      "fold": "2016",
+      "backend": "adaptive",
+      "rows": 168
+    },
+    {
+      "prefix": "v020-confirmation",
+      "dataset": "beijing",
+      "task": "pm25_over_75_next_day",
+      "fold": "later_2016_2017",
+      "backend": "legacy_prior",
+      "rows": 216
+    },
+    {
+      "prefix": "v020-confirmation",
+      "dataset": "beijing",
+      "task": "pm25_over_75_next_day",
+      "fold": "later_2016_2017",
+      "backend": "legacy_historical",
+      "rows": 216
+    },
+    {
+      "prefix": "v020-confirmation",
+      "dataset": "beijing",
+      "task": "pm25_over_75_next_day",
+      "fold": "later_2016_2017",
+      "backend": "legacy_histogram",
+      "rows": 216
+    },
+    {
+      "prefix": "v020-confirmation",
+      "dataset": "beijing",
+      "task": "pm25_over_75_next_day",
+      "fold": "later_2016_2017",
+      "backend": "adaptive",
+      "rows": 216
+    },
+    {
+      "prefix": "v020-confirmation",
+      "dataset": "beijing",
+      "task": "pm25_over_75_next_day",
+      "fold": "confirmation_february_2017",
+      "backend": "legacy_prior",
+      "rows": 96
+    },
+    {
+      "prefix": "v020-confirmation",
+      "dataset": "beijing",
+      "task": "pm25_over_75_next_day",
+      "fold": "confirmation_february_2017",
+      "backend": "legacy_historical",
+      "rows": 96
+    },
+    {
+      "prefix": "v020-confirmation",
+      "dataset": "beijing",
+      "task": "pm25_over_75_next_day",
+      "fold": "confirmation_february_2017",
+      "backend": "legacy_histogram",
+      "rows": 96
+    },
+    {
+      "prefix": "v020-confirmation",
+      "dataset": "beijing",
+      "task": "pm25_over_75_next_day",
+      "fold": "confirmation_february_2017",
+      "backend": "adaptive",
+      "rows": 96
+    },
+    {
+      "prefix": "v020-confirmation",
+      "dataset": "beijing",
+      "task": "pm25_next_day",
+      "fold": "2015",
+      "backend": "legacy_prior",
+      "rows": 216
+    },
+    {
+      "prefix": "v020-confirmation",
+      "dataset": "beijing",
+      "task": "pm25_next_day",
+      "fold": "2015",
+      "backend": "legacy_historical",
+      "rows": 216
+    },
+    {
+      "prefix": "v020-confirmation",
+      "dataset": "beijing",
+      "task": "pm25_next_day",
+      "fold": "2015",
+      "backend": "legacy_histogram",
+      "rows": 216
+    },
+    {
+      "prefix": "v020-confirmation",
+      "dataset": "beijing",
+      "task": "pm25_next_day",
+      "fold": "2015",
+      "backend": "adaptive",
+      "rows": 216
+    },
+    {
+      "prefix": "v020-confirmation",
+      "dataset": "beijing",
+      "task": "pm25_next_day",
+      "fold": "2016",
+      "backend": "legacy_prior",
+      "rows": 168
+    },
+    {
+      "prefix": "v020-confirmation",
+      "dataset": "beijing",
+      "task": "pm25_next_day",
+      "fold": "2016",
+      "backend": "legacy_historical",
+      "rows": 168
+    },
+    {
+      "prefix": "v020-confirmation",
+      "dataset": "beijing",
+      "task": "pm25_next_day",
+      "fold": "2016",
+      "backend": "legacy_histogram",
+      "rows": 168
+    },
+    {
+      "prefix": "v020-confirmation",
+      "dataset": "beijing",
+      "task": "pm25_next_day",
+      "fold": "2016",
+      "backend": "adaptive",
+      "rows": 168
+    },
+    {
+      "prefix": "v020-confirmation",
+      "dataset": "beijing",
+      "task": "pm25_next_day",
+      "fold": "later_2016_2017",
+      "backend": "legacy_prior",
+      "rows": 216
+    },
+    {
+      "prefix": "v020-confirmation",
+      "dataset": "beijing",
+      "task": "pm25_next_day",
+      "fold": "later_2016_2017",
+      "backend": "legacy_historical",
+      "rows": 216
+    },
+    {
+      "prefix": "v020-confirmation",
+      "dataset": "beijing",
+      "task": "pm25_next_day",
+      "fold": "later_2016_2017",
+      "backend": "legacy_histogram",
+      "rows": 216
+    },
+    {
+      "prefix": "v020-confirmation",
+      "dataset": "beijing",
+      "task": "pm25_next_day",
+      "fold": "later_2016_2017",
+      "backend": "adaptive",
+      "rows": 216
+    },
+    {
+      "prefix": "v020-confirmation",
+      "dataset": "beijing",
+      "task": "pm25_next_day",
+      "fold": "confirmation_february_2017",
+      "backend": "legacy_prior",
+      "rows": 96
+    },
+    {
+      "prefix": "v020-confirmation",
+      "dataset": "beijing",
+      "task": "pm25_next_day",
+      "fold": "confirmation_february_2017",
+      "backend": "legacy_historical",
+      "rows": 96
+    },
+    {
+      "prefix": "v020-confirmation",
+      "dataset": "beijing",
+      "task": "pm25_next_day",
+      "fold": "confirmation_february_2017",
+      "backend": "legacy_histogram",
+      "rows": 96
+    },
+    {
+      "prefix": "v020-confirmation",
+      "dataset": "beijing",
+      "task": "pm25_next_day",
+      "fold": "confirmation_february_2017",
+      "backend": "adaptive",
+      "rows": 96
+    }
+  ],
+  "refresh_comparisons": 770,
+  "max_refresh_error": 0
+}

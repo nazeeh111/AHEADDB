@@ -1,5 +1,6 @@
 # Release verification
 
+Historical v0.1 validation; [current v0.2 evidence](v020-results.md).
 Version 0.1.0 has separate evidence for core correctness, numerical quality, UI, optional backends and publication. Source reports are not substituted for actual execution.
 
 ## Local checks

@@ -26,7 +26,7 @@ class ProjectConfig(StrictModel):
     backtest_cutoffs: tuple[str, ...]
     data_as_of: str
     synthetic_demo: bool = False
-    backend_by_task: dict[str, Literal["baseline", "histogram", "robust", "linear", "median", "adaptive"]] = Field(default_factory=dict)
+    backend_by_task: dict[str, Literal["baseline", "histogram", "robust", "linear", "median", "adaptive", "persistence"]] = Field(default_factory=dict)
 
 
 class Project:
@@ -53,7 +53,10 @@ class Project:
 
     def plan(self, task: str) -> dict:
         with self.lock:
-            return Compiler(self.engine.snapshot).plan(self.tasks[task], self.config.prediction_cutoff)
+            result = Compiler(self.engine.snapshot).plan(self.tasks[task], self.config.prediction_cutoff)
+            if task in self.engine.views:
+                result["serving_model_selection"] = self.engine.inspect(task)["model_selection"]
+            return result
 
     def backtest(self, task: str) -> dict:
         with self.lock:

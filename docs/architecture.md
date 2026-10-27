@@ -1,6 +1,6 @@
 # Execution and correctness
 
-AHEADDB 0.1 supports a declared star schema: one entity table and one or more event tables linked directly to entity keys. Each event has a unique stable key, occurrence time, availability time and optional numeric values. Arbitrary joins, recursive neighborhoods, recommendation tasks, production writes and automatic foundation-model selection are outside this version.
+AHEADDB 0.2 supports a declared star schema: one entity table and one or more event tables linked directly to entity keys. Each event has a unique stable key, occurrence time, availability time and optional numeric values. Arbitrary joins, recursive neighborhoods, recommendation tasks, production writes and automatic foundation-model selection are outside this version.
 
 ```mermaid
 flowchart LR
@@ -49,3 +49,5 @@ This method does not avoid scanning source data: diff discovery is O(source rows
 The SDK runs in one process. `Project` serializes HTTP/MCP accesses with a lock. DuckDB/Parquet and optional caller-connected PostgreSQL sources are read-only; the example mutation replaces only a synthetic in-memory snapshot. Restarting the server refits the fixed training specification and reloads the original database. There is no unsafe pickle loading or model artifact execution. Snapshot methods accept at most two million rows by default; DuckDB reads have a 512MB memory limit and two threads. HTTP binds only to loopback through the CLI, rejects foreign origins/hosts and exposes no arbitrary file path/query tool. Do not expose this unauthenticated development inspector to a network.
 
 Row fingerprints are computed once during immutable snapshot ingestion and retained as a keyed SHA256 index. Refresh compares that index rather than hashing unchanged source bytes again. Identical validated data versions skip diff discovery. Snapshot construction and retained-index memory remain real costs; the benchmark reports them separately from refresh latency. Ordinary cache no-ops reuse contexts directly without filtering source events.
+
+Version 0.2 adds recent 1/7/30-day aggregates, last nonmissing value, standard deviation and trend. Owner-to-row-position and row-key-to-owner indexes support sparse context/owner lookup. Mutation-safe model fingerprints use in-memory C-backed serialization hashed with SHA256; no model is loaded or persisted through it. The default adaptive backend selects on a purged earlier validation block and reports all choices; see [v0.2 details](v020-results.md).

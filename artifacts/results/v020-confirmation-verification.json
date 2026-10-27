@@ -1,0 +1,40 @@
+{
+  "protocol_sha256": "88d4d6a58eb464dad52868c4f923018e6c733a2611bbf4ed0f90935b96223316",
+  "datasets": [
+    {
+      "dataset": "retail",
+      "saved_prediction_rows": 144568,
+      "unchanged_phase1_control_rows": 108426,
+      "maximum_phase1_control_prediction_difference": 0.0,
+      "all_saved_test_ids_and_labels_identical": true
+    },
+    {
+      "dataset": "beijing",
+      "saved_prediction_rows": 5568,
+      "unchanged_phase1_control_rows": 3600,
+      "maximum_phase1_control_prediction_difference": 0.0,
+      "all_saved_test_ids_and_labels_identical": true
+    }
+  ],
+  "all_first_phase_evidence_hashes_unchanged": true,
+  "first_phase_evaluator_exact_at_commit": "c2c392d",
+  "both_completed_report_source_diff_hashes_match_current": true,
+  "source_diff_sha256": "19c29b9de3ca006cc0bf5a7514f09a1ac0f1d40a02a02353b33b22a94843b06a",
+  "source_file_sha256": {
+    "src/aheaddb/__init__.py": "e302c260cce775fe5eb128b8e848bcd470bbfa418c0b6e177e715962d7a8efc6",
+    "src/aheaddb/api.py": "7f1339c75ef443f7a7f9c955e6e0851cad8438d88b0c8b7b4db8e169f7a32d2b",
+    "src/aheaddb/cli.py": "b8ad1f491a50cc35f2001792e9762204be03c7232f619e493f60a7d3dc636549",
+    "src/aheaddb/compiler.py": "2d10fa7b3acaf9e829d03bbf119f501d68d540347f48ded4d6af679dccba9b59",
+    "src/aheaddb/demo.py": "6d7ceebfeb1a94bcc809d9760fab29e5a1f7f68f988e59f0ff9f2c05be9d1dc0",
+    "src/aheaddb/engine.py": "b04fe7b670a379da46fed1c0cdefca2b067236109ba43cba98ef869ec1e3d69d",
+    "src/aheaddb/fastdfs_backend.py": "306ae7eeb00810be38aa7ebefc491956bba012c4538c300ce0537f81a22e1bdf",
+    "src/aheaddb/mcp.py": "693c723c7a1b03a63d06ce3d1a06c3bdc34d213b4fe48af8e37ddde33acdfac1",
+    "src/aheaddb/modeling.py": "d20c8808dab6fe634492c9f9e1e458db24195a5f4cc03cf25038783da2284de9",
+    "src/aheaddb/project.py": "e1e6488df0d0ba2fe35cbd31b7e0e570fb9dd99fb75a77a0da7dbb857d5a5143",
+    "src/aheaddb/snapshot.py": "167d1074b0659155432e27722e674beafa76126657d6d1822b8247cdc11bf81b",
+    "src/aheaddb/spec.py": "faa744d817732d7da4688591f6cae353349b1a2923d989b9641df4858b724272"
+  },
+  "modeling_file_modified_utc": "2026-10-27T04:52:40.036558+00:00",
+  "protocol_file_saved_utc": "2026-10-27T04:52:42.646904+00:00",
+  "source_timestamp_qualification": "Modeling file saved before protocol freeze completed; evaluation launched after freeze in sequential tool execution. Source diff hashes match at both dataset completions and verification. Native process listing denied; no bypass attempted."
+}

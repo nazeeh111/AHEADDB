@@ -104,7 +104,38 @@ def signed_log(x):
     return np.sign(x) * np.log1p(np.abs(x))
 
 
+class PersistenceEstimator:
+    """History rate for counts; latest observed value times rate for sums.
+
+    Binary probabilities use a one-dimensional logistic fit on training outcomes.
+    This is a selectable conventional model, not a domain-specific forecast rule.
+    """
+    def __init__(self, task: Task):
+        self.task = task
+        self.calibrator: Any = None
+
+    def _projection(self, x: pd.DataFrame) -> np.ndarray:
+        rate = x[f"{self.task.outcome.table}__count"].to_numpy(dtype=float) * self.task.horizon_days / self.task.history_days
+        if self.task.outcome.aggregation == "sum":
+            return rate * x[f"{self.task.outcome.table}__{self.task.outcome.column}__last"].to_numpy(dtype=float)
+        return rate
+
+    def fit(self, x, y):
+        if self.task.kind == "binary":
+            self.calibrator = make_pipeline(StandardScaler(), LogisticRegression(C=1, max_iter=500, random_state=17))
+            self.calibrator.fit(signed_log(self._projection(x)).reshape(-1, 1), y)
+        return self
+
+    def predict_proba(self, x):
+        return self.calibrator.predict_proba(signed_log(self._projection(x)).reshape(-1, 1))
+
+    def predict(self, x):
+        return self._projection(x) if self.task.kind == "regression" else self.predict_proba(x)[:, 1] >= 0.5
+
+
 def _estimator(task: Task, backend: str):
+    if backend == "persistence":
+        return PersistenceEstimator(task)
     if backend == "baseline":
         return DummyClassifier(strategy="prior") if task.kind == "binary" else DummyRegressor(strategy="mean")
     if backend == "median" and task.kind == "regression":
@@ -119,39 +150,49 @@ def _estimator(task: Task, backend: str):
         if task.kind == "binary":
             return HistGradientBoostingClassifier(**args)
         return HistGradientBoostingRegressor(loss="absolute_error" if robust and task.metric == "mae" else "squared_error", **args)
-    raise ValueError("Unsupported backend/task combination; choose baseline, histogram, robust, adaptive, binary linear or regression median")
+    raise ValueError("Unsupported backend/task combination; choose baseline, histogram, robust, adaptive, persistence, binary linear or regression median")
 
 
 def _select(task: Task, xs: list[pd.DataFrame], ys: list[pd.Series], times: list[pd.Timestamp]) -> tuple[str, dict]:
-    candidates = ("baseline", "histogram", "robust", "linear") if task.kind == "binary" else (
-        "baseline", "median", "histogram", "robust")
+    if len(times) < 2:
+        return "baseline", {"method": "purged-pooled-block-v2", "selected": "baseline", "metric": task.metric,
+                            "validation_scores": {}, "folds": [], "validation_cutoffs": [],
+                            "limitation": "Insufficient mature inner validation; prior/mean fallback"}
+    candidates = ("baseline", "histogram", "robust", "linear", "persistence") if task.kind == "binary" else (
+        "baseline", "median", "histogram", "robust", "persistence")
     records = []
-    scores: dict[str, list[float]] = {name: [] for name in candidates}
-    # Small fixed budget. No held-out final data is read by selection.
-    for i in range(max(1, len(times) - 2), len(times)):
-        train = [j for j in range(i) if times[j] + pd.Timedelta(
-            days=task.horizon_days + task.label_delay_days) <= times[i]]
-        if not train:
-            continue
+    scores: dict[str, float] = {}
+    first = max(1, len(times) - min(12, max(2, len(times) // 5)))
+    train = [j for j in range(first) if times[j] + pd.Timedelta(
+        days=task.horizon_days + task.label_delay_days) <= times[first]]
+    validation = list(range(first, len(times)))
+    if train:
         x, y = pd.concat([xs[j] for j in train]), pd.concat([ys[j] for j in train])
-        if len(y) < 20 or len(ys[i]) == 0 or (task.kind == "binary" and (y.nunique() < 2 or ys[i].nunique() < 2)):
-            continue
+        valid_y = pd.concat([ys[i] for i in validation])
+    else:
+        x, y, valid_y = pd.DataFrame(), pd.Series(dtype=float), pd.Series(dtype=float)
+    usable = len(y) >= 20 and len(valid_y) > 0 and (task.kind != "binary" or (y.nunique() == 2 and valid_y.nunique() == 2))
+    if usable:
         for candidate in candidates:
             estimator = _estimator(task, candidate)
             with threadpool_limits(limits=1):
                 estimator.fit(x, y)
-                pred = estimator.predict_proba(xs[i])[:, 1] if task.kind == "binary" else estimator.predict(xs[i])
-            value = float(metrics(ys[i], pred, task.kind)[task.metric])
-            scores[candidate].append(value)
-            records.append({"candidate": candidate, "validation_cutoff": str(times[i]),
-                            "training_cutoffs": [str(times[j]) for j in train], "samples": len(ys[i]),
-                            "metric": task.metric, "score": value})
-    averages = {k: float(np.mean(v)) for k, v in scores.items() if v}
-    chosen = (min(averages, key=lambda n: averages[n]) if task.kind == "regression" else
-              max(averages, key=lambda n: averages[n])) if averages else "baseline"
-    return chosen, {"method": "last-two-purged-training-cutoffs-v1", "selected": chosen,
-                    "metric": task.metric, "mean_validation_scores": averages, "folds": records,
-                    "limitation": None if averages else "Insufficient mature inner validation; prior/mean fallback"}
+                predictions = []
+                for i in validation:
+                    if len(xs[i]) == 0:
+                        continue
+                    pred = estimator.predict_proba(xs[i])[:, 1] if task.kind == "binary" else estimator.predict(xs[i])
+                    predictions.append(pred)
+                    records.append({"candidate": candidate, "validation_cutoff": str(times[i]),
+                                    "training_cutoffs": [str(times[j]) for j in train], "samples": len(ys[i]),
+                                    "metric": task.metric, "score": metrics(ys[i], pred, task.kind)[task.metric]})
+            scores[candidate] = float(metrics(valid_y, np.concatenate(predictions), task.kind)[task.metric])
+    chosen = (min(scores, key=lambda n: scores[n]) if task.kind == "regression" else
+              max(scores, key=lambda n: scores[n])) if scores else "baseline"
+    return chosen, {"method": "purged-pooled-block-v2", "selected": chosen,
+                    "metric": task.metric, "validation_scores": scores, "folds": records,
+                    "validation_cutoffs": [str(times[i]) for i in validation],
+                    "limitation": None if scores else "Insufficient mature inner validation; prior/mean fallback"}
 
 
 def fit(snapshot: Snapshot, task: Task, cutoffs: list[str], as_of: str,
@@ -199,7 +240,7 @@ def backtest(snapshot: Snapshot, task: Task, cutoffs: list[str], as_of: str,
                 y = compiler.labels(task, test_time, as_of)
                 folds.append({"cutoff": str(test_time), "backend": backend, "training_cutoffs": train,
                               "n_test": len(y), "seconds": time.perf_counter() - start,
-                              "metrics": metrics(y, pred, task.kind), "error": None})
+                              "metrics": metrics(y, pred, task.kind), "selection": model.selection, "error": None})
             except ValueError as exc:
                 folds.append({"cutoff": str(test_time), "backend": backend, "error": str(exc)})
     if not folds:

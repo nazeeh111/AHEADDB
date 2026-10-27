@@ -6,6 +6,7 @@ scanning. Only declared direct entity/event relations are supported.
 from __future__ import annotations
 
 import time
+from copy import deepcopy
 from dataclasses import dataclass
 
 import pandas as pd
@@ -62,7 +63,7 @@ class Engine:
                 "model_version": view.model_version, "context_key": view.context_key,
                 "preprocessing": Compiler.PREPROCESSING, "rows": len(view.predictions),
                 "diagnostics": view.model.diagnostics(self.contexts[view.context_key]),
-                "model_selection": view.model.selection,
+                "model_selection": deepcopy(view.model.selection),
                 "cache_key": digest([view.task.version, view.model_version, view.data_version,
                                      view.cutoff, view.context_key]),
                 "warnings": ["Predictions are estimates, not facts", "Input provenance is not a causal explanation"]}

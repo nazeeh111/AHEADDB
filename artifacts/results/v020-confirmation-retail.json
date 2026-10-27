@@ -1,0 +1,3901 @@
+{
+  "dataset": "retail",
+  "complete": true,
+  "protocol_sha256": "88d4d6a58eb464dad52868c4f923018e6c733a2611bbf4ed0f90935b96223316",
+  "protocol_document_sha256": "cfbeebcf3c67396c3b8e583354ad9bbe8b58b7d70bafc1ef9bb7d986cc48f358",
+  "legacy_commit": "7c84f7aaa0c573340837667ae63a6c9c7b71331a",
+  "current_source_commit": "c2c392dc90af993d62dc2eb22b39ea60c8462d99",
+  "working_tree_diff_sha256": "19c29b9de3ca006cc0bf5a7514f09a1ac0f1d40a02a02353b33b22a94843b06a",
+  "data_version": "14e573d530c0f354b3546d334181e185e66a75df64b12baf0d0d938d734784c5",
+  "source": {
+    "url": "https://archive.ics.uci.edu/static/public/352/online%2Bretail.zip",
+    "page": "https://archive.ics.uci.edu/dataset/352/online+retail",
+    "citation": "Chen, D. (2015). Online Retail. UCI. doi:10.24432/C5BW33",
+    "sha256": "f5385cbb54bbebf7196389109c6b0621faab0c304e3702548165e71c84aede8b",
+    "bytes": 23715478,
+    "license": "CC-BY-4.0",
+    "retrieved_utc": "2026-10-27 00:06:20.472070+00:00",
+    "raw_rows": 541909,
+    "retained_positive_line_items": 397884,
+    "invoices": 18562,
+    "entities": 4338,
+    "start": "2010-12-01 08:26:00.000000890+00:00",
+    "end": "2011-12-09 12:49:59.999999721+00:00",
+    "transform": "Drop missing customer IDs, cancellations, quantity<=0 and price<=0; sum positive line spend per invoice/customer/time. Forecast gross positive spend, not net revenue.",
+    "availability_assumption": "Each invoice is available exactly 24 hours after its event timestamp; customer exists at its first available invoice. Naive source timestamps interpreted UTC, not verified source timezone.",
+    "snapshot_version": "14e573d530c0f354b3546d334181e185e66a75df64b12baf0d0d938d734784c5"
+  },
+  "folds": [
+    {
+      "name": "summer",
+      "train": [
+        "2011-03-01",
+        "2011-03-15",
+        "2011-04-01",
+        "2011-04-15",
+        "2011-05-01",
+        "2011-05-15",
+        "2011-06-01"
+      ],
+      "fit_as_of": "2011-07-15",
+      "test": [
+        "2011-08-01",
+        "2011-09-01"
+      ],
+      "evidence": "phase1_exposed_development",
+      "original_evidence": "previously_exposed_retrospective"
+    },
+    {
+      "name": "autumn",
+      "train": [
+        "2011-03-01",
+        "2011-03-15",
+        "2011-04-01",
+        "2011-04-15",
+        "2011-05-01",
+        "2011-05-15",
+        "2011-06-01",
+        "2011-06-15",
+        "2011-07-01",
+        "2011-07-15",
+        "2011-08-01"
+      ],
+      "fit_as_of": "2011-09-15",
+      "test": [
+        "2011-10-01",
+        "2011-11-01"
+      ],
+      "evidence": "phase1_exposed_development",
+      "original_evidence": "previously_exposed_retrospective"
+    },
+    {
+      "name": "later_overlapping_november",
+      "evidence": "phase1_exposed_development",
+      "train": [
+        "2011-03-01",
+        "2011-03-15",
+        "2011-04-01",
+        "2011-04-15",
+        "2011-05-01",
+        "2011-05-15",
+        "2011-06-01",
+        "2011-06-15",
+        "2011-07-01",
+        "2011-07-15",
+        "2011-08-01",
+        "2011-08-15"
+      ],
+      "fit_as_of": "2011-10-01",
+      "test": [
+        "2011-11-08"
+      ],
+      "original_evidence": "later_overlapping_exposed_outcomes"
+    }
+  ],
+  "source_loading_seconds": 2.766281666001305,
+  "total_seconds": 18.896614750032313,
+  "results": [
+    {
+      "task": {
+        "name": "purchase_30d",
+        "kind": "binary",
+        "outcome": {
+          "table": "purchases",
+          "aggregation": "count",
+          "column": null,
+          "threshold": 0
+        },
+        "horizon_days": 30,
+        "history_days": 90,
+        "label_delay_days": 1,
+        "metric": "roc_auc"
+      },
+      "backend": "legacy_prior",
+      "fold": "summer",
+      "evidence": "phase1_exposed_development",
+      "train_cutoffs": [
+        "2011-03-01",
+        "2011-03-15",
+        "2011-04-01",
+        "2011-04-15",
+        "2011-05-01",
+        "2011-05-15",
+        "2011-06-01"
+      ],
+      "fit_as_of": "2011-07-15",
+      "test_cutoffs": [
+        "2011-08-01",
+        "2011-09-01"
+      ],
+      "test_row_label_sha256": "a81e91127c9de541588ef721fc6cad51d0615f8c16db7e2ac9e9e7d84093c42d",
+      "test_samples": 6456,
+      "same_entity_ids_and_labels_asserted": true,
+      "test_feature_compile_seconds": 0.2141319588990882,
+      "fit_seconds": 0.6525955830002204,
+      "predict_seconds": 0.009245124994777143,
+      "metrics": {
+        "roc_auc": 0.5,
+        "average_precision": 0.26548946716232963,
+        "brier": 0.1954374320129097,
+        "ece_5_bins": 0.020799567897380522,
+        "reliability": [
+          {
+            "lower": 0.2,
+            "n": 6456,
+            "probability": 0.28628903505971015,
+            "frequency": 0.26548946716232963
+          }
+        ],
+        "prevalence": 0.26548946716232963,
+        "limitation": null,
+        "minimum_prediction": 0.2862890350597101,
+        "maximum_prediction": 0.2862890350597101
+      },
+      "model_version": "f7ae0a354cff1c7d8b73b1c9e21995190c0d3931c6e6ca84bbadb0455ad3af0c",
+      "error": null,
+      "process_peak_rss_bytes": 196362240
+    },
+    {
+      "task": {
+        "name": "purchase_30d",
+        "kind": "binary",
+        "outcome": {
+          "table": "purchases",
+          "aggregation": "count",
+          "column": null,
+          "threshold": 0
+        },
+        "horizon_days": 30,
+        "history_days": 90,
+        "label_delay_days": 1,
+        "metric": "roc_auc"
+      },
+      "backend": "legacy_historical",
+      "fold": "summer",
+      "evidence": "phase1_exposed_development",
+      "train_cutoffs": [
+        "2011-03-01",
+        "2011-03-15",
+        "2011-04-01",
+        "2011-04-15",
+        "2011-05-01",
+        "2011-05-15",
+        "2011-06-01"
+      ],
+      "fit_as_of": "2011-07-15",
+      "test_cutoffs": [
+        "2011-08-01",
+        "2011-09-01"
+      ],
+      "test_row_label_sha256": "a81e91127c9de541588ef721fc6cad51d0615f8c16db7e2ac9e9e7d84093c42d",
+      "test_samples": 6456,
+      "same_entity_ids_and_labels_asserted": true,
+      "test_feature_compile_seconds": 0.2141319588990882,
+      "fit_seconds": 4.625064320862293e-06,
+      "predict_seconds": 0.003108459059149027,
+      "metrics": {
+        "roc_auc": 0.7096334820740895,
+        "average_precision": 0.4995010683365527,
+        "brier": 0.17605765964006156,
+        "ece_5_bins": 0.1000840117607485,
+        "reliability": [
+          {
+            "lower": 0.0,
+            "n": 2529,
+            "probability": 0.0,
+            "frequency": 0.1368129695531831
+          },
+          {
+            "lower": 0.2,
+            "n": 2240,
+            "probability": 0.2834686894262108,
+            "frequency": 0.23035714285714284
+          },
+          {
+            "lower": 0.4,
+            "n": 854,
+            "probability": 0.48658288096740787,
+            "frequency": 0.3548009367681499
+          },
+          {
+            "lower": 0.6000000000000001,
+            "n": 549,
+            "probability": 0.6676411247145664,
+            "frequency": 0.5646630236794171
+          },
+          {
+            "lower": 0.8,
+            "n": 284,
+            "probability": 0.8841399922472423,
+            "frequency": 0.8415492957746479
+          }
+        ],
+        "prevalence": 0.26548946716232963,
+        "limitation": null,
+        "minimum_prediction": 0.0,
+        "maximum_prediction": 0.9999999586006229
+      },
+      "model_version": null,
+      "error": null,
+      "process_peak_rss_bytes": 196362240
+    },
+    {
+      "task": {
+        "name": "purchase_30d",
+        "kind": "binary",
+        "outcome": {
+          "table": "purchases",
+          "aggregation": "count",
+          "column": null,
+          "threshold": 0
+        },
+        "horizon_days": 30,
+        "history_days": 90,
+        "label_delay_days": 1,
+        "metric": "roc_auc"
+      },
+      "backend": "legacy_histogram",
+      "fold": "summer",
+      "evidence": "phase1_exposed_development",
+      "train_cutoffs": [
+        "2011-03-01",
+        "2011-03-15",
+        "2011-04-01",
+        "2011-04-15",
+        "2011-05-01",
+        "2011-05-15",
+        "2011-06-01"
+      ],
+      "fit_as_of": "2011-07-15",
+      "test_cutoffs": [
+        "2011-08-01",
+        "2011-09-01"
+      ],
+      "test_row_label_sha256": "a81e91127c9de541588ef721fc6cad51d0615f8c16db7e2ac9e9e7d84093c42d",
+      "test_samples": 6456,
+      "same_entity_ids_and_labels_asserted": true,
+      "test_feature_compile_seconds": 0.2141319588990882,
+      "fit_seconds": 0.6768081249902025,
+      "predict_seconds": 0.02443754207342863,
+      "metrics": {
+        "roc_auc": 0.7137946388365445,
+        "average_precision": 0.5453765514097442,
+        "brier": 0.16333848341122856,
+        "ece_5_bins": 0.0032209407756850386,
+        "reliability": [
+          {
+            "lower": 0.0,
+            "n": 3787,
+            "probability": 0.15759996421875863,
+            "frequency": 0.15790863480327436
+          },
+          {
+            "lower": 0.2,
+            "n": 1598,
+            "probability": 0.28690803396848763,
+            "frequency": 0.2909887359198999
+          },
+          {
+            "lower": 0.4,
+            "n": 572,
+            "probability": 0.47886488352973927,
+            "frequency": 0.46678321678321677
+          },
+          {
+            "lower": 0.6000000000000001,
+            "n": 292,
+            "probability": 0.6991794199390794,
+            "frequency": 0.702054794520548
+          },
+          {
+            "lower": 0.8,
+            "n": 207,
+            "probability": 0.8905998727976091,
+            "frequency": 0.8647342995169082
+          }
+        ],
+        "prevalence": 0.26548946716232963,
+        "limitation": null,
+        "minimum_prediction": 0.09664147836176658,
+        "maximum_prediction": 0.9863169510605858
+      },
+      "model_version": "35f307c3ace0f1e8a26ab9b7fb0d3cee31a924bc14573689fade1ca568ea769d",
+      "error": null,
+      "process_peak_rss_bytes": 207192064
+    },
+    {
+      "task": {
+        "name": "purchase_30d",
+        "kind": "binary",
+        "outcome": {
+          "table": "purchases",
+          "aggregation": "count",
+          "column": null,
+          "threshold": 0
+        },
+        "horizon_days": 30,
+        "history_days": 90,
+        "label_delay_days": 1,
+        "metric": "roc_auc"
+      },
+      "backend": "adaptive",
+      "fold": "summer",
+      "evidence": "phase1_exposed_development",
+      "train_cutoffs": [
+        "2011-03-01",
+        "2011-03-15",
+        "2011-04-01",
+        "2011-04-15",
+        "2011-05-01",
+        "2011-05-15",
+        "2011-06-01"
+      ],
+      "fit_as_of": "2011-07-15",
+      "test_cutoffs": [
+        "2011-08-01",
+        "2011-09-01"
+      ],
+      "test_row_label_sha256": "a81e91127c9de541588ef721fc6cad51d0615f8c16db7e2ac9e9e7d84093c42d",
+      "test_samples": 6456,
+      "same_entity_ids_and_labels_asserted": true,
+      "test_feature_compile_seconds": 0.05188845901284367,
+      "first_phase_adaptive_reference": {
+        "metrics": {
+          "roc_auc": 0.7164558179913157,
+          "average_precision": 0.5484087118500907,
+          "brier": 0.16248109583161438,
+          "ece_5_bins": 0.003349547413949667,
+          "reliability": [
+            {
+              "lower": 0.0,
+              "n": 3721,
+              "probability": 0.15945907521411462,
+              "frequency": 0.15640956732061273
+            },
+            {
+              "lower": 0.2,
+              "n": 1634,
+              "probability": 0.27800761709877375,
+              "frequency": 0.2821297429620563
+            },
+            {
+              "lower": 0.4,
+              "n": 630,
+              "probability": 0.48405172685990405,
+              "frequency": 0.4857142857142857
+            },
+            {
+              "lower": 0.6000000000000001,
+              "n": 270,
+              "probability": 0.6972548203730304,
+              "frequency": 0.7
+            },
+            {
+              "lower": 0.8,
+              "n": 201,
+              "probability": 0.8843447512168788,
+              "frequency": 0.8756218905472637
+            }
+          ],
+          "prevalence": 0.26548946716232963,
+          "limitation": null,
+          "minimum_prediction": 0.11261867057053125,
+          "maximum_prediction": 0.9640011669167027
+        },
+        "model_version": "9b72d0fa626e560f9922bf25ba10cac301fea45f11a0baa65f60cbf07c111f5e",
+        "selection_report": {
+          "method": "last-two-purged-training-cutoffs-v1",
+          "selected": "robust",
+          "metric": "roc_auc",
+          "mean_validation_scores": {
+            "baseline": 0.5,
+            "histogram": 0.7066591209243731,
+            "robust": 0.7135145047840578,
+            "linear": 0.7058902115503531
+          },
+          "folds": [
+            {
+              "candidate": "baseline",
+              "validation_cutoff": "2011-05-15 00:00:00+00:00",
+              "training_cutoffs": [
+                "2011-03-01 00:00:00+00:00",
+                "2011-03-15 00:00:00+00:00",
+                "2011-04-01 00:00:00+00:00"
+              ],
+              "samples": 2580,
+              "metric": "roc_auc",
+              "score": 0.5
+            },
+            {
+              "candidate": "histogram",
+              "validation_cutoff": "2011-05-15 00:00:00+00:00",
+              "training_cutoffs": [
+                "2011-03-01 00:00:00+00:00",
+                "2011-03-15 00:00:00+00:00",
+                "2011-04-01 00:00:00+00:00"
+              ],
+              "samples": 2580,
+              "metric": "roc_auc",
+              "score": 0.7027294765663312
+            },
+            {
+              "candidate": "robust",
+              "validation_cutoff": "2011-05-15 00:00:00+00:00",
+              "training_cutoffs": [
+                "2011-03-01 00:00:00+00:00",
+                "2011-03-15 00:00:00+00:00",
+                "2011-04-01 00:00:00+00:00"
+              ],
+              "samples": 2580,
+              "metric": "roc_auc",
+              "score": 0.708852792307872
+            },
+            {
+              "candidate": "linear",
+              "validation_cutoff": "2011-05-15 00:00:00+00:00",
+              "training_cutoffs": [
+                "2011-03-01 00:00:00+00:00",
+                "2011-03-15 00:00:00+00:00",
+                "2011-04-01 00:00:00+00:00"
+              ],
+              "samples": 2580,
+              "metric": "roc_auc",
+              "score": 0.7081657345351798
+            },
+            {
+              "candidate": "baseline",
+              "validation_cutoff": "2011-06-01 00:00:00+00:00",
+              "training_cutoffs": [
+                "2011-03-01 00:00:00+00:00",
+                "2011-03-15 00:00:00+00:00",
+                "2011-04-01 00:00:00+00:00",
+                "2011-04-15 00:00:00+00:00",
+                "2011-05-01 00:00:00+00:00"
+              ],
+              "samples": 2708,
+              "metric": "roc_auc",
+              "score": 0.5
+            },
+            {
+              "candidate": "histogram",
+              "validation_cutoff": "2011-06-01 00:00:00+00:00",
+              "training_cutoffs": [
+                "2011-03-01 00:00:00+00:00",
+                "2011-03-15 00:00:00+00:00",
+                "2011-04-01 00:00:00+00:00",
+                "2011-04-15 00:00:00+00:00",
+                "2011-05-01 00:00:00+00:00"
+              ],
+              "samples": 2708,
+              "metric": "roc_auc",
+              "score": 0.710588765282415
+            },
+            {
+              "candidate": "robust",
+              "validation_cutoff": "2011-06-01 00:00:00+00:00",
+              "training_cutoffs": [
+                "2011-03-01 00:00:00+00:00",
+                "2011-03-15 00:00:00+00:00",
+                "2011-04-01 00:00:00+00:00",
+                "2011-04-15 00:00:00+00:00",
+                "2011-05-01 00:00:00+00:00"
+              ],
+              "samples": 2708,
+              "metric": "roc_auc",
+              "score": 0.7181762172602435
+            },
+            {
+              "candidate": "linear",
+              "validation_cutoff": "2011-06-01 00:00:00+00:00",
+              "training_cutoffs": [
+                "2011-03-01 00:00:00+00:00",
+                "2011-03-15 00:00:00+00:00",
+                "2011-04-01 00:00:00+00:00",
+                "2011-04-15 00:00:00+00:00",
+                "2011-05-01 00:00:00+00:00"
+              ],
+              "samples": 2708,
+              "metric": "roc_auc",
+              "score": 0.7036146885655266
+            }
+          ],
+          "limitation": null
+        }
+      },
+      "fit_seconds": 0.739057291066274,
+      "predict_seconds": 0.027805416961200535,
+      "metrics": {
+        "roc_auc": 0.7164558179913157,
+        "average_precision": 0.5484087118500907,
+        "brier": 0.16248109583161438,
+        "ece_5_bins": 0.003349547413949667,
+        "reliability": [
+          {
+            "lower": 0.0,
+            "n": 3721,
+            "probability": 0.15945907521411462,
+            "frequency": 0.15640956732061273
+          },
+          {
+            "lower": 0.2,
+            "n": 1634,
+            "probability": 0.27800761709877375,
+            "frequency": 0.2821297429620563
+          },
+          {
+            "lower": 0.4,
+            "n": 630,
+            "probability": 0.48405172685990405,
+            "frequency": 0.4857142857142857
+          },
+          {
+            "lower": 0.6000000000000001,
+            "n": 270,
+            "probability": 0.6972548203730304,
+            "frequency": 0.7
+          },
+          {
+            "lower": 0.8,
+            "n": 201,
+            "probability": 0.8843447512168788,
+            "frequency": 0.8756218905472637
+          }
+        ],
+        "prevalence": 0.26548946716232963,
+        "limitation": null,
+        "minimum_prediction": 0.11261867057053125,
+        "maximum_prediction": 0.9640011669167027
+      },
+      "model_version": "e40f20477ca149a00356f8377959de3cd8a3f9c791b53661051b3ae6c7acfe5c",
+      "selection_report": {
+        "method": "purged-pooled-block-v2",
+        "selected": "robust",
+        "metric": "roc_auc",
+        "validation_scores": {
+          "baseline": 0.5,
+          "histogram": 0.7022678963836404,
+          "robust": 0.7074624937908879,
+          "linear": 0.704512515755154,
+          "persistence": 0.6999075086777794
+        },
+        "folds": [
+          {
+            "candidate": "baseline",
+            "validation_cutoff": "2011-05-15 00:00:00+00:00",
+            "training_cutoffs": [
+              "2011-03-01 00:00:00+00:00",
+              "2011-03-15 00:00:00+00:00",
+              "2011-04-01 00:00:00+00:00"
+            ],
+            "samples": 2580,
+            "metric": "roc_auc",
+            "score": 0.5
+          },
+          {
+            "candidate": "baseline",
+            "validation_cutoff": "2011-06-01 00:00:00+00:00",
+            "training_cutoffs": [
+              "2011-03-01 00:00:00+00:00",
+              "2011-03-15 00:00:00+00:00",
+              "2011-04-01 00:00:00+00:00"
+            ],
+            "samples": 2708,
+            "metric": "roc_auc",
+            "score": 0.5
+          },
+          {
+            "candidate": "histogram",
+            "validation_cutoff": "2011-05-15 00:00:00+00:00",
+            "training_cutoffs": [
+              "2011-03-01 00:00:00+00:00",
+              "2011-03-15 00:00:00+00:00",
+              "2011-04-01 00:00:00+00:00"
+            ],
+            "samples": 2580,
+            "metric": "roc_auc",
+            "score": 0.7027294765663312
+          },
+          {
+            "candidate": "histogram",
+            "validation_cutoff": "2011-06-01 00:00:00+00:00",
+            "training_cutoffs": [
+              "2011-03-01 00:00:00+00:00",
+              "2011-03-15 00:00:00+00:00",
+              "2011-04-01 00:00:00+00:00"
+            ],
+            "samples": 2708,
+            "metric": "roc_auc",
+            "score": 0.7019752727986472
+          },
+          {
+            "candidate": "robust",
+            "validation_cutoff": "2011-05-15 00:00:00+00:00",
+            "training_cutoffs": [
+              "2011-03-01 00:00:00+00:00",
+              "2011-03-15 00:00:00+00:00",
+              "2011-04-01 00:00:00+00:00"
+            ],
+            "samples": 2580,
+            "metric": "roc_auc",
+            "score": 0.708852792307872
+          },
+          {
+            "candidate": "robust",
+            "validation_cutoff": "2011-06-01 00:00:00+00:00",
+            "training_cutoffs": [
+              "2011-03-01 00:00:00+00:00",
+              "2011-03-15 00:00:00+00:00",
+              "2011-04-01 00:00:00+00:00"
+            ],
+            "samples": 2708,
+            "metric": "roc_auc",
+            "score": 0.706091361563589
+          },
+          {
+            "candidate": "linear",
+            "validation_cutoff": "2011-05-15 00:00:00+00:00",
+            "training_cutoffs": [
+              "2011-03-01 00:00:00+00:00",
+              "2011-03-15 00:00:00+00:00",
+              "2011-04-01 00:00:00+00:00"
+            ],
+            "samples": 2580,
+            "metric": "roc_auc",
+            "score": 0.7081657345351798
+          },
+          {
+            "candidate": "linear",
+            "validation_cutoff": "2011-06-01 00:00:00+00:00",
+            "training_cutoffs": [
+              "2011-03-01 00:00:00+00:00",
+              "2011-03-15 00:00:00+00:00",
+              "2011-04-01 00:00:00+00:00"
+            ],
+            "samples": 2708,
+            "metric": "roc_auc",
+            "score": 0.701088945546589
+          },
+          {
+            "candidate": "persistence",
+            "validation_cutoff": "2011-05-15 00:00:00+00:00",
+            "training_cutoffs": [
+              "2011-03-01 00:00:00+00:00",
+              "2011-03-15 00:00:00+00:00",
+              "2011-04-01 00:00:00+00:00"
+            ],
+            "samples": 2580,
+            "metric": "roc_auc",
+            "score": 0.7005311106181258
+          },
+          {
+            "candidate": "persistence",
+            "validation_cutoff": "2011-06-01 00:00:00+00:00",
+            "training_cutoffs": [
+              "2011-03-01 00:00:00+00:00",
+              "2011-03-15 00:00:00+00:00",
+              "2011-04-01 00:00:00+00:00"
+            ],
+            "samples": 2708,
+            "metric": "roc_auc",
+            "score": 0.6988750016186291
+          }
+        ],
+        "validation_cutoffs": [
+          "2011-05-15 00:00:00+00:00",
+          "2011-06-01 00:00:00+00:00"
+        ],
+        "limitation": null
+      },
+      "selection_purge_asserted": true,
+      "feature_columns": [
+        "purchases__count",
+        "purchases__recency",
+        "purchases__spend__sum",
+        "purchases__spend__mean",
+        "purchases__spend__missing",
+        "purchases__spend__std",
+        "purchases__spend__last",
+        "purchases__spend__trend",
+        "purchases__recent1__count",
+        "purchases__recent1__spend__sum",
+        "purchases__recent1__spend__mean",
+        "purchases__recent7__count",
+        "purchases__recent7__spend__sum",
+        "purchases__recent7__spend__mean",
+        "purchases__recent30__count",
+        "purchases__recent30__spend__sum",
+        "purchases__recent30__spend__mean"
+      ],
+      "error": null,
+      "process_peak_rss_bytes": 220004352
+    },
+    {
+      "task": {
+        "name": "purchase_30d",
+        "kind": "binary",
+        "outcome": {
+          "table": "purchases",
+          "aggregation": "count",
+          "column": null,
+          "threshold": 0
+        },
+        "horizon_days": 30,
+        "history_days": 90,
+        "label_delay_days": 1,
+        "metric": "roc_auc"
+      },
+      "backend": "legacy_prior",
+      "fold": "autumn",
+      "evidence": "phase1_exposed_development",
+      "train_cutoffs": [
+        "2011-03-01",
+        "2011-03-15",
+        "2011-04-01",
+        "2011-04-15",
+        "2011-05-01",
+        "2011-05-15",
+        "2011-06-01",
+        "2011-06-15",
+        "2011-07-01",
+        "2011-07-15",
+        "2011-08-01"
+      ],
+      "fit_as_of": "2011-09-15",
+      "test_cutoffs": [
+        "2011-10-01",
+        "2011-11-01"
+      ],
+      "test_row_label_sha256": "586dc38dcebb29325a4935d9a407b03145795e1b5e3e2b2c078eb9f466c28d19",
+      "test_samples": 7569,
+      "same_entity_ids_and_labels_asserted": true,
+      "test_feature_compile_seconds": 0.1985068330541253,
+      "fit_seconds": 0.7620224590646103,
+      "predict_seconds": 0.006700958008877933,
+      "metrics": {
+        "roc_auc": 0.5,
+        "average_precision": 0.30572070286695735,
+        "brier": 0.21358311020288168,
+        "ece_5_bins": 0.036435634993654265,
+        "reliability": [
+          {
+            "lower": 0.2,
+            "n": 7569,
+            "probability": 0.2692850678733031,
+            "frequency": 0.30572070286695735
+          }
+        ],
+        "prevalence": 0.30572070286695735,
+        "limitation": null,
+        "minimum_prediction": 0.26928506787330314,
+        "maximum_prediction": 0.26928506787330314
+      },
+      "model_version": "8bdb919c46a68abd8108ccb4699bae58ea230480418b2edfb0ba5791eaed4704",
+      "error": null,
+      "process_peak_rss_bytes": 224313344
+    },
+    {
+      "task": {
+        "name": "purchase_30d",
+        "kind": "binary",
+        "outcome": {
+          "table": "purchases",
+          "aggregation": "count",
+          "column": null,
+          "threshold": 0
+        },
+        "horizon_days": 30,
+        "history_days": 90,
+        "label_delay_days": 1,
+        "metric": "roc_auc"
+      },
+      "backend": "legacy_historical",
+      "fold": "autumn",
+      "evidence": "phase1_exposed_development",
+      "train_cutoffs": [
+        "2011-03-01",
+        "2011-03-15",
+        "2011-04-01",
+        "2011-04-15",
+        "2011-05-01",
+        "2011-05-15",
+        "2011-06-01",
+        "2011-06-15",
+        "2011-07-01",
+        "2011-07-15",
+        "2011-08-01"
+      ],
+      "fit_as_of": "2011-09-15",
+      "test_cutoffs": [
+        "2011-10-01",
+        "2011-11-01"
+      ],
+      "test_row_label_sha256": "586dc38dcebb29325a4935d9a407b03145795e1b5e3e2b2c078eb9f466c28d19",
+      "test_samples": 7569,
+      "same_entity_ids_and_labels_asserted": true,
+      "test_feature_compile_seconds": 0.1985068330541253,
+      "fit_seconds": 5.459063686430454e-06,
+      "predict_seconds": 0.004338750033639371,
+      "metrics": {
+        "roc_auc": 0.6917705654654949,
+        "average_precision": 0.5105463372243361,
+        "brier": 0.19635635290447076,
+        "ece_5_bins": 0.08749618179854328,
+        "reliability": [
+          {
+            "lower": 0.0,
+            "n": 3003,
+            "probability": 0.0,
+            "frequency": 0.16883116883116883
+          },
+          {
+            "lower": 0.2,
+            "n": 2682,
+            "probability": 0.2834686894262108,
+            "frequency": 0.2949291573452647
+          },
+          {
+            "lower": 0.4,
+            "n": 999,
+            "probability": 0.48658288096740787,
+            "frequency": 0.4014014014014014
+          },
+          {
+            "lower": 0.6000000000000001,
+            "n": 591,
+            "probability": 0.6693516348772142,
+            "frequency": 0.6125211505922166
+          },
+          {
+            "lower": 0.8,
+            "n": 294,
+            "probability": 0.8804030978755012,
+            "frequency": 0.8605442176870748
+          }
+        ],
+        "prevalence": 0.30572070286695735,
+        "limitation": null,
+        "minimum_prediction": 0.0,
+        "maximum_prediction": 0.999999999241744
+      },
+      "model_version": null,
+      "error": null,
+      "process_peak_rss_bytes": 226852864
+    },
+    {
+      "task": {
+        "name": "purchase_30d",
+        "kind": "binary",
+        "outcome": {
+          "table": "purchases",
+          "aggregation": "count",
+          "column": null,
+          "threshold": 0
+        },
+        "horizon_days": 30,
+        "history_days": 90,
+        "label_delay_days": 1,
+        "metric": "roc_auc"
+      },
+      "backend": "legacy_histogram",
+      "fold": "autumn",
+      "evidence": "phase1_exposed_development",
+      "train_cutoffs": [
+        "2011-03-01",
+        "2011-03-15",
+        "2011-04-01",
+        "2011-04-15",
+        "2011-05-01",
+        "2011-05-15",
+        "2011-06-01",
+        "2011-06-15",
+        "2011-07-01",
+        "2011-07-15",
+        "2011-08-01"
+      ],
+      "fit_as_of": "2011-09-15",
+      "test_cutoffs": [
+        "2011-10-01",
+        "2011-11-01"
+      ],
+      "test_row_label_sha256": "586dc38dcebb29325a4935d9a407b03145795e1b5e3e2b2c078eb9f466c28d19",
+      "test_samples": 7569,
+      "same_entity_ids_and_labels_asserted": true,
+      "test_feature_compile_seconds": 0.1985068330541253,
+      "fit_seconds": 0.924891332979314,
+      "predict_seconds": 0.03639537503477186,
+      "metrics": {
+        "roc_auc": 0.6957893745677451,
+        "average_precision": 0.5545578034670932,
+        "brier": 0.18655777414602304,
+        "ece_5_bins": 0.0591526159796678,
+        "reliability": [
+          {
+            "lower": 0.0,
+            "n": 4495,
+            "probability": 0.14466094987189737,
+            "frequency": 0.19866518353726362
+          },
+          {
+            "lower": 0.2,
+            "n": 1928,
+            "probability": 0.27572588173395596,
+            "frequency": 0.35425311203319504
+          },
+          {
+            "lower": 0.4,
+            "n": 644,
+            "probability": 0.47612961011077937,
+            "frequency": 0.5170807453416149
+          },
+          {
+            "lower": 0.6000000000000001,
+            "n": 311,
+            "probability": 0.6887347419174502,
+            "frequency": 0.7652733118971061
+          },
+          {
+            "lower": 0.8,
+            "n": 191,
+            "probability": 0.8921497050001064,
+            "frequency": 0.8743455497382199
+          }
+        ],
+        "prevalence": 0.30572070286695735,
+        "limitation": null,
+        "minimum_prediction": 0.0670839418059006,
+        "maximum_prediction": 0.9887998441007657
+      },
+      "model_version": "c520e88b8cc06ebc87714e92d625b5595c350b11ddada759cbcd70d0dd4b6703",
+      "error": null,
+      "process_peak_rss_bytes": 229539840
+    },
+    {
+      "task": {
+        "name": "purchase_30d",
+        "kind": "binary",
+        "outcome": {
+          "table": "purchases",
+          "aggregation": "count",
+          "column": null,
+          "threshold": 0
+        },
+        "horizon_days": 30,
+        "history_days": 90,
+        "label_delay_days": 1,
+        "metric": "roc_auc"
+      },
+      "backend": "adaptive",
+      "fold": "autumn",
+      "evidence": "phase1_exposed_development",
+      "train_cutoffs": [
+        "2011-03-01",
+        "2011-03-15",
+        "2011-04-01",
+        "2011-04-15",
+        "2011-05-01",
+        "2011-05-15",
+        "2011-06-01",
+        "2011-06-15",
+        "2011-07-01",
+        "2011-07-15",
+        "2011-08-01"
+      ],
+      "fit_as_of": "2011-09-15",
+      "test_cutoffs": [
+        "2011-10-01",
+        "2011-11-01"
+      ],
+      "test_row_label_sha256": "586dc38dcebb29325a4935d9a407b03145795e1b5e3e2b2c078eb9f466c28d19",
+      "test_samples": 7569,
+      "same_entity_ids_and_labels_asserted": true,
+      "test_feature_compile_seconds": 0.06219845812302083,
+      "first_phase_adaptive_reference": {
+        "metrics": {
+          "roc_auc": 0.7011400016611747,
+          "average_precision": 0.5581169492625461,
+          "brier": 0.18585283529716565,
+          "ece_5_bins": 0.058561216662517415,
+          "reliability": [
+            {
+              "lower": 0.0,
+              "n": 4442,
+              "probability": 0.1461152501255226,
+              "frequency": 0.19810895992796038
+            },
+            {
+              "lower": 0.2,
+              "n": 1968,
+              "probability": 0.2667134488211098,
+              "frequency": 0.34552845528455284
+            },
+            {
+              "lower": 0.4,
+              "n": 673,
+              "probability": 0.47840105187054094,
+              "frequency": 0.5215453194650818
+            },
+            {
+              "lower": 0.6000000000000001,
+              "n": 297,
+              "probability": 0.6998777302117899,
+              "frequency": 0.7946127946127947
+            },
+            {
+              "lower": 0.8,
+              "n": 189,
+              "probability": 0.8835267140852624,
+              "frequency": 0.8835978835978836
+            }
+          ],
+          "prevalence": 0.30572070286695735,
+          "limitation": null,
+          "minimum_prediction": 0.09868104503271652,
+          "maximum_prediction": 0.9718574842624707
+        },
+        "model_version": "351a117f2c5f8bfb8213cc9b509250a3858703c247e073ad447de0ad4b902bdc",
+        "selection_report": {
+          "method": "last-two-purged-training-cutoffs-v1",
+          "selected": "robust",
+          "metric": "roc_auc",
+          "mean_validation_scores": {
+            "baseline": 0.5,
+            "histogram": 0.7342284458245958,
+            "robust": 0.7350008640658714,
+            "linear": 0.7309962677621671
+          },
+          "folds": [
+            {
+              "candidate": "baseline",
+              "validation_cutoff": "2011-07-15 00:00:00+00:00",
+              "training_cutoffs": [
+                "2011-03-01 00:00:00+00:00",
+                "2011-03-15 00:00:00+00:00",
+                "2011-04-01 00:00:00+00:00",
+                "2011-04-15 00:00:00+00:00",
+                "2011-05-01 00:00:00+00:00",
+                "2011-05-15 00:00:00+00:00",
+                "2011-06-01 00:00:00+00:00"
+              ],
+              "samples": 3033,
+              "metric": "roc_auc",
+              "score": 0.5
+            },
+            {
+              "candidate": "histogram",
+              "validation_cutoff": "2011-07-15 00:00:00+00:00",
+              "training_cutoffs": [
+                "2011-03-01 00:00:00+00:00",
+                "2011-03-15 00:00:00+00:00",
+                "2011-04-01 00:00:00+00:00",
+                "2011-04-15 00:00:00+00:00",
+                "2011-05-01 00:00:00+00:00",
+                "2011-05-15 00:00:00+00:00",
+                "2011-06-01 00:00:00+00:00"
+              ],
+              "samples": 3033,
+              "metric": "roc_auc",
+              "score": 0.7228896918598814
+            },
+            {
+              "candidate": "robust",
+              "validation_cutoff": "2011-07-15 00:00:00+00:00",
+              "training_cutoffs": [
+                "2011-03-01 00:00:00+00:00",
+                "2011-03-15 00:00:00+00:00",
+                "2011-04-01 00:00:00+00:00",
+                "2011-04-15 00:00:00+00:00",
+                "2011-05-01 00:00:00+00:00",
+                "2011-05-15 00:00:00+00:00",
+                "2011-06-01 00:00:00+00:00"
+              ],
+              "samples": 3033,
+              "metric": "roc_auc",
+              "score": 0.7261706549527368
+            },
+            {
+              "candidate": "linear",
+              "validation_cutoff": "2011-07-15 00:00:00+00:00",
+              "training_cutoffs": [
+                "2011-03-01 00:00:00+00:00",
+                "2011-03-15 00:00:00+00:00",
+                "2011-04-01 00:00:00+00:00",
+                "2011-04-15 00:00:00+00:00",
+                "2011-05-01 00:00:00+00:00",
+                "2011-05-15 00:00:00+00:00",
+                "2011-06-01 00:00:00+00:00"
+              ],
+              "samples": 3033,
+              "metric": "roc_auc",
+              "score": 0.7217985959816025
+            },
+            {
+              "candidate": "baseline",
+              "validation_cutoff": "2011-08-01 00:00:00+00:00",
+              "training_cutoffs": [
+                "2011-03-01 00:00:00+00:00",
+                "2011-03-15 00:00:00+00:00",
+                "2011-04-01 00:00:00+00:00",
+                "2011-04-15 00:00:00+00:00",
+                "2011-05-01 00:00:00+00:00",
+                "2011-05-15 00:00:00+00:00",
+                "2011-06-01 00:00:00+00:00",
+                "2011-06-15 00:00:00+00:00",
+                "2011-07-01 00:00:00+00:00"
+              ],
+              "samples": 3144,
+              "metric": "roc_auc",
+              "score": 0.5
+            },
+            {
+              "candidate": "histogram",
+              "validation_cutoff": "2011-08-01 00:00:00+00:00",
+              "training_cutoffs": [
+                "2011-03-01 00:00:00+00:00",
+                "2011-03-15 00:00:00+00:00",
+                "2011-04-01 00:00:00+00:00",
+                "2011-04-15 00:00:00+00:00",
+                "2011-05-01 00:00:00+00:00",
+                "2011-05-15 00:00:00+00:00",
+                "2011-06-01 00:00:00+00:00",
+                "2011-06-15 00:00:00+00:00",
+                "2011-07-01 00:00:00+00:00"
+              ],
+              "samples": 3144,
+              "metric": "roc_auc",
+              "score": 0.7455671997893101
+            },
+            {
+              "candidate": "robust",
+              "validation_cutoff": "2011-08-01 00:00:00+00:00",
+              "training_cutoffs": [
+                "2011-03-01 00:00:00+00:00",
+                "2011-03-15 00:00:00+00:00",
+                "2011-04-01 00:00:00+00:00",
+                "2011-04-15 00:00:00+00:00",
+                "2011-05-01 00:00:00+00:00",
+                "2011-05-15 00:00:00+00:00",
+                "2011-06-01 00:00:00+00:00",
+                "2011-06-15 00:00:00+00:00",
+                "2011-07-01 00:00:00+00:00"
+              ],
+              "samples": 3144,
+              "metric": "roc_auc",
+              "score": 0.743831073179006
+            },
+            {
+              "candidate": "linear",
+              "validation_cutoff": "2011-08-01 00:00:00+00:00",
+              "training_cutoffs": [
+                "2011-03-01 00:00:00+00:00",
+                "2011-03-15 00:00:00+00:00",
+                "2011-04-01 00:00:00+00:00",
+                "2011-04-15 00:00:00+00:00",
+                "2011-05-01 00:00:00+00:00",
+                "2011-05-15 00:00:00+00:00",
+                "2011-06-01 00:00:00+00:00",
+                "2011-06-15 00:00:00+00:00",
+                "2011-07-01 00:00:00+00:00"
+              ],
+              "samples": 3144,
+              "metric": "roc_auc",
+              "score": 0.7401939395427316
+            }
+          ],
+          "limitation": null
+        }
+      },
+      "fit_seconds": 1.2177055419888347,
+      "predict_seconds": 0.026627541985362768,
+      "metrics": {
+        "roc_auc": 0.7011400016611747,
+        "average_precision": 0.5581169492625461,
+        "brier": 0.18585283529716565,
+        "ece_5_bins": 0.058561216662517415,
+        "reliability": [
+          {
+            "lower": 0.0,
+            "n": 4442,
+            "probability": 0.1461152501255226,
+            "frequency": 0.19810895992796038
+          },
+          {
+            "lower": 0.2,
+            "n": 1968,
+            "probability": 0.2667134488211098,
+            "frequency": 0.34552845528455284
+          },
+          {
+            "lower": 0.4,
+            "n": 673,
+            "probability": 0.47840105187054094,
+            "frequency": 0.5215453194650818
+          },
+          {
+            "lower": 0.6000000000000001,
+            "n": 297,
+            "probability": 0.6998777302117899,
+            "frequency": 0.7946127946127947
+          },
+          {
+            "lower": 0.8,
+            "n": 189,
+            "probability": 0.8835267140852624,
+            "frequency": 0.8835978835978836
+          }
+        ],
+        "prevalence": 0.30572070286695735,
+        "limitation": null,
+        "minimum_prediction": 0.09868104503271652,
+        "maximum_prediction": 0.9718574842624707
+      },
+      "model_version": "daf16ba3320c7bf78649065d1d21358e83e02bfce4d3c276a1692c8c2f026f93",
+      "selection_report": {
+        "method": "purged-pooled-block-v2",
+        "selected": "robust",
+        "metric": "roc_auc",
+        "validation_scores": {
+          "baseline": 0.5,
+          "histogram": 0.7297225608557724,
+          "robust": 0.7316021802868125,
+          "linear": 0.7300882994353897,
+          "persistence": 0.7288274732434865
+        },
+        "folds": [
+          {
+            "candidate": "baseline",
+            "validation_cutoff": "2011-07-15 00:00:00+00:00",
+            "training_cutoffs": [
+              "2011-03-01 00:00:00+00:00",
+              "2011-03-15 00:00:00+00:00",
+              "2011-04-01 00:00:00+00:00",
+              "2011-04-15 00:00:00+00:00",
+              "2011-05-01 00:00:00+00:00",
+              "2011-05-15 00:00:00+00:00",
+              "2011-06-01 00:00:00+00:00"
+            ],
+            "samples": 3033,
+            "metric": "roc_auc",
+            "score": 0.5
+          },
+          {
+            "candidate": "baseline",
+            "validation_cutoff": "2011-08-01 00:00:00+00:00",
+            "training_cutoffs": [
+              "2011-03-01 00:00:00+00:00",
+              "2011-03-15 00:00:00+00:00",
+              "2011-04-01 00:00:00+00:00",
+              "2011-04-15 00:00:00+00:00",
+              "2011-05-01 00:00:00+00:00",
+              "2011-05-15 00:00:00+00:00",
+              "2011-06-01 00:00:00+00:00"
+            ],
+            "samples": 3144,
+            "metric": "roc_auc",
+            "score": 0.5
+          },
+          {
+            "candidate": "histogram",
+            "validation_cutoff": "2011-07-15 00:00:00+00:00",
+            "training_cutoffs": [
+              "2011-03-01 00:00:00+00:00",
+              "2011-03-15 00:00:00+00:00",
+              "2011-04-01 00:00:00+00:00",
+              "2011-04-15 00:00:00+00:00",
+              "2011-05-01 00:00:00+00:00",
+              "2011-05-15 00:00:00+00:00",
+              "2011-06-01 00:00:00+00:00"
+            ],
+            "samples": 3033,
+            "metric": "roc_auc",
+            "score": 0.7228896918598814
+          },
+          {
+            "candidate": "histogram",
+            "validation_cutoff": "2011-08-01 00:00:00+00:00",
+            "training_cutoffs": [
+              "2011-03-01 00:00:00+00:00",
+              "2011-03-15 00:00:00+00:00",
+              "2011-04-01 00:00:00+00:00",
+              "2011-04-15 00:00:00+00:00",
+              "2011-05-01 00:00:00+00:00",
+              "2011-05-15 00:00:00+00:00",
+              "2011-06-01 00:00:00+00:00"
+            ],
+            "samples": 3144,
+            "metric": "roc_auc",
+            "score": 0.7363651428852009
+          },
+          {
+            "candidate": "robust",
+            "validation_cutoff": "2011-07-15 00:00:00+00:00",
+            "training_cutoffs": [
+              "2011-03-01 00:00:00+00:00",
+              "2011-03-15 00:00:00+00:00",
+              "2011-04-01 00:00:00+00:00",
+              "2011-04-15 00:00:00+00:00",
+              "2011-05-01 00:00:00+00:00",
+              "2011-05-15 00:00:00+00:00",
+              "2011-06-01 00:00:00+00:00"
+            ],
+            "samples": 3033,
+            "metric": "roc_auc",
+            "score": 0.7261706549527368
+          },
+          {
+            "candidate": "robust",
+            "validation_cutoff": "2011-08-01 00:00:00+00:00",
+            "training_cutoffs": [
+              "2011-03-01 00:00:00+00:00",
+              "2011-03-15 00:00:00+00:00",
+              "2011-04-01 00:00:00+00:00",
+              "2011-04-15 00:00:00+00:00",
+              "2011-05-01 00:00:00+00:00",
+              "2011-05-15 00:00:00+00:00",
+              "2011-06-01 00:00:00+00:00"
+            ],
+            "samples": 3144,
+            "metric": "roc_auc",
+            "score": 0.7369007949970093
+          },
+          {
+            "candidate": "linear",
+            "validation_cutoff": "2011-07-15 00:00:00+00:00",
+            "training_cutoffs": [
+              "2011-03-01 00:00:00+00:00",
+              "2011-03-15 00:00:00+00:00",
+              "2011-04-01 00:00:00+00:00",
+              "2011-04-15 00:00:00+00:00",
+              "2011-05-01 00:00:00+00:00",
+              "2011-05-15 00:00:00+00:00",
+              "2011-06-01 00:00:00+00:00"
+            ],
+            "samples": 3033,
+            "metric": "roc_auc",
+            "score": 0.7217985959816025
+          },
+          {
+            "candidate": "linear",
+            "validation_cutoff": "2011-08-01 00:00:00+00:00",
+            "training_cutoffs": [
+              "2011-03-01 00:00:00+00:00",
+              "2011-03-15 00:00:00+00:00",
+              "2011-04-01 00:00:00+00:00",
+              "2011-04-15 00:00:00+00:00",
+              "2011-05-01 00:00:00+00:00",
+              "2011-05-15 00:00:00+00:00",
+              "2011-06-01 00:00:00+00:00"
+            ],
+            "samples": 3144,
+            "metric": "roc_auc",
+            "score": 0.7385211426352298
+          },
+          {
+            "candidate": "persistence",
+            "validation_cutoff": "2011-07-15 00:00:00+00:00",
+            "training_cutoffs": [
+              "2011-03-01 00:00:00+00:00",
+              "2011-03-15 00:00:00+00:00",
+              "2011-04-01 00:00:00+00:00",
+              "2011-04-15 00:00:00+00:00",
+              "2011-05-01 00:00:00+00:00",
+              "2011-05-15 00:00:00+00:00",
+              "2011-06-01 00:00:00+00:00"
+            ],
+            "samples": 3033,
+            "metric": "roc_auc",
+            "score": 0.7181406498160843
+          },
+          {
+            "candidate": "persistence",
+            "validation_cutoff": "2011-08-01 00:00:00+00:00",
+            "training_cutoffs": [
+              "2011-03-01 00:00:00+00:00",
+              "2011-03-15 00:00:00+00:00",
+              "2011-04-01 00:00:00+00:00",
+              "2011-04-15 00:00:00+00:00",
+              "2011-05-01 00:00:00+00:00",
+              "2011-05-15 00:00:00+00:00",
+              "2011-06-01 00:00:00+00:00"
+            ],
+            "samples": 3144,
+            "metric": "roc_auc",
+            "score": 0.7393553092051816
+          }
+        ],
+        "validation_cutoffs": [
+          "2011-07-15 00:00:00+00:00",
+          "2011-08-01 00:00:00+00:00"
+        ],
+        "limitation": null
+      },
+      "selection_purge_asserted": true,
+      "feature_columns": [
+        "purchases__count",
+        "purchases__recency",
+        "purchases__spend__sum",
+        "purchases__spend__mean",
+        "purchases__spend__missing",
+        "purchases__spend__std",
+        "purchases__spend__last",
+        "purchases__spend__trend",
+        "purchases__recent1__count",
+        "purchases__recent1__spend__sum",
+        "purchases__recent1__spend__mean",
+        "purchases__recent7__count",
+        "purchases__recent7__spend__sum",
+        "purchases__recent7__spend__mean",
+        "purchases__recent30__count",
+        "purchases__recent30__spend__sum",
+        "purchases__recent30__spend__mean"
+      ],
+      "error": null,
+      "process_peak_rss_bytes": 247037952
+    },
+    {
+      "task": {
+        "name": "purchase_30d",
+        "kind": "binary",
+        "outcome": {
+          "table": "purchases",
+          "aggregation": "count",
+          "column": null,
+          "threshold": 0
+        },
+        "horizon_days": 30,
+        "history_days": 90,
+        "label_delay_days": 1,
+        "metric": "roc_auc"
+      },
+      "backend": "legacy_prior",
+      "fold": "later_overlapping_november",
+      "evidence": "phase1_exposed_development",
+      "train_cutoffs": [
+        "2011-03-01",
+        "2011-03-15",
+        "2011-04-01",
+        "2011-04-15",
+        "2011-05-01",
+        "2011-05-15",
+        "2011-06-01",
+        "2011-06-15",
+        "2011-07-01",
+        "2011-07-15",
+        "2011-08-01",
+        "2011-08-15"
+      ],
+      "fit_as_of": "2011-10-01",
+      "test_cutoffs": [
+        "2011-11-08"
+      ],
+      "test_row_label_sha256": "8c094282f5281b9eca5f4156d656d5c8b119903fd0c256edc4a2c7db360d82ca",
+      "test_samples": 4046,
+      "same_entity_ids_and_labels_asserted": true,
+      "test_feature_compile_seconds": 0.10337845794856548,
+      "fit_seconds": 0.9904497499810532,
+      "predict_seconds": 0.0035981250694021583,
+      "metrics": {
+        "roc_auc": 0.5,
+        "average_precision": 0.34330202669303017,
+        "brier": 0.23115883447234306,
+        "ece_5_bins": 0.07558498072272601,
+        "reliability": [
+          {
+            "lower": 0.2,
+            "n": 4046,
+            "probability": 0.26771704597030416,
+            "frequency": 0.34330202669303017
+          }
+        ],
+        "prevalence": 0.34330202669303017,
+        "limitation": null,
+        "minimum_prediction": 0.2677170459703041,
+        "maximum_prediction": 0.2677170459703041
+      },
+      "model_version": "e3a2d924288eaa0936d02261708c27909310b260bb4e03b173b445bea1f72868",
+      "error": null,
+      "process_peak_rss_bytes": 247693312
+    },
+    {
+      "task": {
+        "name": "purchase_30d",
+        "kind": "binary",
+        "outcome": {
+          "table": "purchases",
+          "aggregation": "count",
+          "column": null,
+          "threshold": 0
+        },
+        "horizon_days": 30,
+        "history_days": 90,
+        "label_delay_days": 1,
+        "metric": "roc_auc"
+      },
+      "backend": "legacy_historical",
+      "fold": "later_overlapping_november",
+      "evidence": "phase1_exposed_development",
+      "train_cutoffs": [
+        "2011-03-01",
+        "2011-03-15",
+        "2011-04-01",
+        "2011-04-15",
+        "2011-05-01",
+        "2011-05-15",
+        "2011-06-01",
+        "2011-06-15",
+        "2011-07-01",
+        "2011-07-15",
+        "2011-08-01",
+        "2011-08-15"
+      ],
+      "fit_as_of": "2011-10-01",
+      "test_cutoffs": [
+        "2011-11-08"
+      ],
+      "test_row_label_sha256": "8c094282f5281b9eca5f4156d656d5c8b119903fd0c256edc4a2c7db360d82ca",
+      "test_samples": 4046,
+      "same_entity_ids_and_labels_asserted": true,
+      "test_feature_compile_seconds": 0.10337845794856548,
+      "fit_seconds": 3.1250063329935074e-05,
+      "predict_seconds": 0.001968250027857721,
+      "metrics": {
+        "roc_auc": 0.7109219896205818,
+        "average_precision": 0.5686545703442674,
+        "brier": 0.20201626492879013,
+        "ece_5_bins": 0.08261435593545621,
+        "reliability": [
+          {
+            "lower": 0.0,
+            "n": 1514,
+            "probability": 0.0,
+            "frequency": 0.18494055482166447
+          },
+          {
+            "lower": 0.2,
+            "n": 1482,
+            "probability": 0.28346868942621084,
+            "frequency": 0.305668016194332
+          },
+          {
+            "lower": 0.4,
+            "n": 554,
+            "probability": 0.4865828809674078,
+            "frequency": 0.48736462093862815
+          },
+          {
+            "lower": 0.6000000000000001,
+            "n": 332,
+            "probability": 0.665415511008997,
+            "frequency": 0.7168674698795181
+          },
+          {
+            "lower": 0.8,
+            "n": 164,
+            "probability": 0.8790051978327363,
+            "frequency": 0.9024390243902439
+          }
+        ],
+        "prevalence": 0.34330202669303017,
+        "limitation": null,
+        "minimum_prediction": 0.0,
+        "maximum_prediction": 0.9999999994566858
+      },
+      "model_version": null,
+      "error": null,
+      "process_peak_rss_bytes": 249053184
+    },
+    {
+      "task": {
+        "name": "purchase_30d",
+        "kind": "binary",
+        "outcome": {
+          "table": "purchases",
+          "aggregation": "count",
+          "column": null,
+          "threshold": 0
+        },
+        "horizon_days": 30,
+        "history_days": 90,
+        "label_delay_days": 1,
+        "metric": "roc_auc"
+      },
+      "backend": "legacy_histogram",
+      "fold": "later_overlapping_november",
+      "evidence": "phase1_exposed_development",
+      "train_cutoffs": [
+        "2011-03-01",
+        "2011-03-15",
+        "2011-04-01",
+        "2011-04-15",
+        "2011-05-01",
+        "2011-05-15",
+        "2011-06-01",
+        "2011-06-15",
+        "2011-07-01",
+        "2011-07-15",
+        "2011-08-01",
+        "2011-08-15"
+      ],
+      "fit_as_of": "2011-10-01",
+      "test_cutoffs": [
+        "2011-11-08"
+      ],
+      "test_row_label_sha256": "8c094282f5281b9eca5f4156d656d5c8b119903fd0c256edc4a2c7db360d82ca",
+      "test_samples": 4046,
+      "same_entity_ids_and_labels_asserted": true,
+      "test_feature_compile_seconds": 0.10337845794856548,
+      "fit_seconds": 1.106965999933891,
+      "predict_seconds": 0.020617500063963234,
+      "metrics": {
+        "roc_auc": 0.7118895900446895,
+        "average_precision": 0.6078526406627403,
+        "brier": 0.19894336499684193,
+        "ece_5_bins": 0.0903030053757847,
+        "reliability": [
+          {
+            "lower": 0.0,
+            "n": 2237,
+            "probability": 0.14351106837822092,
+            "frequency": 0.2168082253017434
+          },
+          {
+            "lower": 0.2,
+            "n": 1181,
+            "probability": 0.27315260646915906,
+            "frequency": 0.3869602032176122
+          },
+          {
+            "lower": 0.4,
+            "n": 351,
+            "probability": 0.479578701491247,
+            "frequency": 0.6011396011396012
+          },
+          {
+            "lower": 0.6000000000000001,
+            "n": 184,
+            "probability": 0.6988409375210987,
+            "frequency": 0.8043478260869565
+          },
+          {
+            "lower": 0.8,
+            "n": 93,
+            "probability": 0.8934160787108416,
+            "frequency": 0.946236559139785
+          }
+        ],
+        "prevalence": 0.34330202669303017,
+        "limitation": null,
+        "minimum_prediction": 0.06047213401703732,
+        "maximum_prediction": 0.9902285108976288
+      },
+      "model_version": "f224d6b0fa9fdcd1771025d882bc3eff8f26c041e04358da8383f5c8c8d05e86",
+      "error": null,
+      "process_peak_rss_bytes": 250576896
+    },
+    {
+      "task": {
+        "name": "purchase_30d",
+        "kind": "binary",
+        "outcome": {
+          "table": "purchases",
+          "aggregation": "count",
+          "column": null,
+          "threshold": 0
+        },
+        "horizon_days": 30,
+        "history_days": 90,
+        "label_delay_days": 1,
+        "metric": "roc_auc"
+      },
+      "backend": "adaptive",
+      "fold": "later_overlapping_november",
+      "evidence": "phase1_exposed_development",
+      "train_cutoffs": [
+        "2011-03-01",
+        "2011-03-15",
+        "2011-04-01",
+        "2011-04-15",
+        "2011-05-01",
+        "2011-05-15",
+        "2011-06-01",
+        "2011-06-15",
+        "2011-07-01",
+        "2011-07-15",
+        "2011-08-01",
+        "2011-08-15"
+      ],
+      "fit_as_of": "2011-10-01",
+      "test_cutoffs": [
+        "2011-11-08"
+      ],
+      "test_row_label_sha256": "8c094282f5281b9eca5f4156d656d5c8b119903fd0c256edc4a2c7db360d82ca",
+      "test_samples": 4046,
+      "same_entity_ids_and_labels_asserted": true,
+      "test_feature_compile_seconds": 0.03162512497510761,
+      "first_phase_adaptive_reference": {
+        "metrics": {
+          "roc_auc": 0.7132504898290862,
+          "average_precision": 0.6114790206622498,
+          "brier": 0.1983697560776441,
+          "ece_5_bins": 0.09066903660587892,
+          "reliability": [
+            {
+              "lower": 0.0,
+              "n": 2251,
+              "probability": 0.14427950994581654,
+              "frequency": 0.2190137716570413
+            },
+            {
+              "lower": 0.2,
+              "n": 1164,
+              "probability": 0.2692084818562819,
+              "frequency": 0.38144329896907214
+            },
+            {
+              "lower": 0.4,
+              "n": 354,
+              "probability": 0.48175059821265903,
+              "frequency": 0.6073446327683616
+            },
+            {
+              "lower": 0.6000000000000001,
+              "n": 167,
+              "probability": 0.695241722937429,
+              "frequency": 0.8203592814371258
+            },
+            {
+              "lower": 0.8,
+              "n": 110,
+              "probability": 0.8852377147821522,
+              "frequency": 0.9090909090909091
+            }
+          ],
+          "prevalence": 0.34330202669303017,
+          "limitation": null,
+          "minimum_prediction": 0.07099408934380096,
+          "maximum_prediction": 0.9856777673148883
+        },
+        "model_version": "5d2aca441317d5ccff598889f8504fa07f864db36e42478ae707509416444b62",
+        "selection_report": {
+          "method": "last-two-purged-training-cutoffs-v1",
+          "selected": "histogram",
+          "metric": "roc_auc",
+          "mean_validation_scores": {
+            "baseline": 0.5,
+            "histogram": 0.7395647163635317,
+            "robust": 0.7389560268606343,
+            "linear": 0.7317489407072668
+          },
+          "folds": [
+            {
+              "candidate": "baseline",
+              "validation_cutoff": "2011-08-01 00:00:00+00:00",
+              "training_cutoffs": [
+                "2011-03-01 00:00:00+00:00",
+                "2011-03-15 00:00:00+00:00",
+                "2011-04-01 00:00:00+00:00",
+                "2011-04-15 00:00:00+00:00",
+                "2011-05-01 00:00:00+00:00",
+                "2011-05-15 00:00:00+00:00",
+                "2011-06-01 00:00:00+00:00",
+                "2011-06-15 00:00:00+00:00",
+                "2011-07-01 00:00:00+00:00"
+              ],
+              "samples": 3144,
+              "metric": "roc_auc",
+              "score": 0.5
+            },
+            {
+              "candidate": "histogram",
+              "validation_cutoff": "2011-08-01 00:00:00+00:00",
+              "training_cutoffs": [
+                "2011-03-01 00:00:00+00:00",
+                "2011-03-15 00:00:00+00:00",
+                "2011-04-01 00:00:00+00:00",
+                "2011-04-15 00:00:00+00:00",
+                "2011-05-01 00:00:00+00:00",
+                "2011-05-15 00:00:00+00:00",
+                "2011-06-01 00:00:00+00:00",
+                "2011-06-15 00:00:00+00:00",
+                "2011-07-01 00:00:00+00:00"
+              ],
+              "samples": 3144,
+              "metric": "roc_auc",
+              "score": 0.7455671997893101
+            },
+            {
+              "candidate": "robust",
+              "validation_cutoff": "2011-08-01 00:00:00+00:00",
+              "training_cutoffs": [
+                "2011-03-01 00:00:00+00:00",
+                "2011-03-15 00:00:00+00:00",
+                "2011-04-01 00:00:00+00:00",
+                "2011-04-15 00:00:00+00:00",
+                "2011-05-01 00:00:00+00:00",
+                "2011-05-15 00:00:00+00:00",
+                "2011-06-01 00:00:00+00:00",
+                "2011-06-15 00:00:00+00:00",
+                "2011-07-01 00:00:00+00:00"
+              ],
+              "samples": 3144,
+              "metric": "roc_auc",
+              "score": 0.743831073179006
+            },
+            {
+              "candidate": "linear",
+              "validation_cutoff": "2011-08-01 00:00:00+00:00",
+              "training_cutoffs": [
+                "2011-03-01 00:00:00+00:00",
+                "2011-03-15 00:00:00+00:00",
+                "2011-04-01 00:00:00+00:00",
+                "2011-04-15 00:00:00+00:00",
+                "2011-05-01 00:00:00+00:00",
+                "2011-05-15 00:00:00+00:00",
+                "2011-06-01 00:00:00+00:00",
+                "2011-06-15 00:00:00+00:00",
+                "2011-07-01 00:00:00+00:00"
+              ],
+              "samples": 3144,
+              "metric": "roc_auc",
+              "score": 0.7401939395427316
+            },
+            {
+              "candidate": "baseline",
+              "validation_cutoff": "2011-08-15 00:00:00+00:00",
+              "training_cutoffs": [
+                "2011-03-01 00:00:00+00:00",
+                "2011-03-15 00:00:00+00:00",
+                "2011-04-01 00:00:00+00:00",
+                "2011-04-15 00:00:00+00:00",
+                "2011-05-01 00:00:00+00:00",
+                "2011-05-15 00:00:00+00:00",
+                "2011-06-01 00:00:00+00:00",
+                "2011-06-15 00:00:00+00:00",
+                "2011-07-01 00:00:00+00:00",
+                "2011-07-15 00:00:00+00:00"
+              ],
+              "samples": 3221,
+              "metric": "roc_auc",
+              "score": 0.5
+            },
+            {
+              "candidate": "histogram",
+              "validation_cutoff": "2011-08-15 00:00:00+00:00",
+              "training_cutoffs": [
+                "2011-03-01 00:00:00+00:00",
+                "2011-03-15 00:00:00+00:00",
+                "2011-04-01 00:00:00+00:00",
+                "2011-04-15 00:00:00+00:00",
+                "2011-05-01 00:00:00+00:00",
+                "2011-05-15 00:00:00+00:00",
+                "2011-06-01 00:00:00+00:00",
+                "2011-06-15 00:00:00+00:00",
+                "2011-07-01 00:00:00+00:00",
+                "2011-07-15 00:00:00+00:00"
+              ],
+              "samples": 3221,
+              "metric": "roc_auc",
+              "score": 0.7335622329377532
+            },
+            {
+              "candidate": "robust",
+              "validation_cutoff": "2011-08-15 00:00:00+00:00",
+              "training_cutoffs": [
+                "2011-03-01 00:00:00+00:00",
+                "2011-03-15 00:00:00+00:00",
+                "2011-04-01 00:00:00+00:00",
+                "2011-04-15 00:00:00+00:00",
+                "2011-05-01 00:00:00+00:00",
+                "2011-05-15 00:00:00+00:00",
+                "2011-06-01 00:00:00+00:00",
+                "2011-06-15 00:00:00+00:00",
+                "2011-07-01 00:00:00+00:00",
+                "2011-07-15 00:00:00+00:00"
+              ],
+              "samples": 3221,
+              "metric": "roc_auc",
+              "score": 0.7340809805422628
+            },
+            {
+              "candidate": "linear",
+              "validation_cutoff": "2011-08-15 00:00:00+00:00",
+              "training_cutoffs": [
+                "2011-03-01 00:00:00+00:00",
+                "2011-03-15 00:00:00+00:00",
+                "2011-04-01 00:00:00+00:00",
+                "2011-04-15 00:00:00+00:00",
+                "2011-05-01 00:00:00+00:00",
+                "2011-05-15 00:00:00+00:00",
+                "2011-06-01 00:00:00+00:00",
+                "2011-06-15 00:00:00+00:00",
+                "2011-07-01 00:00:00+00:00",
+                "2011-07-15 00:00:00+00:00"
+              ],
+              "samples": 3221,
+              "metric": "roc_auc",
+              "score": 0.723303941871802
+            }
+          ],
+          "limitation": null
+        }
+      },
+      "fit_seconds": 1.4742223749635741,
+      "predict_seconds": 0.015512917074374855,
+      "metrics": {
+        "roc_auc": 0.7132504898290862,
+        "average_precision": 0.6114790206622498,
+        "brier": 0.1983697560776441,
+        "ece_5_bins": 0.09066903660587892,
+        "reliability": [
+          {
+            "lower": 0.0,
+            "n": 2251,
+            "probability": 0.14427950994581654,
+            "frequency": 0.2190137716570413
+          },
+          {
+            "lower": 0.2,
+            "n": 1164,
+            "probability": 0.2692084818562819,
+            "frequency": 0.38144329896907214
+          },
+          {
+            "lower": 0.4,
+            "n": 354,
+            "probability": 0.48175059821265903,
+            "frequency": 0.6073446327683616
+          },
+          {
+            "lower": 0.6000000000000001,
+            "n": 167,
+            "probability": 0.695241722937429,
+            "frequency": 0.8203592814371258
+          },
+          {
+            "lower": 0.8,
+            "n": 110,
+            "probability": 0.8852377147821522,
+            "frequency": 0.9090909090909091
+          }
+        ],
+        "prevalence": 0.34330202669303017,
+        "limitation": null,
+        "minimum_prediction": 0.07099408934380096,
+        "maximum_prediction": 0.9856777673148883
+      },
+      "model_version": "2560d6c82d038c1cd50719f79b3193f906e6894453a411f540f06d33151ae43d",
+      "selection_report": {
+        "method": "purged-pooled-block-v2",
+        "selected": "histogram",
+        "metric": "roc_auc",
+        "validation_scores": {
+          "baseline": 0.5,
+          "histogram": 0.7401430025752593,
+          "robust": 0.7372589701143824,
+          "linear": 0.7310701411697546,
+          "persistence": 0.7295587291343739
+        },
+        "folds": [
+          {
+            "candidate": "baseline",
+            "validation_cutoff": "2011-08-01 00:00:00+00:00",
+            "training_cutoffs": [
+              "2011-03-01 00:00:00+00:00",
+              "2011-03-15 00:00:00+00:00",
+              "2011-04-01 00:00:00+00:00",
+              "2011-04-15 00:00:00+00:00",
+              "2011-05-01 00:00:00+00:00",
+              "2011-05-15 00:00:00+00:00",
+              "2011-06-01 00:00:00+00:00",
+              "2011-06-15 00:00:00+00:00",
+              "2011-07-01 00:00:00+00:00"
+            ],
+            "samples": 3144,
+            "metric": "roc_auc",
+            "score": 0.5
+          },
+          {
+            "candidate": "baseline",
+            "validation_cutoff": "2011-08-15 00:00:00+00:00",
+            "training_cutoffs": [
+              "2011-03-01 00:00:00+00:00",
+              "2011-03-15 00:00:00+00:00",
+              "2011-04-01 00:00:00+00:00",
+              "2011-04-15 00:00:00+00:00",
+              "2011-05-01 00:00:00+00:00",
+              "2011-05-15 00:00:00+00:00",
+              "2011-06-01 00:00:00+00:00",
+              "2011-06-15 00:00:00+00:00",
+              "2011-07-01 00:00:00+00:00"
+            ],
+            "samples": 3221,
+            "metric": "roc_auc",
+            "score": 0.5
+          },
+          {
+            "candidate": "histogram",
+            "validation_cutoff": "2011-08-01 00:00:00+00:00",
+            "training_cutoffs": [
+              "2011-03-01 00:00:00+00:00",
+              "2011-03-15 00:00:00+00:00",
+              "2011-04-01 00:00:00+00:00",
+              "2011-04-15 00:00:00+00:00",
+              "2011-05-01 00:00:00+00:00",
+              "2011-05-15 00:00:00+00:00",
+              "2011-06-01 00:00:00+00:00",
+              "2011-06-15 00:00:00+00:00",
+              "2011-07-01 00:00:00+00:00"
+            ],
+            "samples": 3144,
+            "metric": "roc_auc",
+            "score": 0.7455671997893101
+          },
+          {
+            "candidate": "histogram",
+            "validation_cutoff": "2011-08-15 00:00:00+00:00",
+            "training_cutoffs": [
+              "2011-03-01 00:00:00+00:00",
+              "2011-03-15 00:00:00+00:00",
+              "2011-04-01 00:00:00+00:00",
+              "2011-04-15 00:00:00+00:00",
+              "2011-05-01 00:00:00+00:00",
+              "2011-05-15 00:00:00+00:00",
+              "2011-06-01 00:00:00+00:00",
+              "2011-06-15 00:00:00+00:00",
+              "2011-07-01 00:00:00+00:00"
+            ],
+            "samples": 3221,
+            "metric": "roc_auc",
+            "score": 0.7358507206550502
+          },
+          {
+            "candidate": "robust",
+            "validation_cutoff": "2011-08-01 00:00:00+00:00",
+            "training_cutoffs": [
+              "2011-03-01 00:00:00+00:00",
+              "2011-03-15 00:00:00+00:00",
+              "2011-04-01 00:00:00+00:00",
+              "2011-04-15 00:00:00+00:00",
+              "2011-05-01 00:00:00+00:00",
+              "2011-05-15 00:00:00+00:00",
+              "2011-06-01 00:00:00+00:00",
+              "2011-06-15 00:00:00+00:00",
+              "2011-07-01 00:00:00+00:00"
+            ],
+            "samples": 3144,
+            "metric": "roc_auc",
+            "score": 0.743831073179006
+          },
+          {
+            "candidate": "robust",
+            "validation_cutoff": "2011-08-15 00:00:00+00:00",
+            "training_cutoffs": [
+              "2011-03-01 00:00:00+00:00",
+              "2011-03-15 00:00:00+00:00",
+              "2011-04-01 00:00:00+00:00",
+              "2011-04-15 00:00:00+00:00",
+              "2011-05-01 00:00:00+00:00",
+              "2011-05-15 00:00:00+00:00",
+              "2011-06-01 00:00:00+00:00",
+              "2011-06-15 00:00:00+00:00",
+              "2011-07-01 00:00:00+00:00"
+            ],
+            "samples": 3221,
+            "metric": "roc_auc",
+            "score": 0.7318479004573926
+          },
+          {
+            "candidate": "linear",
+            "validation_cutoff": "2011-08-01 00:00:00+00:00",
+            "training_cutoffs": [
+              "2011-03-01 00:00:00+00:00",
+              "2011-03-15 00:00:00+00:00",
+              "2011-04-01 00:00:00+00:00",
+              "2011-04-15 00:00:00+00:00",
+              "2011-05-01 00:00:00+00:00",
+              "2011-05-15 00:00:00+00:00",
+              "2011-06-01 00:00:00+00:00",
+              "2011-06-15 00:00:00+00:00",
+              "2011-07-01 00:00:00+00:00"
+            ],
+            "samples": 3144,
+            "metric": "roc_auc",
+            "score": 0.7401939395427316
+          },
+          {
+            "candidate": "linear",
+            "validation_cutoff": "2011-08-15 00:00:00+00:00",
+            "training_cutoffs": [
+              "2011-03-01 00:00:00+00:00",
+              "2011-03-15 00:00:00+00:00",
+              "2011-04-01 00:00:00+00:00",
+              "2011-04-15 00:00:00+00:00",
+              "2011-05-01 00:00:00+00:00",
+              "2011-05-15 00:00:00+00:00",
+              "2011-06-01 00:00:00+00:00",
+              "2011-06-15 00:00:00+00:00",
+              "2011-07-01 00:00:00+00:00"
+            ],
+            "samples": 3221,
+            "metric": "roc_auc",
+            "score": 0.7238267560915355
+          },
+          {
+            "candidate": "persistence",
+            "validation_cutoff": "2011-08-01 00:00:00+00:00",
+            "training_cutoffs": [
+              "2011-03-01 00:00:00+00:00",
+              "2011-03-15 00:00:00+00:00",
+              "2011-04-01 00:00:00+00:00",
+              "2011-04-15 00:00:00+00:00",
+              "2011-05-01 00:00:00+00:00",
+              "2011-05-15 00:00:00+00:00",
+              "2011-06-01 00:00:00+00:00",
+              "2011-06-15 00:00:00+00:00",
+              "2011-07-01 00:00:00+00:00"
+            ],
+            "samples": 3144,
+            "metric": "roc_auc",
+            "score": 0.7393553092051816
+          },
+          {
+            "candidate": "persistence",
+            "validation_cutoff": "2011-08-15 00:00:00+00:00",
+            "training_cutoffs": [
+              "2011-03-01 00:00:00+00:00",
+              "2011-03-15 00:00:00+00:00",
+              "2011-04-01 00:00:00+00:00",
+              "2011-04-15 00:00:00+00:00",
+              "2011-05-01 00:00:00+00:00",
+              "2011-05-15 00:00:00+00:00",
+              "2011-06-01 00:00:00+00:00",
+              "2011-06-15 00:00:00+00:00",
+              "2011-07-01 00:00:00+00:00"
+            ],
+            "samples": 3221,
+            "metric": "roc_auc",
+            "score": 0.7216371379568716
+          }
+        ],
+        "validation_cutoffs": [
+          "2011-08-01 00:00:00+00:00",
+          "2011-08-15 00:00:00+00:00"
+        ],
+        "limitation": null
+      },
+      "selection_purge_asserted": true,
+      "feature_columns": [
+        "purchases__count",
+        "purchases__recency",
+        "purchases__spend__sum",
+        "purchases__spend__mean",
+        "purchases__spend__missing",
+        "purchases__spend__std",
+        "purchases__spend__last",
+        "purchases__spend__trend",
+        "purchases__recent1__count",
+        "purchases__recent1__spend__sum",
+        "purchases__recent1__spend__mean",
+        "purchases__recent7__count",
+        "purchases__recent7__spend__sum",
+        "purchases__recent7__spend__mean",
+        "purchases__recent30__count",
+        "purchases__recent30__spend__sum",
+        "purchases__recent30__spend__mean"
+      ],
+      "error": null,
+      "process_peak_rss_bytes": 262864896
+    },
+    {
+      "task": {
+        "name": "gross_spend_30d",
+        "kind": "regression",
+        "outcome": {
+          "table": "purchases",
+          "aggregation": "sum",
+          "column": "spend",
+          "threshold": 0
+        },
+        "horizon_days": 30,
+        "history_days": 90,
+        "label_delay_days": 1,
+        "metric": "mae"
+      },
+      "backend": "legacy_prior",
+      "fold": "summer",
+      "evidence": "phase1_exposed_development",
+      "train_cutoffs": [
+        "2011-03-01",
+        "2011-03-15",
+        "2011-04-01",
+        "2011-04-15",
+        "2011-05-01",
+        "2011-05-15",
+        "2011-06-01"
+      ],
+      "fit_as_of": "2011-07-15",
+      "test_cutoffs": [
+        "2011-08-01",
+        "2011-09-01"
+      ],
+      "test_row_label_sha256": "e4974fb461cc2038db33d0584cfccebaebe3e477a994e017a3b76739e2217fe3",
+      "test_samples": 6456,
+      "same_entity_ids_and_labels_asserted": true,
+      "test_feature_compile_seconds": 0.14884554198943079,
+      "fit_seconds": 0.4955275420797989,
+      "predict_seconds": 0.006045208894647658,
+      "metrics": {
+        "mae": 309.3495355897982,
+        "rmse": 1507.151094991061,
+        "minimum_prediction": 199.40796091704453,
+        "maximum_prediction": 199.40796091704453,
+        "negative_predictions": 0,
+        "negative_prediction_fraction": 0.0
+      },
+      "model_version": "5b22b20f2cd033c9e15aaa119effbe5ca4ee9b7c123dfdb71597d1bfea6b9c40",
+      "error": null,
+      "process_peak_rss_bytes": 265453568
+    },
+    {
+      "task": {
+        "name": "gross_spend_30d",
+        "kind": "regression",
+        "outcome": {
+          "table": "purchases",
+          "aggregation": "sum",
+          "column": "spend",
+          "threshold": 0
+        },
+        "horizon_days": 30,
+        "history_days": 90,
+        "label_delay_days": 1,
+        "metric": "mae"
+      },
+      "backend": "legacy_historical",
+      "fold": "summer",
+      "evidence": "phase1_exposed_development",
+      "train_cutoffs": [
+        "2011-03-01",
+        "2011-03-15",
+        "2011-04-01",
+        "2011-04-15",
+        "2011-05-01",
+        "2011-05-15",
+        "2011-06-01"
+      ],
+      "fit_as_of": "2011-07-15",
+      "test_cutoffs": [
+        "2011-08-01",
+        "2011-09-01"
+      ],
+      "test_row_label_sha256": "e4974fb461cc2038db33d0584cfccebaebe3e477a994e017a3b76739e2217fe3",
+      "test_samples": 6456,
+      "same_entity_ids_and_labels_asserted": true,
+      "test_feature_compile_seconds": 0.14884554198943079,
+      "fit_seconds": 3.374996595084667e-06,
+      "predict_seconds": 0.0035868330160155892,
+      "metrics": {
+        "mae": 214.49022217059064,
+        "rmse": 1192.4304690916333,
+        "minimum_prediction": 0.0,
+        "maximum_prediction": 27691.646666666667,
+        "negative_predictions": 0,
+        "negative_prediction_fraction": 0.0
+      },
+      "model_version": null,
+      "error": null,
+      "process_peak_rss_bytes": 267632640
+    },
+    {
+      "task": {
+        "name": "gross_spend_30d",
+        "kind": "regression",
+        "outcome": {
+          "table": "purchases",
+          "aggregation": "sum",
+          "column": "spend",
+          "threshold": 0
+        },
+        "horizon_days": 30,
+        "history_days": 90,
+        "label_delay_days": 1,
+        "metric": "mae"
+      },
+      "backend": "legacy_histogram",
+      "fold": "summer",
+      "evidence": "phase1_exposed_development",
+      "train_cutoffs": [
+        "2011-03-01",
+        "2011-03-15",
+        "2011-04-01",
+        "2011-04-15",
+        "2011-05-01",
+        "2011-05-15",
+        "2011-06-01"
+      ],
+      "fit_as_of": "2011-07-15",
+      "test_cutoffs": [
+        "2011-08-01",
+        "2011-09-01"
+      ],
+      "test_row_label_sha256": "e4974fb461cc2038db33d0584cfccebaebe3e477a994e017a3b76739e2217fe3",
+      "test_samples": 6456,
+      "same_entity_ids_and_labels_asserted": true,
+      "test_feature_compile_seconds": 0.14884554198943079,
+      "fit_seconds": 0.5621177499415353,
+      "predict_seconds": 0.016459665959700942,
+      "metrics": {
+        "mae": 227.04797392191588,
+        "rmse": 1233.5946420881614,
+        "minimum_prediction": -982.7013214340645,
+        "maximum_prediction": 19277.876122966976,
+        "negative_predictions": 3,
+        "negative_prediction_fraction": 0.00046468401486988845
+      },
+      "model_version": "2e1eb96067c7ba857f677d84cd97b3d9ce951c5bea480dda8dae7ea81903950d",
+      "error": null,
+      "process_peak_rss_bytes": 270041088
+    },
+    {
+      "task": {
+        "name": "gross_spend_30d",
+        "kind": "regression",
+        "outcome": {
+          "table": "purchases",
+          "aggregation": "sum",
+          "column": "spend",
+          "threshold": 0
+        },
+        "horizon_days": 30,
+        "history_days": 90,
+        "label_delay_days": 1,
+        "metric": "mae"
+      },
+      "backend": "adaptive",
+      "fold": "summer",
+      "evidence": "phase1_exposed_development",
+      "train_cutoffs": [
+        "2011-03-01",
+        "2011-03-15",
+        "2011-04-01",
+        "2011-04-15",
+        "2011-05-01",
+        "2011-05-15",
+        "2011-06-01"
+      ],
+      "fit_as_of": "2011-07-15",
+      "test_cutoffs": [
+        "2011-08-01",
+        "2011-09-01"
+      ],
+      "test_row_label_sha256": "e4974fb461cc2038db33d0584cfccebaebe3e477a994e017a3b76739e2217fe3",
+      "test_samples": 6456,
+      "same_entity_ids_and_labels_asserted": true,
+      "test_feature_compile_seconds": 0.03858604095876217,
+      "first_phase_adaptive_reference": {
+        "metrics": {
+          "mae": 206.23760838880236,
+          "rmse": 1510.7939548584113,
+          "minimum_prediction": 0.0,
+          "maximum_prediction": 2629.8903104729675,
+          "negative_predictions": 0,
+          "negative_prediction_fraction": 0.0
+        },
+        "model_version": "7e86a60d1f110ec9ce1c57e1c8e767ff500feeeb6f237d1590dbe348c6aa5180",
+        "selection_report": {
+          "method": "last-two-purged-training-cutoffs-v1",
+          "selected": "robust",
+          "metric": "mae",
+          "mean_validation_scores": {
+            "baseline": 294.62613843314523,
+            "median": 199.43447044072687,
+            "histogram": 217.99709180123597,
+            "robust": 196.7649673552403
+          },
+          "folds": [
+            {
+              "candidate": "baseline",
+              "validation_cutoff": "2011-05-15 00:00:00+00:00",
+              "training_cutoffs": [
+                "2011-03-01 00:00:00+00:00",
+                "2011-03-15 00:00:00+00:00",
+                "2011-04-01 00:00:00+00:00"
+              ],
+              "samples": 2580,
+              "metric": "mae",
+              "score": 296.6596312989652
+            },
+            {
+              "candidate": "median",
+              "validation_cutoff": "2011-05-15 00:00:00+00:00",
+              "training_cutoffs": [
+                "2011-03-01 00:00:00+00:00",
+                "2011-03-15 00:00:00+00:00",
+                "2011-04-01 00:00:00+00:00"
+              ],
+              "samples": 2580,
+              "metric": "mae",
+              "score": 204.82509302325582
+            },
+            {
+              "candidate": "histogram",
+              "validation_cutoff": "2011-05-15 00:00:00+00:00",
+              "training_cutoffs": [
+                "2011-03-01 00:00:00+00:00",
+                "2011-03-15 00:00:00+00:00",
+                "2011-04-01 00:00:00+00:00"
+              ],
+              "samples": 2580,
+              "metric": "mae",
+              "score": 216.74952496733894
+            },
+            {
+              "candidate": "robust",
+              "validation_cutoff": "2011-05-15 00:00:00+00:00",
+              "training_cutoffs": [
+                "2011-03-01 00:00:00+00:00",
+                "2011-03-15 00:00:00+00:00",
+                "2011-04-01 00:00:00+00:00"
+              ],
+              "samples": 2580,
+              "metric": "mae",
+              "score": 202.45588353737583
+            },
+            {
+              "candidate": "baseline",
+              "validation_cutoff": "2011-06-01 00:00:00+00:00",
+              "training_cutoffs": [
+                "2011-03-01 00:00:00+00:00",
+                "2011-03-15 00:00:00+00:00",
+                "2011-04-01 00:00:00+00:00",
+                "2011-04-15 00:00:00+00:00",
+                "2011-05-01 00:00:00+00:00"
+              ],
+              "samples": 2708,
+              "metric": "mae",
+              "score": 292.5926455673252
+            },
+            {
+              "candidate": "median",
+              "validation_cutoff": "2011-06-01 00:00:00+00:00",
+              "training_cutoffs": [
+                "2011-03-01 00:00:00+00:00",
+                "2011-03-15 00:00:00+00:00",
+                "2011-04-01 00:00:00+00:00",
+                "2011-04-15 00:00:00+00:00",
+                "2011-05-01 00:00:00+00:00"
+              ],
+              "samples": 2708,
+              "metric": "mae",
+              "score": 194.04384785819792
+            },
+            {
+              "candidate": "histogram",
+              "validation_cutoff": "2011-06-01 00:00:00+00:00",
+              "training_cutoffs": [
+                "2011-03-01 00:00:00+00:00",
+                "2011-03-15 00:00:00+00:00",
+                "2011-04-01 00:00:00+00:00",
+                "2011-04-15 00:00:00+00:00",
+                "2011-05-01 00:00:00+00:00"
+              ],
+              "samples": 2708,
+              "metric": "mae",
+              "score": 219.24465863513296
+            },
+            {
+              "candidate": "robust",
+              "validation_cutoff": "2011-06-01 00:00:00+00:00",
+              "training_cutoffs": [
+                "2011-03-01 00:00:00+00:00",
+                "2011-03-15 00:00:00+00:00",
+                "2011-04-01 00:00:00+00:00",
+                "2011-04-15 00:00:00+00:00",
+                "2011-05-01 00:00:00+00:00"
+              ],
+              "samples": 2708,
+              "metric": "mae",
+              "score": 191.07405117310475
+            }
+          ],
+          "limitation": null
+        }
+      },
+      "fit_seconds": 0.4746353339869529,
+      "predict_seconds": 0.01329879101831466,
+      "metrics": {
+        "mae": 206.23760838880236,
+        "rmse": 1510.7939548584113,
+        "minimum_prediction": 0.0,
+        "maximum_prediction": 2629.8903104729675,
+        "negative_predictions": 0,
+        "negative_prediction_fraction": 0.0
+      },
+      "model_version": "61df7b7d6439572e3f8b574fad856f875e4b343dbab9333aef17dba5ad271c73",
+      "selection_report": {
+        "method": "purged-pooled-block-v2",
+        "selected": "robust",
+        "metric": "mae",
+        "validation_scores": {
+          "baseline": 294.5773672290203,
+          "median": 199.30398638426627,
+          "histogram": 217.180102425477,
+          "robust": 196.66811991409202,
+          "persistence": 242.82774899142714
+        },
+        "folds": [
+          {
+            "candidate": "baseline",
+            "validation_cutoff": "2011-05-15 00:00:00+00:00",
+            "training_cutoffs": [
+              "2011-03-01 00:00:00+00:00",
+              "2011-03-15 00:00:00+00:00",
+              "2011-04-01 00:00:00+00:00"
+            ],
+            "samples": 2580,
+            "metric": "mae",
+            "score": 296.6596312989652
+          },
+          {
+            "candidate": "baseline",
+            "validation_cutoff": "2011-06-01 00:00:00+00:00",
+            "training_cutoffs": [
+              "2011-03-01 00:00:00+00:00",
+              "2011-03-15 00:00:00+00:00",
+              "2011-04-01 00:00:00+00:00"
+            ],
+            "samples": 2708,
+            "metric": "mae",
+            "score": 292.59352627611855
+          },
+          {
+            "candidate": "median",
+            "validation_cutoff": "2011-05-15 00:00:00+00:00",
+            "training_cutoffs": [
+              "2011-03-01 00:00:00+00:00",
+              "2011-03-15 00:00:00+00:00",
+              "2011-04-01 00:00:00+00:00"
+            ],
+            "samples": 2580,
+            "metric": "mae",
+            "score": 204.82509302325582
+          },
+          {
+            "candidate": "median",
+            "validation_cutoff": "2011-06-01 00:00:00+00:00",
+            "training_cutoffs": [
+              "2011-03-01 00:00:00+00:00",
+              "2011-03-15 00:00:00+00:00",
+              "2011-04-01 00:00:00+00:00"
+            ],
+            "samples": 2708,
+            "metric": "mae",
+            "score": 194.04384785819792
+          },
+          {
+            "candidate": "histogram",
+            "validation_cutoff": "2011-05-15 00:00:00+00:00",
+            "training_cutoffs": [
+              "2011-03-01 00:00:00+00:00",
+              "2011-03-15 00:00:00+00:00",
+              "2011-04-01 00:00:00+00:00"
+            ],
+            "samples": 2580,
+            "metric": "mae",
+            "score": 216.74952496733894
+          },
+          {
+            "candidate": "histogram",
+            "validation_cutoff": "2011-06-01 00:00:00+00:00",
+            "training_cutoffs": [
+              "2011-03-01 00:00:00+00:00",
+              "2011-03-15 00:00:00+00:00",
+              "2011-04-01 00:00:00+00:00"
+            ],
+            "samples": 2708,
+            "metric": "mae",
+            "score": 217.5903276256233
+          },
+          {
+            "candidate": "robust",
+            "validation_cutoff": "2011-05-15 00:00:00+00:00",
+            "training_cutoffs": [
+              "2011-03-01 00:00:00+00:00",
+              "2011-03-15 00:00:00+00:00",
+              "2011-04-01 00:00:00+00:00"
+            ],
+            "samples": 2580,
+            "metric": "mae",
+            "score": 202.45588353737583
+          },
+          {
+            "candidate": "robust",
+            "validation_cutoff": "2011-06-01 00:00:00+00:00",
+            "training_cutoffs": [
+              "2011-03-01 00:00:00+00:00",
+              "2011-03-15 00:00:00+00:00",
+              "2011-04-01 00:00:00+00:00"
+            ],
+            "samples": 2708,
+            "metric": "mae",
+            "score": 191.15392857433125
+          },
+          {
+            "candidate": "persistence",
+            "validation_cutoff": "2011-05-15 00:00:00+00:00",
+            "training_cutoffs": [
+              "2011-03-01 00:00:00+00:00",
+              "2011-03-15 00:00:00+00:00",
+              "2011-04-01 00:00:00+00:00"
+            ],
+            "samples": 2580,
+            "metric": "mae",
+            "score": 252.3893720930233
+          },
+          {
+            "candidate": "persistence",
+            "validation_cutoff": "2011-06-01 00:00:00+00:00",
+            "training_cutoffs": [
+              "2011-03-01 00:00:00+00:00",
+              "2011-03-15 00:00:00+00:00",
+              "2011-04-01 00:00:00+00:00"
+            ],
+            "samples": 2708,
+            "metric": "mae",
+            "score": 233.71807853274254
+          }
+        ],
+        "validation_cutoffs": [
+          "2011-05-15 00:00:00+00:00",
+          "2011-06-01 00:00:00+00:00"
+        ],
+        "limitation": null
+      },
+      "selection_purge_asserted": true,
+      "feature_columns": [
+        "purchases__count",
+        "purchases__recency",
+        "purchases__spend__sum",
+        "purchases__spend__mean",
+        "purchases__spend__missing",
+        "purchases__spend__std",
+        "purchases__spend__last",
+        "purchases__spend__trend",
+        "purchases__recent1__count",
+        "purchases__recent1__spend__sum",
+        "purchases__recent1__spend__mean",
+        "purchases__recent7__count",
+        "purchases__recent7__spend__sum",
+        "purchases__recent7__spend__mean",
+        "purchases__recent30__count",
+        "purchases__recent30__spend__sum",
+        "purchases__recent30__spend__mean"
+      ],
+      "error": null,
+      "process_peak_rss_bytes": 271302656
+    },
+    {
+      "task": {
+        "name": "gross_spend_30d",
+        "kind": "regression",
+        "outcome": {
+          "table": "purchases",
+          "aggregation": "sum",
+          "column": "spend",
+          "threshold": 0
+        },
+        "horizon_days": 30,
+        "history_days": 90,
+        "label_delay_days": 1,
+        "metric": "mae"
+      },
+      "backend": "legacy_prior",
+      "fold": "autumn",
+      "evidence": "phase1_exposed_development",
+      "train_cutoffs": [
+        "2011-03-01",
+        "2011-03-15",
+        "2011-04-01",
+        "2011-04-15",
+        "2011-05-01",
+        "2011-05-15",
+        "2011-06-01",
+        "2011-06-15",
+        "2011-07-01",
+        "2011-07-15",
+        "2011-08-01"
+      ],
+      "fit_as_of": "2011-09-15",
+      "test_cutoffs": [
+        "2011-10-01",
+        "2011-11-01"
+      ],
+      "test_row_label_sha256": "0a004a135cc0e1fd4d9cae2b9030435c613b900f65b9a9cf7e1689bdded0807c",
+      "test_samples": 7569,
+      "same_entity_ids_and_labels_asserted": true,
+      "test_feature_compile_seconds": 0.13520466594491154,
+      "fit_seconds": 0.8695803330047056,
+      "predict_seconds": 0.007799415965564549,
+      "metrics": {
+        "mae": 325.954600458718,
+        "rmse": 1278.6865767551658,
+        "minimum_prediction": 189.15175601809955,
+        "maximum_prediction": 189.15175601809955,
+        "negative_predictions": 0,
+        "negative_prediction_fraction": 0.0
+      },
+      "model_version": "60548e5d3075c7b2b61071b95763d5e52548b55c1d30c474e5a569ebf90a84ae",
+      "error": null,
+      "process_peak_rss_bytes": 273989632
+    },
+    {
+      "task": {
+        "name": "gross_spend_30d",
+        "kind": "regression",
+        "outcome": {
+          "table": "purchases",
+          "aggregation": "sum",
+          "column": "spend",
+          "threshold": 0
+        },
+        "horizon_days": 30,
+        "history_days": 90,
+        "label_delay_days": 1,
+        "metric": "mae"
+      },
+      "backend": "legacy_historical",
+      "fold": "autumn",
+      "evidence": "phase1_exposed_development",
+      "train_cutoffs": [
+        "2011-03-01",
+        "2011-03-15",
+        "2011-04-01",
+        "2011-04-15",
+        "2011-05-01",
+        "2011-05-15",
+        "2011-06-01",
+        "2011-06-15",
+        "2011-07-01",
+        "2011-07-15",
+        "2011-08-01"
+      ],
+      "fit_as_of": "2011-09-15",
+      "test_cutoffs": [
+        "2011-10-01",
+        "2011-11-01"
+      ],
+      "test_row_label_sha256": "0a004a135cc0e1fd4d9cae2b9030435c613b900f65b9a9cf7e1689bdded0807c",
+      "test_samples": 7569,
+      "same_entity_ids_and_labels_asserted": true,
+      "test_feature_compile_seconds": 0.13520466594491154,
+      "fit_seconds": 3.875000402331352e-06,
+      "predict_seconds": 0.0034202920505777,
+      "metrics": {
+        "mae": 238.26486700136522,
+        "rmse": 910.2260192188393,
+        "minimum_prediction": 0.0,
+        "maximum_prediction": 35691.486666666664,
+        "negative_predictions": 0,
+        "negative_prediction_fraction": 0.0
+      },
+      "model_version": null,
+      "error": null,
+      "process_peak_rss_bytes": 276545536
+    },
+    {
+      "task": {
+        "name": "gross_spend_30d",
+        "kind": "regression",
+        "outcome": {
+          "table": "purchases",
+          "aggregation": "sum",
+          "column": "spend",
+          "threshold": 0
+        },
+        "horizon_days": 30,
+        "history_days": 90,
+        "label_delay_days": 1,
+        "metric": "mae"
+      },
+      "backend": "legacy_histogram",
+      "fold": "autumn",
+      "evidence": "phase1_exposed_development",
+      "train_cutoffs": [
+        "2011-03-01",
+        "2011-03-15",
+        "2011-04-01",
+        "2011-04-15",
+        "2011-05-01",
+        "2011-05-15",
+        "2011-06-01",
+        "2011-06-15",
+        "2011-07-01",
+        "2011-07-15",
+        "2011-08-01"
+      ],
+      "fit_as_of": "2011-09-15",
+      "test_cutoffs": [
+        "2011-10-01",
+        "2011-11-01"
+      ],
+      "test_row_label_sha256": "0a004a135cc0e1fd4d9cae2b9030435c613b900f65b9a9cf7e1689bdded0807c",
+      "test_samples": 7569,
+      "same_entity_ids_and_labels_asserted": true,
+      "test_feature_compile_seconds": 0.13520466594491154,
+      "fit_seconds": 0.9342752920929343,
+      "predict_seconds": 0.01847883395384997,
+      "metrics": {
+        "mae": 245.9238646472469,
+        "rmse": 969.3437974409477,
+        "minimum_prediction": -1145.5695989049516,
+        "maximum_prediction": 20060.487938103346,
+        "negative_predictions": 5,
+        "negative_prediction_fraction": 0.0006605892456070815
+      },
+      "model_version": "e3cff9baf9aaf340d6cb01a62e8635757ae0cd3f67707f2eaed3e12ebf5f6cad",
+      "error": null,
+      "process_peak_rss_bytes": 276725760
+    },
+    {
+      "task": {
+        "name": "gross_spend_30d",
+        "kind": "regression",
+        "outcome": {
+          "table": "purchases",
+          "aggregation": "sum",
+          "column": "spend",
+          "threshold": 0
+        },
+        "horizon_days": 30,
+        "history_days": 90,
+        "label_delay_days": 1,
+        "metric": "mae"
+      },
+      "backend": "adaptive",
+      "fold": "autumn",
+      "evidence": "phase1_exposed_development",
+      "train_cutoffs": [
+        "2011-03-01",
+        "2011-03-15",
+        "2011-04-01",
+        "2011-04-15",
+        "2011-05-01",
+        "2011-05-15",
+        "2011-06-01",
+        "2011-06-15",
+        "2011-07-01",
+        "2011-07-15",
+        "2011-08-01"
+      ],
+      "fit_as_of": "2011-09-15",
+      "test_cutoffs": [
+        "2011-10-01",
+        "2011-11-01"
+      ],
+      "test_row_label_sha256": "0a004a135cc0e1fd4d9cae2b9030435c613b900f65b9a9cf7e1689bdded0807c",
+      "test_samples": 7569,
+      "same_entity_ids_and_labels_asserted": true,
+      "test_feature_compile_seconds": 0.03731570905074477,
+      "first_phase_adaptive_reference": {
+        "metrics": {
+          "mae": 242.35745695599383,
+          "rmse": 1257.5498196716908,
+          "minimum_prediction": 0.0,
+          "maximum_prediction": 2874.306900011823,
+          "negative_predictions": 0,
+          "negative_prediction_fraction": 0.0
+        },
+        "model_version": "ac9f95fbfa818d93afcf7cb5fc1c60c38f04c6cf0cee4d6997bc8072041de11d",
+        "selection_report": {
+          "method": "last-two-purged-training-cutoffs-v1",
+          "selected": "robust",
+          "metric": "mae",
+          "mean_validation_scores": {
+            "baseline": 289.5077373156393,
+            "median": 181.52780975585353,
+            "histogram": 208.38747035246348,
+            "robust": 180.15003280419268
+          },
+          "folds": [
+            {
+              "candidate": "baseline",
+              "validation_cutoff": "2011-07-15 00:00:00+00:00",
+              "training_cutoffs": [
+                "2011-03-01 00:00:00+00:00",
+                "2011-03-15 00:00:00+00:00",
+                "2011-04-01 00:00:00+00:00",
+                "2011-04-15 00:00:00+00:00",
+                "2011-05-01 00:00:00+00:00",
+                "2011-05-15 00:00:00+00:00",
+                "2011-06-01 00:00:00+00:00"
+              ],
+              "samples": 3033,
+              "metric": "mae",
+              "score": 298.70363254240607
+            },
+            {
+              "candidate": "median",
+              "validation_cutoff": "2011-07-15 00:00:00+00:00",
+              "training_cutoffs": [
+                "2011-03-01 00:00:00+00:00",
+                "2011-03-15 00:00:00+00:00",
+                "2011-04-01 00:00:00+00:00",
+                "2011-04-15 00:00:00+00:00",
+                "2011-05-01 00:00:00+00:00",
+                "2011-05-15 00:00:00+00:00",
+                "2011-06-01 00:00:00+00:00"
+              ],
+              "samples": 3033,
+              "metric": "mae",
+              "score": 189.44169139465876
+            },
+            {
+              "candidate": "histogram",
+              "validation_cutoff": "2011-07-15 00:00:00+00:00",
+              "training_cutoffs": [
+                "2011-03-01 00:00:00+00:00",
+                "2011-03-15 00:00:00+00:00",
+                "2011-04-01 00:00:00+00:00",
+                "2011-04-15 00:00:00+00:00",
+                "2011-05-01 00:00:00+00:00",
+                "2011-05-15 00:00:00+00:00",
+                "2011-06-01 00:00:00+00:00"
+              ],
+              "samples": 3033,
+              "metric": "mae",
+              "score": 212.14690827033468
+            },
+            {
+              "candidate": "robust",
+              "validation_cutoff": "2011-07-15 00:00:00+00:00",
+              "training_cutoffs": [
+                "2011-03-01 00:00:00+00:00",
+                "2011-03-15 00:00:00+00:00",
+                "2011-04-01 00:00:00+00:00",
+                "2011-04-15 00:00:00+00:00",
+                "2011-05-01 00:00:00+00:00",
+                "2011-05-15 00:00:00+00:00",
+                "2011-06-01 00:00:00+00:00"
+              ],
+              "samples": 3033,
+              "metric": "mae",
+              "score": 188.03779745780645
+            },
+            {
+              "candidate": "baseline",
+              "validation_cutoff": "2011-08-01 00:00:00+00:00",
+              "training_cutoffs": [
+                "2011-03-01 00:00:00+00:00",
+                "2011-03-15 00:00:00+00:00",
+                "2011-04-01 00:00:00+00:00",
+                "2011-04-15 00:00:00+00:00",
+                "2011-05-01 00:00:00+00:00",
+                "2011-05-15 00:00:00+00:00",
+                "2011-06-01 00:00:00+00:00",
+                "2011-06-15 00:00:00+00:00",
+                "2011-07-01 00:00:00+00:00"
+              ],
+              "samples": 3144,
+              "metric": "mae",
+              "score": 280.31184208887254
+            },
+            {
+              "candidate": "median",
+              "validation_cutoff": "2011-08-01 00:00:00+00:00",
+              "training_cutoffs": [
+                "2011-03-01 00:00:00+00:00",
+                "2011-03-15 00:00:00+00:00",
+                "2011-04-01 00:00:00+00:00",
+                "2011-04-15 00:00:00+00:00",
+                "2011-05-01 00:00:00+00:00",
+                "2011-05-15 00:00:00+00:00",
+                "2011-06-01 00:00:00+00:00",
+                "2011-06-15 00:00:00+00:00",
+                "2011-07-01 00:00:00+00:00"
+              ],
+              "samples": 3144,
+              "metric": "mae",
+              "score": 173.61392811704832
+            },
+            {
+              "candidate": "histogram",
+              "validation_cutoff": "2011-08-01 00:00:00+00:00",
+              "training_cutoffs": [
+                "2011-03-01 00:00:00+00:00",
+                "2011-03-15 00:00:00+00:00",
+                "2011-04-01 00:00:00+00:00",
+                "2011-04-15 00:00:00+00:00",
+                "2011-05-01 00:00:00+00:00",
+                "2011-05-15 00:00:00+00:00",
+                "2011-06-01 00:00:00+00:00",
+                "2011-06-15 00:00:00+00:00",
+                "2011-07-01 00:00:00+00:00"
+              ],
+              "samples": 3144,
+              "metric": "mae",
+              "score": 204.6280324345923
+            },
+            {
+              "candidate": "robust",
+              "validation_cutoff": "2011-08-01 00:00:00+00:00",
+              "training_cutoffs": [
+                "2011-03-01 00:00:00+00:00",
+                "2011-03-15 00:00:00+00:00",
+                "2011-04-01 00:00:00+00:00",
+                "2011-04-15 00:00:00+00:00",
+                "2011-05-01 00:00:00+00:00",
+                "2011-05-15 00:00:00+00:00",
+                "2011-06-01 00:00:00+00:00",
+                "2011-06-15 00:00:00+00:00",
+                "2011-07-01 00:00:00+00:00"
+              ],
+              "samples": 3144,
+              "metric": "mae",
+              "score": 172.2622681505789
+            }
+          ],
+          "limitation": null
+        }
+      },
+      "fit_seconds": 0.620808916981332,
+      "predict_seconds": 0.0106047079898417,
+      "metrics": {
+        "mae": 242.35745695599383,
+        "rmse": 1257.5498196716908,
+        "minimum_prediction": 0.0,
+        "maximum_prediction": 2874.306900011823,
+        "negative_predictions": 0,
+        "negative_prediction_fraction": 0.0
+      },
+      "model_version": "c8d8c0c73357c033018e04e08bf4054b313232ffa4323946fa933917eb761730",
+      "selection_report": {
+        "method": "purged-pooled-block-v2",
+        "selected": "robust",
+        "metric": "mae",
+        "validation_scores": {
+          "baseline": 291.88479433153003,
+          "median": 181.38559818682205,
+          "histogram": 212.45514521536467,
+          "robust": 180.0389540843539,
+          "persistence": 207.65546117316927
+        },
+        "folds": [
+          {
+            "candidate": "baseline",
+            "validation_cutoff": "2011-07-15 00:00:00+00:00",
+            "training_cutoffs": [
+              "2011-03-01 00:00:00+00:00",
+              "2011-03-15 00:00:00+00:00",
+              "2011-04-01 00:00:00+00:00",
+              "2011-04-15 00:00:00+00:00",
+              "2011-05-01 00:00:00+00:00",
+              "2011-05-15 00:00:00+00:00",
+              "2011-06-01 00:00:00+00:00"
+            ],
+            "samples": 3033,
+            "metric": "mae",
+            "score": 298.70363254240607
+          },
+          {
+            "candidate": "baseline",
+            "validation_cutoff": "2011-08-01 00:00:00+00:00",
+            "training_cutoffs": [
+              "2011-03-01 00:00:00+00:00",
+              "2011-03-15 00:00:00+00:00",
+              "2011-04-01 00:00:00+00:00",
+              "2011-04-15 00:00:00+00:00",
+              "2011-05-01 00:00:00+00:00",
+              "2011-05-15 00:00:00+00:00",
+              "2011-06-01 00:00:00+00:00"
+            ],
+            "samples": 3144,
+            "metric": "mae",
+            "score": 285.30669754603804
+          },
+          {
+            "candidate": "median",
+            "validation_cutoff": "2011-07-15 00:00:00+00:00",
+            "training_cutoffs": [
+              "2011-03-01 00:00:00+00:00",
+              "2011-03-15 00:00:00+00:00",
+              "2011-04-01 00:00:00+00:00",
+              "2011-04-15 00:00:00+00:00",
+              "2011-05-01 00:00:00+00:00",
+              "2011-05-15 00:00:00+00:00",
+              "2011-06-01 00:00:00+00:00"
+            ],
+            "samples": 3033,
+            "metric": "mae",
+            "score": 189.44169139465876
+          },
+          {
+            "candidate": "median",
+            "validation_cutoff": "2011-08-01 00:00:00+00:00",
+            "training_cutoffs": [
+              "2011-03-01 00:00:00+00:00",
+              "2011-03-15 00:00:00+00:00",
+              "2011-04-01 00:00:00+00:00",
+              "2011-04-15 00:00:00+00:00",
+              "2011-05-01 00:00:00+00:00",
+              "2011-05-15 00:00:00+00:00",
+              "2011-06-01 00:00:00+00:00"
+            ],
+            "samples": 3144,
+            "metric": "mae",
+            "score": 173.61392811704832
+          },
+          {
+            "candidate": "histogram",
+            "validation_cutoff": "2011-07-15 00:00:00+00:00",
+            "training_cutoffs": [
+              "2011-03-01 00:00:00+00:00",
+              "2011-03-15 00:00:00+00:00",
+              "2011-04-01 00:00:00+00:00",
+              "2011-04-15 00:00:00+00:00",
+              "2011-05-01 00:00:00+00:00",
+              "2011-05-15 00:00:00+00:00",
+              "2011-06-01 00:00:00+00:00"
+            ],
+            "samples": 3033,
+            "metric": "mae",
+            "score": 212.14690827033468
+          },
+          {
+            "candidate": "histogram",
+            "validation_cutoff": "2011-08-01 00:00:00+00:00",
+            "training_cutoffs": [
+              "2011-03-01 00:00:00+00:00",
+              "2011-03-15 00:00:00+00:00",
+              "2011-04-01 00:00:00+00:00",
+              "2011-04-15 00:00:00+00:00",
+              "2011-05-01 00:00:00+00:00",
+              "2011-05-15 00:00:00+00:00",
+              "2011-06-01 00:00:00+00:00"
+            ],
+            "samples": 3144,
+            "metric": "mae",
+            "score": 212.7524997491674
+          },
+          {
+            "candidate": "robust",
+            "validation_cutoff": "2011-07-15 00:00:00+00:00",
+            "training_cutoffs": [
+              "2011-03-01 00:00:00+00:00",
+              "2011-03-15 00:00:00+00:00",
+              "2011-04-01 00:00:00+00:00",
+              "2011-04-15 00:00:00+00:00",
+              "2011-05-01 00:00:00+00:00",
+              "2011-05-15 00:00:00+00:00",
+              "2011-06-01 00:00:00+00:00"
+            ],
+            "samples": 3033,
+            "metric": "mae",
+            "score": 188.03779745780645
+          },
+          {
+            "candidate": "robust",
+            "validation_cutoff": "2011-08-01 00:00:00+00:00",
+            "training_cutoffs": [
+              "2011-03-01 00:00:00+00:00",
+              "2011-03-15 00:00:00+00:00",
+              "2011-04-01 00:00:00+00:00",
+              "2011-04-15 00:00:00+00:00",
+              "2011-05-01 00:00:00+00:00",
+              "2011-05-15 00:00:00+00:00",
+              "2011-06-01 00:00:00+00:00"
+            ],
+            "samples": 3144,
+            "metric": "mae",
+            "score": 172.3225126238954
+          },
+          {
+            "candidate": "persistence",
+            "validation_cutoff": "2011-07-15 00:00:00+00:00",
+            "training_cutoffs": [
+              "2011-03-01 00:00:00+00:00",
+              "2011-03-15 00:00:00+00:00",
+              "2011-04-01 00:00:00+00:00",
+              "2011-04-15 00:00:00+00:00",
+              "2011-05-01 00:00:00+00:00",
+              "2011-05-15 00:00:00+00:00",
+              "2011-06-01 00:00:00+00:00"
+            ],
+            "samples": 3033,
+            "metric": "mae",
+            "score": 208.05178810858337
+          },
+          {
+            "candidate": "persistence",
+            "validation_cutoff": "2011-08-01 00:00:00+00:00",
+            "training_cutoffs": [
+              "2011-03-01 00:00:00+00:00",
+              "2011-03-15 00:00:00+00:00",
+              "2011-04-01 00:00:00+00:00",
+              "2011-04-15 00:00:00+00:00",
+              "2011-05-01 00:00:00+00:00",
+              "2011-05-15 00:00:00+00:00",
+              "2011-06-01 00:00:00+00:00"
+            ],
+            "samples": 3144,
+            "metric": "mae",
+            "score": 207.27312669635285
+          }
+        ],
+        "validation_cutoffs": [
+          "2011-07-15 00:00:00+00:00",
+          "2011-08-01 00:00:00+00:00"
+        ],
+        "limitation": null
+      },
+      "selection_purge_asserted": true,
+      "feature_columns": [
+        "purchases__count",
+        "purchases__recency",
+        "purchases__spend__sum",
+        "purchases__spend__mean",
+        "purchases__spend__missing",
+        "purchases__spend__std",
+        "purchases__spend__last",
+        "purchases__spend__trend",
+        "purchases__recent1__count",
+        "purchases__recent1__spend__sum",
+        "purchases__recent1__spend__mean",
+        "purchases__recent7__count",
+        "purchases__recent7__spend__sum",
+        "purchases__recent7__spend__mean",
+        "purchases__recent30__count",
+        "purchases__recent30__spend__sum",
+        "purchases__recent30__spend__mean"
+      ],
+      "error": null,
+      "process_peak_rss_bytes": 276725760
+    },
+    {
+      "task": {
+        "name": "gross_spend_30d",
+        "kind": "regression",
+        "outcome": {
+          "table": "purchases",
+          "aggregation": "sum",
+          "column": "spend",
+          "threshold": 0
+        },
+        "horizon_days": 30,
+        "history_days": 90,
+        "label_delay_days": 1,
+        "metric": "mae"
+      },
+      "backend": "legacy_prior",
+      "fold": "later_overlapping_november",
+      "evidence": "phase1_exposed_development",
+      "train_cutoffs": [
+        "2011-03-01",
+        "2011-03-15",
+        "2011-04-01",
+        "2011-04-15",
+        "2011-05-01",
+        "2011-05-15",
+        "2011-06-01",
+        "2011-06-15",
+        "2011-07-01",
+        "2011-07-15",
+        "2011-08-01",
+        "2011-08-15"
+      ],
+      "fit_as_of": "2011-10-01",
+      "test_cutoffs": [
+        "2011-11-08"
+      ],
+      "test_row_label_sha256": "4a33137ebcb9c5e3683e401aaedbcf3998635a8d487fe37979d0f74f7b10ac05",
+      "test_samples": 4046,
+      "same_entity_ids_and_labels_asserted": true,
+      "test_feature_compile_seconds": 0.0542140839388594,
+      "fit_seconds": 0.6069630830315873,
+      "predict_seconds": 0.002709332969971001,
+      "metrics": {
+        "mae": 329.38999073194736,
+        "rmse": 1188.429105804227,
+        "minimum_prediction": 188.49820851974323,
+        "maximum_prediction": 188.49820851974323,
+        "negative_predictions": 0,
+        "negative_prediction_fraction": 0.0
+      },
+      "model_version": "fd4695462fb00b254b780136f6f9f7995505afcba98ef5db98306f099520140c",
+      "error": null,
+      "process_peak_rss_bytes": 276725760
+    },
+    {
+      "task": {
+        "name": "gross_spend_30d",
+        "kind": "regression",
+        "outcome": {
+          "table": "purchases",
+          "aggregation": "sum",
+          "column": "spend",
+          "threshold": 0
+        },
+        "horizon_days": 30,
+        "history_days": 90,
+        "label_delay_days": 1,
+        "metric": "mae"
+      },
+      "backend": "legacy_historical",
+      "fold": "later_overlapping_november",
+      "evidence": "phase1_exposed_development",
+      "train_cutoffs": [
+        "2011-03-01",
+        "2011-03-15",
+        "2011-04-01",
+        "2011-04-15",
+        "2011-05-01",
+        "2011-05-15",
+        "2011-06-01",
+        "2011-06-15",
+        "2011-07-01",
+        "2011-07-15",
+        "2011-08-01",
+        "2011-08-15"
+      ],
+      "fit_as_of": "2011-10-01",
+      "test_cutoffs": [
+        "2011-11-08"
+      ],
+      "test_row_label_sha256": "4a33137ebcb9c5e3683e401aaedbcf3998635a8d487fe37979d0f74f7b10ac05",
+      "test_samples": 4046,
+      "same_entity_ids_and_labels_asserted": true,
+      "test_feature_compile_seconds": 0.0542140839388594,
+      "fit_seconds": 2.4579931050539017e-06,
+      "predict_seconds": 0.0015264590037986636,
+      "metrics": {
+        "mae": 245.4175516559565,
+        "rmse": 996.452232772928,
+        "minimum_prediction": 0.0,
+        "maximum_prediction": 39116.15,
+        "negative_predictions": 0,
+        "negative_prediction_fraction": 0.0
+      },
+      "model_version": null,
+      "error": null,
+      "process_peak_rss_bytes": 276725760
+    },
+    {
+      "task": {
+        "name": "gross_spend_30d",
+        "kind": "regression",
+        "outcome": {
+          "table": "purchases",
+          "aggregation": "sum",
+          "column": "spend",
+          "threshold": 0
+        },
+        "horizon_days": 30,
+        "history_days": 90,
+        "label_delay_days": 1,
+        "metric": "mae"
+      },
+      "backend": "legacy_histogram",
+      "fold": "later_overlapping_november",
+      "evidence": "phase1_exposed_development",
+      "train_cutoffs": [
+        "2011-03-01",
+        "2011-03-15",
+        "2011-04-01",
+        "2011-04-15",
+        "2011-05-01",
+        "2011-05-15",
+        "2011-06-01",
+        "2011-06-15",
+        "2011-07-01",
+        "2011-07-15",
+        "2011-08-01",
+        "2011-08-15"
+      ],
+      "fit_as_of": "2011-10-01",
+      "test_cutoffs": [
+        "2011-11-08"
+      ],
+      "test_row_label_sha256": "4a33137ebcb9c5e3683e401aaedbcf3998635a8d487fe37979d0f74f7b10ac05",
+      "test_samples": 4046,
+      "same_entity_ids_and_labels_asserted": true,
+      "test_feature_compile_seconds": 0.0542140839388594,
+      "fit_seconds": 0.6666303749661893,
+      "predict_seconds": 0.008619333966635168,
+      "metrics": {
+        "mae": 250.1930913096326,
+        "rmse": 891.4375044495508,
+        "minimum_prediction": -1225.1884842280651,
+        "maximum_prediction": 15762.760793766154,
+        "negative_predictions": 4,
+        "negative_prediction_fraction": 0.0009886307464162135
+      },
+      "model_version": "1304e10ad9ca9039455ba24b55a709b0d73f83d5e72949ef138bd0dadf0f21a3",
+      "error": null,
+      "process_peak_rss_bytes": 276725760
+    },
+    {
+      "task": {
+        "name": "gross_spend_30d",
+        "kind": "regression",
+        "outcome": {
+          "table": "purchases",
+          "aggregation": "sum",
+          "column": "spend",
+          "threshold": 0
+        },
+        "horizon_days": 30,
+        "history_days": 90,
+        "label_delay_days": 1,
+        "metric": "mae"
+      },
+      "backend": "adaptive",
+      "fold": "later_overlapping_november",
+      "evidence": "phase1_exposed_development",
+      "train_cutoffs": [
+        "2011-03-01",
+        "2011-03-15",
+        "2011-04-01",
+        "2011-04-15",
+        "2011-05-01",
+        "2011-05-15",
+        "2011-06-01",
+        "2011-06-15",
+        "2011-07-01",
+        "2011-07-15",
+        "2011-08-01",
+        "2011-08-15"
+      ],
+      "fit_as_of": "2011-10-01",
+      "test_cutoffs": [
+        "2011-11-08"
+      ],
+      "test_row_label_sha256": "4a33137ebcb9c5e3683e401aaedbcf3998635a8d487fe37979d0f74f7b10ac05",
+      "test_samples": 4046,
+      "same_entity_ids_and_labels_asserted": true,
+      "test_feature_compile_seconds": 0.01338658295571804,
+      "first_phase_adaptive_reference": {
+        "metrics": {
+          "mae": 260.2486036876262,
+          "rmse": 1191.5146900936247,
+          "minimum_prediction": 0.0,
+          "maximum_prediction": 2952.834739932179,
+          "negative_predictions": 0,
+          "negative_prediction_fraction": 0.0
+        },
+        "model_version": "74501b411639caa73b030d9b4df24fbb1e06286018a60d3acc876f505ce6e917",
+        "selection_report": {
+          "method": "last-two-purged-training-cutoffs-v1",
+          "selected": "robust",
+          "metric": "mae",
+          "mean_validation_scores": {
+            "baseline": 281.5803161864355,
+            "median": 178.25348377289856,
+            "histogram": 200.58840989938173,
+            "robust": 176.29463549268786
+          },
+          "folds": [
+            {
+              "candidate": "baseline",
+              "validation_cutoff": "2011-08-01 00:00:00+00:00",
+              "training_cutoffs": [
+                "2011-03-01 00:00:00+00:00",
+                "2011-03-15 00:00:00+00:00",
+                "2011-04-01 00:00:00+00:00",
+                "2011-04-15 00:00:00+00:00",
+                "2011-05-01 00:00:00+00:00",
+                "2011-05-15 00:00:00+00:00",
+                "2011-06-01 00:00:00+00:00",
+                "2011-06-15 00:00:00+00:00",
+                "2011-07-01 00:00:00+00:00"
+              ],
+              "samples": 3144,
+              "metric": "mae",
+              "score": 280.31184208887254
+            },
+            {
+              "candidate": "median",
+              "validation_cutoff": "2011-08-01 00:00:00+00:00",
+              "training_cutoffs": [
+                "2011-03-01 00:00:00+00:00",
+                "2011-03-15 00:00:00+00:00",
+                "2011-04-01 00:00:00+00:00",
+                "2011-04-15 00:00:00+00:00",
+                "2011-05-01 00:00:00+00:00",
+                "2011-05-15 00:00:00+00:00",
+                "2011-06-01 00:00:00+00:00",
+                "2011-06-15 00:00:00+00:00",
+                "2011-07-01 00:00:00+00:00"
+              ],
+              "samples": 3144,
+              "metric": "mae",
+              "score": 173.61392811704832
+            },
+            {
+              "candidate": "histogram",
+              "validation_cutoff": "2011-08-01 00:00:00+00:00",
+              "training_cutoffs": [
+                "2011-03-01 00:00:00+00:00",
+                "2011-03-15 00:00:00+00:00",
+                "2011-04-01 00:00:00+00:00",
+                "2011-04-15 00:00:00+00:00",
+                "2011-05-01 00:00:00+00:00",
+                "2011-05-15 00:00:00+00:00",
+                "2011-06-01 00:00:00+00:00",
+                "2011-06-15 00:00:00+00:00",
+                "2011-07-01 00:00:00+00:00"
+              ],
+              "samples": 3144,
+              "metric": "mae",
+              "score": 204.6280324345923
+            },
+            {
+              "candidate": "robust",
+              "validation_cutoff": "2011-08-01 00:00:00+00:00",
+              "training_cutoffs": [
+                "2011-03-01 00:00:00+00:00",
+                "2011-03-15 00:00:00+00:00",
+                "2011-04-01 00:00:00+00:00",
+                "2011-04-15 00:00:00+00:00",
+                "2011-05-01 00:00:00+00:00",
+                "2011-05-15 00:00:00+00:00",
+                "2011-06-01 00:00:00+00:00",
+                "2011-06-15 00:00:00+00:00",
+                "2011-07-01 00:00:00+00:00"
+              ],
+              "samples": 3144,
+              "metric": "mae",
+              "score": 172.2622681505789
+            },
+            {
+              "candidate": "baseline",
+              "validation_cutoff": "2011-08-15 00:00:00+00:00",
+              "training_cutoffs": [
+                "2011-03-01 00:00:00+00:00",
+                "2011-03-15 00:00:00+00:00",
+                "2011-04-01 00:00:00+00:00",
+                "2011-04-15 00:00:00+00:00",
+                "2011-05-01 00:00:00+00:00",
+                "2011-05-15 00:00:00+00:00",
+                "2011-06-01 00:00:00+00:00",
+                "2011-06-15 00:00:00+00:00",
+                "2011-07-01 00:00:00+00:00",
+                "2011-07-15 00:00:00+00:00"
+              ],
+              "samples": 3221,
+              "metric": "mae",
+              "score": 282.8487902839984
+            },
+            {
+              "candidate": "median",
+              "validation_cutoff": "2011-08-15 00:00:00+00:00",
+              "training_cutoffs": [
+                "2011-03-01 00:00:00+00:00",
+                "2011-03-15 00:00:00+00:00",
+                "2011-04-01 00:00:00+00:00",
+                "2011-04-15 00:00:00+00:00",
+                "2011-05-01 00:00:00+00:00",
+                "2011-05-15 00:00:00+00:00",
+                "2011-06-01 00:00:00+00:00",
+                "2011-06-15 00:00:00+00:00",
+                "2011-07-01 00:00:00+00:00",
+                "2011-07-15 00:00:00+00:00"
+              ],
+              "samples": 3221,
+              "metric": "mae",
+              "score": 182.89303942874884
+            },
+            {
+              "candidate": "histogram",
+              "validation_cutoff": "2011-08-15 00:00:00+00:00",
+              "training_cutoffs": [
+                "2011-03-01 00:00:00+00:00",
+                "2011-03-15 00:00:00+00:00",
+                "2011-04-01 00:00:00+00:00",
+                "2011-04-15 00:00:00+00:00",
+                "2011-05-01 00:00:00+00:00",
+                "2011-05-15 00:00:00+00:00",
+                "2011-06-01 00:00:00+00:00",
+                "2011-06-15 00:00:00+00:00",
+                "2011-07-01 00:00:00+00:00",
+                "2011-07-15 00:00:00+00:00"
+              ],
+              "samples": 3221,
+              "metric": "mae",
+              "score": 196.54878736417115
+            },
+            {
+              "candidate": "robust",
+              "validation_cutoff": "2011-08-15 00:00:00+00:00",
+              "training_cutoffs": [
+                "2011-03-01 00:00:00+00:00",
+                "2011-03-15 00:00:00+00:00",
+                "2011-04-01 00:00:00+00:00",
+                "2011-04-15 00:00:00+00:00",
+                "2011-05-01 00:00:00+00:00",
+                "2011-05-15 00:00:00+00:00",
+                "2011-06-01 00:00:00+00:00",
+                "2011-06-15 00:00:00+00:00",
+                "2011-07-01 00:00:00+00:00",
+                "2011-07-15 00:00:00+00:00"
+              ],
+              "samples": 3221,
+              "metric": "mae",
+              "score": 180.3270028347968
+            }
+          ],
+          "limitation": null
+        }
+      },
+      "fit_seconds": 0.6516590840183198,
+      "predict_seconds": 0.00485354196280241,
+      "metrics": {
+        "mae": 260.2486036876262,
+        "rmse": 1191.5146900936247,
+        "minimum_prediction": 0.0,
+        "maximum_prediction": 2952.834739932179,
+        "negative_predictions": 0,
+        "negative_prediction_fraction": 0.0
+      },
+      "model_version": "83f79af0cdcb349bae13e6cd4b599a9a045eba7f67a6fae8f24785b683501357",
+      "selection_report": {
+        "method": "purged-pooled-block-v2",
+        "selected": "robust",
+        "metric": "mae",
+        "validation_scores": {
+          "baseline": 281.66703016558,
+          "median": 178.30961036920658,
+          "histogram": 200.6569758671722,
+          "robust": 176.48572415737317,
+          "persistence": 202.9510772453522
+        },
+        "folds": [
+          {
+            "candidate": "baseline",
+            "validation_cutoff": "2011-08-01 00:00:00+00:00",
+            "training_cutoffs": [
+              "2011-03-01 00:00:00+00:00",
+              "2011-03-15 00:00:00+00:00",
+              "2011-04-01 00:00:00+00:00",
+              "2011-04-15 00:00:00+00:00",
+              "2011-05-01 00:00:00+00:00",
+              "2011-05-15 00:00:00+00:00",
+              "2011-06-01 00:00:00+00:00",
+              "2011-06-15 00:00:00+00:00",
+              "2011-07-01 00:00:00+00:00"
+            ],
+            "samples": 3144,
+            "metric": "mae",
+            "score": 280.31184208887254
+          },
+          {
+            "candidate": "baseline",
+            "validation_cutoff": "2011-08-15 00:00:00+00:00",
+            "training_cutoffs": [
+              "2011-03-01 00:00:00+00:00",
+              "2011-03-15 00:00:00+00:00",
+              "2011-04-01 00:00:00+00:00",
+              "2011-04-15 00:00:00+00:00",
+              "2011-05-01 00:00:00+00:00",
+              "2011-05-15 00:00:00+00:00",
+              "2011-06-01 00:00:00+00:00",
+              "2011-06-15 00:00:00+00:00",
+              "2011-07-01 00:00:00+00:00"
+            ],
+            "samples": 3221,
+            "metric": "mae",
+            "score": 282.989821631947
+          },
+          {
+            "candidate": "median",
+            "validation_cutoff": "2011-08-01 00:00:00+00:00",
+            "training_cutoffs": [
+              "2011-03-01 00:00:00+00:00",
+              "2011-03-15 00:00:00+00:00",
+              "2011-04-01 00:00:00+00:00",
+              "2011-04-15 00:00:00+00:00",
+              "2011-05-01 00:00:00+00:00",
+              "2011-05-15 00:00:00+00:00",
+              "2011-06-01 00:00:00+00:00",
+              "2011-06-15 00:00:00+00:00",
+              "2011-07-01 00:00:00+00:00"
+            ],
+            "samples": 3144,
+            "metric": "mae",
+            "score": 173.61392811704832
+          },
+          {
+            "candidate": "median",
+            "validation_cutoff": "2011-08-15 00:00:00+00:00",
+            "training_cutoffs": [
+              "2011-03-01 00:00:00+00:00",
+              "2011-03-15 00:00:00+00:00",
+              "2011-04-01 00:00:00+00:00",
+              "2011-04-15 00:00:00+00:00",
+              "2011-05-01 00:00:00+00:00",
+              "2011-05-15 00:00:00+00:00",
+              "2011-06-01 00:00:00+00:00",
+              "2011-06-15 00:00:00+00:00",
+              "2011-07-01 00:00:00+00:00"
+            ],
+            "samples": 3221,
+            "metric": "mae",
+            "score": 182.89303942874884
+          },
+          {
+            "candidate": "histogram",
+            "validation_cutoff": "2011-08-01 00:00:00+00:00",
+            "training_cutoffs": [
+              "2011-03-01 00:00:00+00:00",
+              "2011-03-15 00:00:00+00:00",
+              "2011-04-01 00:00:00+00:00",
+              "2011-04-15 00:00:00+00:00",
+              "2011-05-01 00:00:00+00:00",
+              "2011-05-15 00:00:00+00:00",
+              "2011-06-01 00:00:00+00:00",
+              "2011-06-15 00:00:00+00:00",
+              "2011-07-01 00:00:00+00:00"
+            ],
+            "samples": 3144,
+            "metric": "mae",
+            "score": 204.6280324345923
+          },
+          {
+            "candidate": "histogram",
+            "validation_cutoff": "2011-08-15 00:00:00+00:00",
+            "training_cutoffs": [
+              "2011-03-01 00:00:00+00:00",
+              "2011-03-15 00:00:00+00:00",
+              "2011-04-01 00:00:00+00:00",
+              "2011-04-15 00:00:00+00:00",
+              "2011-05-01 00:00:00+00:00",
+              "2011-05-15 00:00:00+00:00",
+              "2011-06-01 00:00:00+00:00",
+              "2011-06-15 00:00:00+00:00",
+              "2011-07-01 00:00:00+00:00"
+            ],
+            "samples": 3221,
+            "metric": "mae",
+            "score": 196.78084986656094
+          },
+          {
+            "candidate": "robust",
+            "validation_cutoff": "2011-08-01 00:00:00+00:00",
+            "training_cutoffs": [
+              "2011-03-01 00:00:00+00:00",
+              "2011-03-15 00:00:00+00:00",
+              "2011-04-01 00:00:00+00:00",
+              "2011-04-15 00:00:00+00:00",
+              "2011-05-01 00:00:00+00:00",
+              "2011-05-15 00:00:00+00:00",
+              "2011-06-01 00:00:00+00:00",
+              "2011-06-15 00:00:00+00:00",
+              "2011-07-01 00:00:00+00:00"
+            ],
+            "samples": 3144,
+            "metric": "mae",
+            "score": 172.2622681505789
+          },
+          {
+            "candidate": "robust",
+            "validation_cutoff": "2011-08-15 00:00:00+00:00",
+            "training_cutoffs": [
+              "2011-03-01 00:00:00+00:00",
+              "2011-03-15 00:00:00+00:00",
+              "2011-04-01 00:00:00+00:00",
+              "2011-04-15 00:00:00+00:00",
+              "2011-05-01 00:00:00+00:00",
+              "2011-05-15 00:00:00+00:00",
+              "2011-06-01 00:00:00+00:00",
+              "2011-06-15 00:00:00+00:00",
+              "2011-07-01 00:00:00+00:00"
+            ],
+            "samples": 3221,
+            "metric": "mae",
+            "score": 180.608215832431
+          },
+          {
+            "candidate": "persistence",
+            "validation_cutoff": "2011-08-01 00:00:00+00:00",
+            "training_cutoffs": [
+              "2011-03-01 00:00:00+00:00",
+              "2011-03-15 00:00:00+00:00",
+              "2011-04-01 00:00:00+00:00",
+              "2011-04-15 00:00:00+00:00",
+              "2011-05-01 00:00:00+00:00",
+              "2011-05-15 00:00:00+00:00",
+              "2011-06-01 00:00:00+00:00",
+              "2011-06-15 00:00:00+00:00",
+              "2011-07-01 00:00:00+00:00"
+            ],
+            "samples": 3144,
+            "metric": "mae",
+            "score": 207.27312669635285
+          },
+          {
+            "candidate": "persistence",
+            "validation_cutoff": "2011-08-15 00:00:00+00:00",
+            "training_cutoffs": [
+              "2011-03-01 00:00:00+00:00",
+              "2011-03-15 00:00:00+00:00",
+              "2011-04-01 00:00:00+00:00",
+              "2011-04-15 00:00:00+00:00",
+              "2011-05-01 00:00:00+00:00",
+              "2011-05-15 00:00:00+00:00",
+              "2011-06-01 00:00:00+00:00",
+              "2011-06-15 00:00:00+00:00",
+              "2011-07-01 00:00:00+00:00"
+            ],
+            "samples": 3221,
+            "metric": "mae",
+            "score": 198.73234906343785
+          }
+        ],
+        "validation_cutoffs": [
+          "2011-08-01 00:00:00+00:00",
+          "2011-08-15 00:00:00+00:00"
+        ],
+        "limitation": null
+      },
+      "selection_purge_asserted": true,
+      "feature_columns": [
+        "purchases__count",
+        "purchases__recency",
+        "purchases__spend__sum",
+        "purchases__spend__mean",
+        "purchases__spend__missing",
+        "purchases__spend__std",
+        "purchases__spend__last",
+        "purchases__spend__trend",
+        "purchases__recent1__count",
+        "purchases__recent1__spend__sum",
+        "purchases__recent1__spend__mean",
+        "purchases__recent7__count",
+        "purchases__recent7__spend__sum",
+        "purchases__recent7__spend__mean",
+        "purchases__recent30__count",
+        "purchases__recent30__spend__sum",
+        "purchases__recent30__spend__mean"
+      ],
+      "error": null,
+      "process_peak_rss_bytes": 276725760
+    }
+  ],
+  "failures": 0,
+  "environment": {
+    "python": "3.12.13",
+    "platform": "macOS-26.6.2-arm64-arm-64bit",
+    "sklearn": "1.7.2",
+    "numpy": "2.3.4",
+    "pandas": "2.3.3",
+    "numerical_threads": 1
+  },
+  "limitations": [
+    "All first-stage periods are exposed development comparisons and motivated this second stage.",
+    "Retail has no untouched later complete horizon; all its results are retrospective.",
+    "February Beijing is a small newly fixed temporal confirmation, not independent external validation.",
+    "Complete-case Beijing label filtering can bias included days.",
+    "Source availability clocks and timezones are experimental assumptions.",
+    "Entities recur; folds and outcome windows are dependent; no IID confidence intervals.",
+    "Process peak RSS is cumulative across loading and preceding fits, not per-model allocation.",
+    "Prediction timing excludes precompiled features; fit timing includes training feature compilation.",
+    "No final-test tuning, paid API/compute, raw-data redistribution or foundation-model claim."
+  ]
+}

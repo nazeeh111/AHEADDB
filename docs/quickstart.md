@@ -46,7 +46,7 @@ For numerical forecasting use `kind="regression"`, a count or `Outcome(table="or
 
 Train only on mature labels. The supplied `as_of` must reflect a truly complete source observation interval. Naive times explicitly mean UTC. Zero events means zero only for complete event logs; missing observed numerical outcomes fail instead of becoming invented zeros. See [temporal semantics](architecture.md) and [actual evaluation assumptions](data.md).
 
-Use `backend="baseline"` or `"histogram"` with `fit`; backtests compare both. A project JSON may set `"backend_by_task": {"buys_30d":"baseline"}` to serve a simpler model. Choose using appropriate validation, not the final held-out tests. Histogram boosting is not universally better: see [saved failures](data.md).
+The default `backend="adaptive"` chooses on earlier purged validation. Explicit `baseline`, `histogram`, `robust`, `persistence`, binary `linear` and regression `median` backends are available. Backtests include the adaptive comparison. A project JSON may set `"backend_by_task": {"buys_30d":"baseline"}` to serve a simpler model. Choose using appropriate validation, not the final held-out tests. Histogram boosting is not universally better: see [saved failures](data.md).
 
 ## Runtime and diagnostics
 

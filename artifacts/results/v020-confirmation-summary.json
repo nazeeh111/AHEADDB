@@ -1,0 +1,317 @@
+[
+  {
+    "dataset": "retail",
+    "task": "purchase_30d",
+    "period": "summer",
+    "evidence": "phase1_exposed_development",
+    "samples": 6456,
+    "selected": "robust",
+    "metrics": {
+      "roc_auc": {
+        "legacy": 0.7137946388365445,
+        "first_phase_adaptive": 0.7164558179913157,
+        "adaptive": 0.7164558179913157
+      },
+      "brier": {
+        "legacy": 0.16333848341122856,
+        "first_phase_adaptive": 0.16248109583161438,
+        "adaptive": 0.16248109583161438
+      },
+      "ece_5_bins": {
+        "legacy": 0.0032209407756850386,
+        "first_phase_adaptive": 0.003349547413949667,
+        "adaptive": 0.003349547413949667
+      }
+    }
+  },
+  {
+    "dataset": "retail",
+    "task": "purchase_30d",
+    "period": "autumn",
+    "evidence": "phase1_exposed_development",
+    "samples": 7569,
+    "selected": "robust",
+    "metrics": {
+      "roc_auc": {
+        "legacy": 0.6957893745677451,
+        "first_phase_adaptive": 0.7011400016611747,
+        "adaptive": 0.7011400016611747
+      },
+      "brier": {
+        "legacy": 0.18655777414602304,
+        "first_phase_adaptive": 0.18585283529716565,
+        "adaptive": 0.18585283529716565
+      },
+      "ece_5_bins": {
+        "legacy": 0.0591526159796678,
+        "first_phase_adaptive": 0.058561216662517415,
+        "adaptive": 0.058561216662517415
+      }
+    }
+  },
+  {
+    "dataset": "retail",
+    "task": "purchase_30d",
+    "period": "later_overlapping_november",
+    "evidence": "phase1_exposed_development",
+    "samples": 4046,
+    "selected": "histogram",
+    "metrics": {
+      "roc_auc": {
+        "legacy": 0.7118895900446895,
+        "first_phase_adaptive": 0.7132504898290862,
+        "adaptive": 0.7132504898290862
+      },
+      "brier": {
+        "legacy": 0.19894336499684193,
+        "first_phase_adaptive": 0.1983697560776441,
+        "adaptive": 0.1983697560776441
+      },
+      "ece_5_bins": {
+        "legacy": 0.0903030053757847,
+        "first_phase_adaptive": 0.09066903660587892,
+        "adaptive": 0.09066903660587892
+      }
+    }
+  },
+  {
+    "dataset": "retail",
+    "task": "gross_spend_30d",
+    "period": "summer",
+    "evidence": "phase1_exposed_development",
+    "samples": 6456,
+    "selected": "robust",
+    "metrics": {
+      "mae": {
+        "legacy": 227.04797392191588,
+        "first_phase_adaptive": 206.23760838880236,
+        "adaptive": 206.23760838880236
+      },
+      "rmse": {
+        "legacy": 1233.5946420881614,
+        "first_phase_adaptive": 1510.7939548584113,
+        "adaptive": 1510.7939548584113
+      }
+    }
+  },
+  {
+    "dataset": "retail",
+    "task": "gross_spend_30d",
+    "period": "autumn",
+    "evidence": "phase1_exposed_development",
+    "samples": 7569,
+    "selected": "robust",
+    "metrics": {
+      "mae": {
+        "legacy": 245.9238646472469,
+        "first_phase_adaptive": 242.35745695599383,
+        "adaptive": 242.35745695599383
+      },
+      "rmse": {
+        "legacy": 969.3437974409477,
+        "first_phase_adaptive": 1257.5498196716908,
+        "adaptive": 1257.5498196716908
+      }
+    }
+  },
+  {
+    "dataset": "retail",
+    "task": "gross_spend_30d",
+    "period": "later_overlapping_november",
+    "evidence": "phase1_exposed_development",
+    "samples": 4046,
+    "selected": "robust",
+    "metrics": {
+      "mae": {
+        "legacy": 250.1930913096326,
+        "first_phase_adaptive": 260.2486036876262,
+        "adaptive": 260.2486036876262
+      },
+      "rmse": {
+        "legacy": 891.4375044495508,
+        "first_phase_adaptive": 1191.5146900936247,
+        "adaptive": 1191.5146900936247
+      }
+    }
+  },
+  {
+    "dataset": "beijing",
+    "task": "pm25_over_75_next_day",
+    "period": "2015",
+    "evidence": "phase1_exposed_development",
+    "samples": 216,
+    "selected": "linear",
+    "metrics": {
+      "roc_auc": {
+        "legacy": 0.2516544117647059,
+        "first_phase_adaptive": 0.5,
+        "adaptive": 0.742830882352941
+      },
+      "brier": {
+        "legacy": 0.4372905883874044,
+        "first_phase_adaptive": 0.2382422553168403,
+        "adaptive": 0.20461028578116094
+      },
+      "ece_5_bins": {
+        "legacy": 0.409367135338639,
+        "first_phase_adaptive": 0.07103587962962965,
+        "adaptive": 0.08100132519385952
+      }
+    }
+  },
+  {
+    "dataset": "beijing",
+    "task": "pm25_over_75_next_day",
+    "period": "2016",
+    "evidence": "phase1_exposed_development",
+    "samples": 168,
+    "selected": "persistence",
+    "metrics": {
+      "roc_auc": {
+        "legacy": 0.5167289021657954,
+        "first_phase_adaptive": 0.5,
+        "adaptive": 0.6174010455563854
+      },
+      "brier": {
+        "legacy": 0.28697244119483845,
+        "first_phase_adaptive": 0.23721159877265252,
+        "adaptive": 0.22886976992079688
+      },
+      "ece_5_bins": {
+        "legacy": 0.17864234597070847,
+        "first_phase_adaptive": 0.0014600179694518878,
+        "adaptive": 0.04065303941364784
+      }
+    }
+  },
+  {
+    "dataset": "beijing",
+    "task": "pm25_over_75_next_day",
+    "period": "later_2016_2017",
+    "evidence": "phase1_exposed_development",
+    "samples": 216,
+    "selected": "persistence",
+    "metrics": {
+      "roc_auc": {
+        "legacy": 0.5525412087912088,
+        "first_phase_adaptive": 0.5,
+        "adaptive": 0.865470467032967
+      },
+      "brier": {
+        "legacy": 0.3105142594971731,
+        "first_phase_adaptive": 0.25850127643980203,
+        "adaptive": 0.16295635532577216
+      },
+      "ece_5_bins": {
+        "legacy": 0.2817444747955842,
+        "first_phase_adaptive": 0.09404367053620771,
+        "adaptive": 0.1477973133058546
+      }
+    }
+  },
+  {
+    "dataset": "beijing",
+    "task": "pm25_over_75_next_day",
+    "period": "confirmation_february_2017",
+    "evidence": "newly_fixed_temporal_confirmation",
+    "samples": 96,
+    "selected": "persistence",
+    "metrics": {
+      "roc_auc": {
+        "legacy": 0.6039215686274509,
+        "first_phase_adaptive": null,
+        "adaptive": 0.8784313725490196
+      },
+      "brier": {
+        "legacy": 0.3119247593557551,
+        "first_phase_adaptive": null,
+        "adaptive": 0.16413719083079667
+      },
+      "ece_5_bins": {
+        "legacy": 0.27340394654707345,
+        "first_phase_adaptive": null,
+        "adaptive": 0.16489221755755143
+      }
+    }
+  },
+  {
+    "dataset": "beijing",
+    "task": "pm25_next_day",
+    "period": "2015",
+    "evidence": "phase1_exposed_development",
+    "samples": 216,
+    "selected": "persistence",
+    "metrics": {
+      "mae": {
+        "legacy": 61.19213789879801,
+        "first_phase_adaptive": 30.93219460893475,
+        "adaptive": 36.9730770872981
+      },
+      "rmse": {
+        "legacy": 70.58302731054586,
+        "first_phase_adaptive": 42.14652450240829,
+        "adaptive": 53.82418260920926
+      }
+    }
+  },
+  {
+    "dataset": "beijing",
+    "task": "pm25_next_day",
+    "period": "2016",
+    "evidence": "phase1_exposed_development",
+    "samples": 168,
+    "selected": "persistence",
+    "metrics": {
+      "mae": {
+        "legacy": 39.738592787590335,
+        "first_phase_adaptive": 33.88977972432575,
+        "adaptive": 36.749558945142674
+      },
+      "rmse": {
+        "legacy": 50.46193509831461,
+        "first_phase_adaptive": 46.27775249589754,
+        "adaptive": 43.45146850195641
+      }
+    }
+  },
+  {
+    "dataset": "beijing",
+    "task": "pm25_next_day",
+    "period": "later_2016_2017",
+    "evidence": "phase1_exposed_development",
+    "samples": 216,
+    "selected": "persistence",
+    "metrics": {
+      "mae": {
+        "legacy": 48.41919314737843,
+        "first_phase_adaptive": 50.031891745585966,
+        "adaptive": 54.40648117420619
+      },
+      "rmse": {
+        "legacy": 64.11687738725486,
+        "first_phase_adaptive": 66.5390758373284,
+        "adaptive": 97.00464861662422
+      }
+    }
+  },
+  {
+    "dataset": "beijing",
+    "task": "pm25_next_day",
+    "period": "confirmation_february_2017",
+    "evidence": "newly_fixed_temporal_confirmation",
+    "samples": 96,
+    "selected": "persistence",
+    "metrics": {
+      "mae": {
+        "legacy": 53.702611937097004,
+        "first_phase_adaptive": null,
+        "adaptive": 47.75588081906017
+      },
+      "rmse": {
+        "legacy": 75.14144180897402,
+        "first_phase_adaptive": null,
+        "adaptive": 64.26857506977353
+      }
+    }
+  }
+]

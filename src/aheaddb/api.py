@@ -18,7 +18,7 @@ class Change(StrictModel):
 
 
 def create_app(project: Project) -> FastAPI:
-    app = FastAPI(title="AHEADDB", version="0.1.0", description="Local maintained predictive views")
+    app = FastAPI(title="AHEADDB", version="0.2.0", description="Local maintained predictive views")
     app.add_middleware(TrustedHostMiddleware, allowed_hosts=["localhost", "127.0.0.1", "testserver"])
 
     @app.middleware("http")
