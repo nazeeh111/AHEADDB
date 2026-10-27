@@ -1,0 +1,7 @@
+public-retail* and public-beijing* and fastdfs-* derived evaluation records:
+CC BY4.0, https://creativecommons.org/licenses/by/4.0/
+Online Retail: Chen,D.(2015), UCI, https://doi.org/10.24432/C5BW33
+Beijing Multi-Site Air Quality: Chen,S.(2017), UCI, https://doi.org/10.24432/C5RK5G
+Changes: normalized source data, generated temporal samples and model predictions.
+See docs/data.md and saved JSON source-provenance records.
+Synthetic refresh benchmark records are original AHEADDB project artifacts.

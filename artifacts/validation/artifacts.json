@@ -1,0 +1,148 @@
+{
+  "checks": [
+    {
+      "dataset": "retail",
+      "task": "purchase_30d",
+      "backend": "historical",
+      "rows": 14025,
+      "metrics_recomputed": true,
+      "aligned_labels": true
+    },
+    {
+      "dataset": "retail",
+      "task": "purchase_30d",
+      "backend": "baseline",
+      "rows": 14025,
+      "metrics_recomputed": true,
+      "aligned_labels": true
+    },
+    {
+      "dataset": "retail",
+      "task": "purchase_30d",
+      "backend": "histogram",
+      "rows": 14025,
+      "metrics_recomputed": true,
+      "aligned_labels": true
+    },
+    {
+      "dataset": "retail",
+      "task": "gross_spend_30d",
+      "backend": "historical",
+      "rows": 14025,
+      "metrics_recomputed": true,
+      "aligned_labels": true
+    },
+    {
+      "dataset": "retail",
+      "task": "gross_spend_30d",
+      "backend": "baseline",
+      "rows": 14025,
+      "metrics_recomputed": true,
+      "aligned_labels": true
+    },
+    {
+      "dataset": "retail",
+      "task": "gross_spend_30d",
+      "backend": "histogram",
+      "rows": 14025,
+      "metrics_recomputed": true,
+      "aligned_labels": true
+    },
+    {
+      "dataset": "retail",
+      "task": "purchase_30d",
+      "backend": "fastdfs-extratrees",
+      "rows": 14025,
+      "metrics_recomputed": true,
+      "aligned_labels": true
+    },
+    {
+      "dataset": "retail",
+      "task": "gross_spend_30d",
+      "backend": "fastdfs-extratrees",
+      "rows": 14025,
+      "metrics_recomputed": true,
+      "aligned_labels": true
+    },
+    {
+      "dataset": "beijing",
+      "task": "pm25_over_75_next_day",
+      "backend": "historical",
+      "rows": 384,
+      "metrics_recomputed": true,
+      "aligned_labels": true
+    },
+    {
+      "dataset": "beijing",
+      "task": "pm25_over_75_next_day",
+      "backend": "baseline",
+      "rows": 384,
+      "metrics_recomputed": true,
+      "aligned_labels": true
+    },
+    {
+      "dataset": "beijing",
+      "task": "pm25_over_75_next_day",
+      "backend": "histogram",
+      "rows": 384,
+      "metrics_recomputed": true,
+      "aligned_labels": true
+    },
+    {
+      "dataset": "beijing",
+      "task": "pm25_next_day",
+      "backend": "historical",
+      "rows": 384,
+      "metrics_recomputed": true,
+      "aligned_labels": true
+    },
+    {
+      "dataset": "beijing",
+      "task": "pm25_next_day",
+      "backend": "baseline",
+      "rows": 384,
+      "metrics_recomputed": true,
+      "aligned_labels": true
+    },
+    {
+      "dataset": "beijing",
+      "task": "pm25_next_day",
+      "backend": "histogram",
+      "rows": 384,
+      "metrics_recomputed": true,
+      "aligned_labels": true
+    },
+    {
+      "dataset": "beijing",
+      "task": "pm25_over_75_next_day",
+      "backend": "fastdfs-extratrees",
+      "rows": 384,
+      "metrics_recomputed": true,
+      "aligned_labels": true
+    },
+    {
+      "dataset": "beijing",
+      "task": "pm25_next_day",
+      "backend": "fastdfs-extratrees",
+      "rows": 384,
+      "metrics_recomputed": true,
+      "aligned_labels": true
+    }
+  ],
+  "refresh_cases": 90,
+  "max_refresh_error": 0,
+  "core_source_sha256": {
+    "src/aheaddb/__init__.py": "e302c260cce775fe5eb128b8e848bcd470bbfa418c0b6e177e715962d7a8efc6",
+    "src/aheaddb/api.py": "7f1339c75ef443f7a7f9c955e6e0851cad8438d88b0c8b7b4db8e169f7a32d2b",
+    "src/aheaddb/cli.py": "75827c3d8a4a2e70bf3cab7aee9208aaa8e52d2afab5157692f9e9a7d1b5812a",
+    "src/aheaddb/compiler.py": "7acf718020dc999cd0ddaafe19a4396c945a356e6caa5795d22b00fade5be5ba",
+    "src/aheaddb/demo.py": "6d7ceebfeb1a94bcc809d9760fab29e5a1f7f68f988e59f0ff9f2c05be9d1dc0",
+    "src/aheaddb/engine.py": "b0df305a8b42b8274cd10913f64c8b8719c4c8ffae0c4c9f118b7e79cfdb7373",
+    "src/aheaddb/fastdfs_backend.py": "306ae7eeb00810be38aa7ebefc491956bba012c4538c300ce0537f81a22e1bdf",
+    "src/aheaddb/mcp.py": "693c723c7a1b03a63d06ce3d1a06c3bdc34d213b4fe48af8e37ddde33acdfac1",
+    "src/aheaddb/modeling.py": "d36ef68f1ca02fd13078b1181d3b754aa422046616485a4611f1503d74881b35",
+    "src/aheaddb/project.py": "726b18873a2e3b327a8ba043625a2a05451a8f430468e788e1eaa4443a8bf917",
+    "src/aheaddb/snapshot.py": "6bd4f915c1096055ee4d033339d3f73f98684c47be3524a1af1a2331f60dc58a",
+    "src/aheaddb/spec.py": "faa744d817732d7da4688591f6cae353349b1a2923d989b9641df4858b724272"
+  }
+}

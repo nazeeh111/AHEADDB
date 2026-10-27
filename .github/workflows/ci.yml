@@ -1,0 +1,36 @@
+name: checks
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      OMP_NUM_THREADS: '1'
+      OPENBLAS_NUM_THREADS: '1'
+      LOKY_MAX_CPU_COUNT: '1'
+      AHEAD_TEST_POSTGRES: 'postgresql://postgres@127.0.0.1:5432/ahead'
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_HOST_AUTH_METHOD: trust
+          POSTGRES_DB: ahead
+        ports:
+          - 5432:5432
+        options: --health-cmd pg_isready --health-interval 5s --health-timeout 5s --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          version: '0.9.5'
+          enable-cache: false
+      - run: uv python install 3.12
+      - run: uv sync --frozen --extra dev --extra mcp --extra postgres
+      - run: uv run --no-sync ruff check src scripts tests
+      - run: uv run --no-sync mypy src/aheaddb
+      - run: uv run --no-sync pytest -q
+      - run: uv build
+      - run: uv run --no-sync ahead demo run/ci
+      - run: uv run --no-sync ahead predict --project run/ci/ahead.json > /tmp/predictions.json
+      - run: uv run --no-sync ahead backtest --project run/ci/ahead.json > /tmp/backtest.json

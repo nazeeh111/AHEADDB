@@ -1,0 +1,854 @@
+{
+  "dataset": "retail",
+  "source": {
+    "url": "https://archive.ics.uci.edu/static/public/352/online%2Bretail.zip",
+    "page": "https://archive.ics.uci.edu/dataset/352/online+retail",
+    "citation": "Chen, D. (2015). Online Retail. UCI. doi:10.24432/C5BW33",
+    "sha256": "f5385cbb54bbebf7196389109c6b0621faab0c304e3702548165e71c84aede8b",
+    "bytes": 23715478,
+    "license": "CC-BY-4.0",
+    "retrieved_utc": "2026-10-27 00:06:20.472070+00:00",
+    "raw_rows": 541909,
+    "retained_positive_line_items": 397884,
+    "invoices": 18562,
+    "entities": 4338,
+    "start": "2010-12-01 08:26:00.000000890+00:00",
+    "end": "2011-12-09 12:49:59.999999721+00:00",
+    "transform": "Drop missing customer IDs, cancellations, quantity<=0 and price<=0; sum positive line spend per invoice/customer/time. Forecast gross positive spend, not net revenue.",
+    "availability_assumption": "Each invoice is available exactly 24 hours after its event timestamp; customer exists at its first available invoice. Naive source timestamps interpreted UTC, not verified source timezone.",
+    "snapshot_version": "14e573d530c0f354b3546d334181e185e66a75df64b12baf0d0d938d734784c5"
+  },
+  "data_version": "14e573d530c0f354b3546d334181e185e66a75df64b12baf0d0d938d734784c5",
+  "schema": {
+    "entity_table": "entities",
+    "entity_key": "entity_id",
+    "available_at": "available_at",
+    "events": [
+      {
+        "table": "purchases",
+        "key": "id",
+        "entity_key": "entity_id",
+        "occurred_at": "occurred_at",
+        "available_at": "available_at",
+        "values": [
+          "spend"
+        ]
+      }
+    ]
+  },
+  "results": [
+    {
+      "task": {
+        "name": "purchase_30d",
+        "kind": "binary",
+        "outcome": {
+          "table": "purchases",
+          "aggregation": "count",
+          "column": null,
+          "threshold": 0
+        },
+        "horizon_days": 30,
+        "history_days": 90,
+        "label_delay_days": 1,
+        "metric": "roc_auc"
+      },
+      "backend": "historical",
+      "test_samples": 14025,
+      "seconds": 19.40602358384058,
+      "metrics": {
+        "roc_auc": 0.6988541944907206,
+        "average_precision": 0.5039086745021566,
+        "brier": 0.18701244105313206,
+        "ece_5_bins": 0.08890745312247851,
+        "reliability": [
+          {
+            "lower": 0.0,
+            "n": 5532,
+            "probability": 0.0,
+            "frequency": 0.1541937816341287
+          },
+          {
+            "lower": 0.2,
+            "n": 4922,
+            "probability": 0.28346868942621084,
+            "frequency": 0.265542462413653
+          },
+          {
+            "lower": 0.4,
+            "n": 1853,
+            "probability": 0.4865828809674078,
+            "frequency": 0.37992444684295734
+          },
+          {
+            "lower": 0.6000000000000001,
+            "n": 1140,
+            "probability": 0.6685278891936233,
+            "frequency": 0.5894736842105263
+          },
+          {
+            "lower": 0.8,
+            "n": 578,
+            "probability": 0.8822392189854915,
+            "frequency": 0.8512110726643599
+          }
+        ],
+        "prevalence": 0.28720142602495546,
+        "limitation": null
+      },
+      "folds": [
+        {
+          "name": "summer",
+          "train_cutoffs": [
+            "2011-03-01",
+            "2011-03-15",
+            "2011-04-01",
+            "2011-04-15",
+            "2011-05-01",
+            "2011-05-15",
+            "2011-06-01"
+          ],
+          "fit_as_of": "2011-07-15",
+          "test_cutoffs": [
+            "2011-08-01",
+            "2011-09-01"
+          ],
+          "train_samples": 15659,
+          "test_samples": 6456,
+          "fit_seconds": 4.5890919864177704e-07,
+          "predict_seconds": 4.853223584010266,
+          "process_peak_rss_bytes": 158826496,
+          "metrics": {
+            "roc_auc": 0.7096334820740895,
+            "average_precision": 0.4995010683365527,
+            "brier": 0.17605765964006156,
+            "ece_5_bins": 0.1000840117607485,
+            "reliability": [
+              {
+                "lower": 0.0,
+                "n": 2529,
+                "probability": 0.0,
+                "frequency": 0.1368129695531831
+              },
+              {
+                "lower": 0.2,
+                "n": 2240,
+                "probability": 0.2834686894262108,
+                "frequency": 0.23035714285714284
+              },
+              {
+                "lower": 0.4,
+                "n": 854,
+                "probability": 0.48658288096740787,
+                "frequency": 0.3548009367681499
+              },
+              {
+                "lower": 0.6000000000000001,
+                "n": 549,
+                "probability": 0.6676411247145664,
+                "frequency": 0.5646630236794171
+              },
+              {
+                "lower": 0.8,
+                "n": 284,
+                "probability": 0.8841399922472423,
+                "frequency": 0.8415492957746479
+              }
+            ],
+            "prevalence": 0.26548946716232963,
+            "limitation": null
+          },
+          "model_version": null
+        },
+        {
+          "name": "autumn",
+          "train_cutoffs": [
+            "2011-03-01",
+            "2011-03-15",
+            "2011-04-01",
+            "2011-04-15",
+            "2011-05-01",
+            "2011-05-15",
+            "2011-06-01",
+            "2011-06-15",
+            "2011-07-01",
+            "2011-07-15",
+            "2011-08-01"
+          ],
+          "fit_as_of": "2011-09-15",
+          "test_cutoffs": [
+            "2011-10-01",
+            "2011-11-01"
+          ],
+          "train_samples": 27625,
+          "test_samples": 7569,
+          "fit_seconds": 0.0001800829777494073,
+          "predict_seconds": 14.552619457943365,
+          "process_peak_rss_bytes": 171802624,
+          "metrics": {
+            "roc_auc": 0.6917705654654949,
+            "average_precision": 0.5105463372243361,
+            "brier": 0.19635635290447076,
+            "ece_5_bins": 0.08749618179854328,
+            "reliability": [
+              {
+                "lower": 0.0,
+                "n": 3003,
+                "probability": 0.0,
+                "frequency": 0.16883116883116883
+              },
+              {
+                "lower": 0.2,
+                "n": 2682,
+                "probability": 0.2834686894262108,
+                "frequency": 0.2949291573452647
+              },
+              {
+                "lower": 0.4,
+                "n": 999,
+                "probability": 0.48658288096740787,
+                "frequency": 0.4014014014014014
+              },
+              {
+                "lower": 0.6000000000000001,
+                "n": 591,
+                "probability": 0.6693516348772142,
+                "frequency": 0.6125211505922166
+              },
+              {
+                "lower": 0.8,
+                "n": 294,
+                "probability": 0.8804030978755012,
+                "frequency": 0.8605442176870748
+              }
+            ],
+            "prevalence": 0.30572070286695735,
+            "limitation": null
+          },
+          "model_version": null
+        }
+      ]
+    },
+    {
+      "task": {
+        "name": "purchase_30d",
+        "kind": "binary",
+        "outcome": {
+          "table": "purchases",
+          "aggregation": "count",
+          "column": null,
+          "threshold": 0
+        },
+        "horizon_days": 30,
+        "history_days": 90,
+        "label_delay_days": 1,
+        "metric": "roc_auc"
+      },
+      "backend": "baseline",
+      "test_samples": 14025,
+      "seconds": 64.29695262492169,
+      "metrics": {
+        "roc_auc": 0.4755895239276848,
+        "average_precision": 0.2779625239667279,
+        "brier": 0.20523027609275982,
+        "ece_5_bins": 0.010089077427556548,
+        "reliability": [
+          {
+            "lower": 0.2,
+            "n": 14025,
+            "probability": 0.2771123485973989,
+            "frequency": 0.28720142602495546
+          }
+        ],
+        "prevalence": 0.28720142602495546,
+        "limitation": null
+      },
+      "folds": [
+        {
+          "name": "summer",
+          "train_cutoffs": [
+            "2011-03-01",
+            "2011-03-15",
+            "2011-04-01",
+            "2011-04-15",
+            "2011-05-01",
+            "2011-05-15",
+            "2011-06-01"
+          ],
+          "fit_as_of": "2011-07-15",
+          "test_cutoffs": [
+            "2011-08-01",
+            "2011-09-01"
+          ],
+          "train_samples": 15659,
+          "test_samples": 6456,
+          "fit_seconds": 6.467553582973778,
+          "predict_seconds": 5.001907791942358,
+          "process_peak_rss_bytes": 158826496,
+          "metrics": {
+            "roc_auc": 0.5,
+            "average_precision": 0.26548946716232963,
+            "brier": 0.1954374320129097,
+            "ece_5_bins": 0.020799567897380522,
+            "reliability": [
+              {
+                "lower": 0.2,
+                "n": 6456,
+                "probability": 0.28628903505971015,
+                "frequency": 0.26548946716232963
+              }
+            ],
+            "prevalence": 0.26548946716232963,
+            "limitation": null
+          },
+          "model_version": "21ad85e3fccd2308dbaadf46ea8ae597ca40ee6d9d2532db7c7b41da71cbc6ff"
+        },
+        {
+          "name": "autumn",
+          "train_cutoffs": [
+            "2011-03-01",
+            "2011-03-15",
+            "2011-04-01",
+            "2011-04-15",
+            "2011-05-01",
+            "2011-05-15",
+            "2011-06-01",
+            "2011-06-15",
+            "2011-07-01",
+            "2011-07-15",
+            "2011-08-01"
+          ],
+          "fit_as_of": "2011-09-15",
+          "test_cutoffs": [
+            "2011-10-01",
+            "2011-11-01"
+          ],
+          "train_samples": 27625,
+          "test_samples": 7569,
+          "fit_seconds": 46.49911062500905,
+          "predict_seconds": 6.328380624996498,
+          "process_peak_rss_bytes": 171802624,
+          "metrics": {
+            "roc_auc": 0.5,
+            "average_precision": 0.30572070286695735,
+            "brier": 0.21358311020288168,
+            "ece_5_bins": 0.036435634993654265,
+            "reliability": [
+              {
+                "lower": 0.2,
+                "n": 7569,
+                "probability": 0.2692850678733031,
+                "frequency": 0.30572070286695735
+              }
+            ],
+            "prevalence": 0.30572070286695735,
+            "limitation": null
+          },
+          "model_version": "10ecf60dc65bef4860dd5b03f8bce8bb5349d5d7ee623137a2aad2a6e1738cf9"
+        }
+      ]
+    },
+    {
+      "task": {
+        "name": "purchase_30d",
+        "kind": "binary",
+        "outcome": {
+          "table": "purchases",
+          "aggregation": "count",
+          "column": null,
+          "threshold": 0
+        },
+        "horizon_days": 30,
+        "history_days": 90,
+        "label_delay_days": 1,
+        "metric": "roc_auc"
+      },
+      "backend": "histogram",
+      "test_samples": 14025,
+      "seconds": 36.21811291703489,
+      "metrics": {
+        "roc_auc": 0.6983489535440572,
+        "average_precision": 0.5502731384237867,
+        "brier": 0.1758694503682096,
+        "ece_5_bins": 0.03242061441995769,
+        "reliability": [
+          {
+            "lower": 0.0,
+            "n": 8282,
+            "probability": 0.15057740088995625,
+            "frequency": 0.18002897850760685
+          },
+          {
+            "lower": 0.2,
+            "n": 3526,
+            "probability": 0.2807936864051929,
+            "frequency": 0.32558139534883723
+          },
+          {
+            "lower": 0.4,
+            "n": 1216,
+            "probability": 0.47741626833088224,
+            "frequency": 0.4934210526315789
+          },
+          {
+            "lower": 0.6000000000000001,
+            "n": 603,
+            "probability": 0.6937925296161496,
+            "frequency": 0.7346600331674958
+          },
+          {
+            "lower": 0.8,
+            "n": 398,
+            "probability": 0.8913436364927774,
+            "frequency": 0.8693467336683417
+          }
+        ],
+        "prevalence": 0.28720142602495546,
+        "limitation": null
+      },
+      "folds": [
+        {
+          "name": "summer",
+          "train_cutoffs": [
+            "2011-03-01",
+            "2011-03-15",
+            "2011-04-01",
+            "2011-04-15",
+            "2011-05-01",
+            "2011-05-15",
+            "2011-06-01"
+          ],
+          "fit_as_of": "2011-07-15",
+          "test_cutoffs": [
+            "2011-08-01",
+            "2011-09-01"
+          ],
+          "train_samples": 15659,
+          "test_samples": 6456,
+          "fit_seconds": 12.172406374942511,
+          "predict_seconds": 5.503482666099444,
+          "process_peak_rss_bytes": 171802624,
+          "metrics": {
+            "roc_auc": 0.7137946388365445,
+            "average_precision": 0.5453765514097442,
+            "brier": 0.16333848341122856,
+            "ece_5_bins": 0.0032209407756850386,
+            "reliability": [
+              {
+                "lower": 0.0,
+                "n": 3787,
+                "probability": 0.15759996421875863,
+                "frequency": 0.15790863480327436
+              },
+              {
+                "lower": 0.2,
+                "n": 1598,
+                "probability": 0.28690803396848763,
+                "frequency": 0.2909887359198999
+              },
+              {
+                "lower": 0.4,
+                "n": 572,
+                "probability": 0.47886488352973927,
+                "frequency": 0.46678321678321677
+              },
+              {
+                "lower": 0.6000000000000001,
+                "n": 292,
+                "probability": 0.6991794199390794,
+                "frequency": 0.702054794520548
+              },
+              {
+                "lower": 0.8,
+                "n": 207,
+                "probability": 0.8905998727976091,
+                "frequency": 0.8647342995169082
+              }
+            ],
+            "prevalence": 0.26548946716232963,
+            "limitation": null
+          },
+          "model_version": "2eaa4a7c0b465817355bf216481b8214fa6b710bbee91fb541152cdb2cbc64ed"
+        },
+        {
+          "name": "autumn",
+          "train_cutoffs": [
+            "2011-03-01",
+            "2011-03-15",
+            "2011-04-01",
+            "2011-04-15",
+            "2011-05-01",
+            "2011-05-15",
+            "2011-06-01",
+            "2011-06-15",
+            "2011-07-01",
+            "2011-07-15",
+            "2011-08-01"
+          ],
+          "fit_as_of": "2011-09-15",
+          "test_cutoffs": [
+            "2011-10-01",
+            "2011-11-01"
+          ],
+          "train_samples": 27625,
+          "test_samples": 7569,
+          "fit_seconds": 15.950953833991662,
+          "predict_seconds": 2.5912700420012698,
+          "process_peak_rss_bytes": 171802624,
+          "metrics": {
+            "roc_auc": 0.6957893745677451,
+            "average_precision": 0.5545578034670932,
+            "brier": 0.18655777414602304,
+            "ece_5_bins": 0.0591526159796678,
+            "reliability": [
+              {
+                "lower": 0.0,
+                "n": 4495,
+                "probability": 0.14466094987189737,
+                "frequency": 0.19866518353726362
+              },
+              {
+                "lower": 0.2,
+                "n": 1928,
+                "probability": 0.27572588173395596,
+                "frequency": 0.35425311203319504
+              },
+              {
+                "lower": 0.4,
+                "n": 644,
+                "probability": 0.47612961011077937,
+                "frequency": 0.5170807453416149
+              },
+              {
+                "lower": 0.6000000000000001,
+                "n": 311,
+                "probability": 0.6887347419174502,
+                "frequency": 0.7652733118971061
+              },
+              {
+                "lower": 0.8,
+                "n": 191,
+                "probability": 0.8921497050001064,
+                "frequency": 0.8743455497382199
+              }
+            ],
+            "prevalence": 0.30572070286695735,
+            "limitation": null
+          },
+          "model_version": "80535ea8b02c4fdb797decb212feae73c508a064bde5227d902c8e87cac3e14d"
+        }
+      ]
+    },
+    {
+      "task": {
+        "name": "gross_spend_30d",
+        "kind": "regression",
+        "outcome": {
+          "table": "purchases",
+          "aggregation": "sum",
+          "column": "spend",
+          "threshold": 0
+        },
+        "horizon_days": 30,
+        "history_days": 90,
+        "label_delay_days": 1,
+        "metric": "mae"
+      },
+      "backend": "historical",
+      "test_samples": 14025,
+      "seconds": 7.703932165983133,
+      "metrics": {
+        "mae": 227.32090215092097,
+        "rmse": 1049.5980864730648
+      },
+      "folds": [
+        {
+          "name": "summer",
+          "train_cutoffs": [
+            "2011-03-01",
+            "2011-03-15",
+            "2011-04-01",
+            "2011-04-15",
+            "2011-05-01",
+            "2011-05-15",
+            "2011-06-01"
+          ],
+          "fit_as_of": "2011-07-15",
+          "test_cutoffs": [
+            "2011-08-01",
+            "2011-09-01"
+          ],
+          "train_samples": 15659,
+          "test_samples": 6456,
+          "fit_seconds": 0.0001664169831201434,
+          "predict_seconds": 3.94781124999281,
+          "process_peak_rss_bytes": 171802624,
+          "metrics": {
+            "mae": 214.49022217059064,
+            "rmse": 1192.4304690916333
+          },
+          "model_version": null
+        },
+        {
+          "name": "autumn",
+          "train_cutoffs": [
+            "2011-03-01",
+            "2011-03-15",
+            "2011-04-01",
+            "2011-04-15",
+            "2011-05-01",
+            "2011-05-15",
+            "2011-06-01",
+            "2011-06-15",
+            "2011-07-01",
+            "2011-07-15",
+            "2011-08-01"
+          ],
+          "fit_as_of": "2011-09-15",
+          "test_cutoffs": [
+            "2011-10-01",
+            "2011-11-01"
+          ],
+          "train_samples": 27625,
+          "test_samples": 7569,
+          "fit_seconds": 0.00020308303646743298,
+          "predict_seconds": 3.7557514159707353,
+          "process_peak_rss_bytes": 171802624,
+          "metrics": {
+            "mae": 238.26486700136522,
+            "rmse": 910.2260192188393
+          },
+          "model_version": null
+        }
+      ]
+    },
+    {
+      "task": {
+        "name": "gross_spend_30d",
+        "kind": "regression",
+        "outcome": {
+          "table": "purchases",
+          "aggregation": "sum",
+          "column": "spend",
+          "threshold": 0
+        },
+        "horizon_days": 30,
+        "history_days": 90,
+        "label_delay_days": 1,
+        "metric": "mae"
+      },
+      "backend": "baseline",
+      "test_samples": 14025,
+      "seconds": 19.686238666065037,
+      "metrics": {
+        "mae": 318.31094279071465,
+        "rmse": 1388.5306994372427
+      },
+      "folds": [
+        {
+          "name": "summer",
+          "train_cutoffs": [
+            "2011-03-01",
+            "2011-03-15",
+            "2011-04-01",
+            "2011-04-15",
+            "2011-05-01",
+            "2011-05-15",
+            "2011-06-01"
+          ],
+          "fit_as_of": "2011-07-15",
+          "test_cutoffs": [
+            "2011-08-01",
+            "2011-09-01"
+          ],
+          "train_samples": 15659,
+          "test_samples": 6456,
+          "fit_seconds": 5.017592999967746,
+          "predict_seconds": 1.0843869580421597,
+          "process_peak_rss_bytes": 171802624,
+          "metrics": {
+            "mae": 309.3495355897982,
+            "rmse": 1507.151094991061
+          },
+          "model_version": "12f1d0eef98a0915896b1aeb66c2c3461d4ab981fefbef1a241cefc3c63ef355"
+        },
+        {
+          "name": "autumn",
+          "train_cutoffs": [
+            "2011-03-01",
+            "2011-03-15",
+            "2011-04-01",
+            "2011-04-15",
+            "2011-05-01",
+            "2011-05-15",
+            "2011-06-01",
+            "2011-06-15",
+            "2011-07-01",
+            "2011-07-15",
+            "2011-08-01"
+          ],
+          "fit_as_of": "2011-09-15",
+          "test_cutoffs": [
+            "2011-10-01",
+            "2011-11-01"
+          ],
+          "train_samples": 27625,
+          "test_samples": 7569,
+          "fit_seconds": 12.276652375003323,
+          "predict_seconds": 1.3076063330518082,
+          "process_peak_rss_bytes": 171802624,
+          "metrics": {
+            "mae": 325.954600458718,
+            "rmse": 1278.6865767551658
+          },
+          "model_version": "d101ece75bce4dc5baba6a1d836924a6e0e8f9601c9a2a05d085986f8fa06b7f"
+        }
+      ]
+    },
+    {
+      "task": {
+        "name": "gross_spend_30d",
+        "kind": "regression",
+        "outcome": {
+          "table": "purchases",
+          "aggregation": "sum",
+          "column": "spend",
+          "threshold": 0
+        },
+        "horizon_days": 30,
+        "history_days": 90,
+        "label_delay_days": 1,
+        "metric": "mae"
+      },
+      "backend": "histogram",
+      "test_samples": 14025,
+      "seconds": 17.51327874895651,
+      "metrics": {
+        "mae": 237.23489847806775,
+        "rmse": 1098.905462142432
+      },
+      "folds": [
+        {
+          "name": "summer",
+          "train_cutoffs": [
+            "2011-03-01",
+            "2011-03-15",
+            "2011-04-01",
+            "2011-04-15",
+            "2011-05-01",
+            "2011-05-15",
+            "2011-06-01"
+          ],
+          "fit_as_of": "2011-07-15",
+          "test_cutoffs": [
+            "2011-08-01",
+            "2011-09-01"
+          ],
+          "train_samples": 15659,
+          "test_samples": 6456,
+          "fit_seconds": 5.283667374984361,
+          "predict_seconds": 2.5226957079721615,
+          "process_peak_rss_bytes": 171802624,
+          "metrics": {
+            "mae": 227.04797392191588,
+            "rmse": 1233.5946420881614
+          },
+          "model_version": "8a6c8b07c889bd4a5b7a21df07710a2ac0b54e62aacd9193eb1b9b654e5de87c"
+        },
+        {
+          "name": "autumn",
+          "train_cutoffs": [
+            "2011-03-01",
+            "2011-03-15",
+            "2011-04-01",
+            "2011-04-15",
+            "2011-05-01",
+            "2011-05-15",
+            "2011-06-01",
+            "2011-06-15",
+            "2011-07-01",
+            "2011-07-15",
+            "2011-08-01"
+          ],
+          "fit_as_of": "2011-09-15",
+          "test_cutoffs": [
+            "2011-10-01",
+            "2011-11-01"
+          ],
+          "train_samples": 27625,
+          "test_samples": 7569,
+          "fit_seconds": 7.72633999993559,
+          "predict_seconds": 1.9805756660643965,
+          "process_peak_rss_bytes": 187793408,
+          "metrics": {
+            "mae": 245.9238646472469,
+            "rmse": 969.3437974409477
+          },
+          "model_version": "f2245769956fef86337c4c76f14b20758d5bdc1cb1ddd63e9effb9fe576d8a6a"
+        }
+      ]
+    }
+  ],
+  "folds": [
+    {
+      "name": "summer",
+      "train": [
+        "2011-03-01",
+        "2011-03-15",
+        "2011-04-01",
+        "2011-04-15",
+        "2011-05-01",
+        "2011-05-15",
+        "2011-06-01"
+      ],
+      "fit_as_of": "2011-07-15",
+      "test": [
+        "2011-08-01",
+        "2011-09-01"
+      ]
+    },
+    {
+      "name": "autumn",
+      "train": [
+        "2011-03-01",
+        "2011-03-15",
+        "2011-04-01",
+        "2011-04-15",
+        "2011-05-01",
+        "2011-05-15",
+        "2011-06-01",
+        "2011-06-15",
+        "2011-07-01",
+        "2011-07-15",
+        "2011-08-01"
+      ],
+      "fit_as_of": "2011-09-15",
+      "test": [
+        "2011-10-01",
+        "2011-11-01"
+      ]
+    }
+  ],
+  "total_seconds": 175.09661254205275,
+  "environment": {
+    "python": "3.12.13",
+    "platform": "macOS-26.6.2-arm64-arm-64bit",
+    "processor": "arm",
+    "sklearn": "1.7.2",
+    "numpy": "2.3.4",
+    "pandas": "2.3.3",
+    "OMP_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1"
+  },
+  "limitations": [
+    "These are actual public-data predictions, separate from synthetic refresh stress tests.",
+    "Availability timestamps and source timezone are assumptions; source does not record when information became available.",
+    "Entity IDs recur across temporal samples. Samples and folds are dependent; no IID confidence intervals are claimed.",
+    "Fixed hyperparameters, no test tuning, no pretrained foundation model or zero-shot transfer claim.",
+    "Baseline is training-prior/mean; historical is a separate task-specific rate/persistence baseline.",
+    "Binary probabilities are uncalibrated raw estimates; reliability/Brier/ECE expose calibration error.",
+    "Peak RSS is cumulative process high-water memory including loaded source tables, not per-model allocation.",
+    "Retail task excludes refunds/cancellations and forecasts positive gross spend, not business net revenue.",
+    "Beijing retains only cutoffs with complete next-day labels across all stations; this can bias results toward better observed days.",
+    "Beijing is normalized from station time series; this is not an original multi-hop relational benchmark."
+  ]
+}

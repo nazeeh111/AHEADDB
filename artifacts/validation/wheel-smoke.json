@@ -1,0 +1,24 @@
+{
+  "version": "0.1.0",
+  "installed_wheel": true,
+  "static_http": 200,
+  "prediction_rows": 160,
+  "refresh": {
+    "mode": "incremental",
+    "seconds": 0.05009725003037602,
+    "discovery_seconds": 0.003873458015732467,
+    "changed_source_rows": 1,
+    "diff_scan_performed": true,
+    "affected_entities": [
+      "C0122"
+    ],
+    "feature_rows": 1,
+    "prediction_rows": 2,
+    "reused_prediction_rows": 318,
+    "data_version": "8f13886c107f79a9b2e4828896d067e03c7c0e655d34bc62364dc2c15c7c610d",
+    "views": [
+      "return_14d",
+      "revenue_14d"
+    ]
+  }
+}

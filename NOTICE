@@ -1,0 +1,18 @@
+AHEADDB
+Copyright 2026 Nazeeh Abdul-Hadi (GitHub: nazeeh111)
+Licensed under the Apache License, Version2.0.
+
+AHEADDB uses the independently distributed open-source DuckDB, pandas, NumPy,
+scikit-learn, Pydantic, FastAPI, Uvicorn, Typer and optional MCP Python SDK.
+Their licenses remain applicable to their distributions. See docs/licenses.md.
+
+The optional FastDFS comparison uses FastDFS 0.2.1 and its Featuretools/Woodwork
+components. No upstream code or model weights are vendored in this repository.
+Related research is attributed in docs/research.md and
+ docs/THIRD_PARTY_RESEARCH.md; citations do not imply code adoption.
+
+Public evaluation data: Online Retail (Chen,D.,2015) and Beijing Multi-Site
+Air Quality (Chen,S.,2017), UCI Machine Learning Repository, CC BY 4.0.
+Source datasets are downloaded separately; derived evaluation records are
+attributed in docs/data.md and carry CC BY 4.0 under artifacts/results/NOTICE.
+The generated SignalDesk dataset is original synthetic demonstration data.

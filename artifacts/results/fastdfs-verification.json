@@ -1,0 +1,19 @@
+{
+  "checks": {
+    "optional_tests": "6 passed, 17 upstream warnings, 21.13 seconds",
+    "ruff": "passed",
+    "evaluation_exit_code": 0,
+    "retail_optional_core_rows_and_labels_match": 28050,
+    "beijing_optional_core_rows_and_labels_match": 768,
+    "snapshot_versions_match_core": true
+  },
+  "scope": "FastDFS optional comparison, not maintained-view serving or a pretrained relational foundation model",
+  "runtime_note": "Estimator workers and native env limited to1; DuckDB feature-query thread defaults uncontrolled. Host load varied during evaluation.",
+  "evaluation_note": "Final safety-only guards reject prediction before model training time and a colliding local :memory: filename. Evaluated cutoffs satisfy those guards; numerical pipeline unchanged.",
+  "source_sha256": {
+    "src/aheaddb/fastdfs_backend.py": "306ae7eeb00810be38aa7ebefc491956bba012c4538c300ce0537f81a22e1bdf",
+    "scripts/evaluate_fastdfs.py": "96c31890ccf3b6a033e00fd36133ded1f6416afd979848b6bcd7eb234b772997",
+    "tests/test_fastdfs.py": "5609a164522c140c2ca0c04cdec70a7260afc33c1633ca93de3281130eb87027",
+    "requirements-fastdfs.lock": "d933873ee97b95515be75bc99532eaa2bce41a31e365cb426da75c2742f7bf79"
+  }
+}

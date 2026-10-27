@@ -1,0 +1,9 @@
+cff-version: 1.2.0
+message: "If you use AHEADDB, cite this software and the datasets/models actually used."
+title: AHEADDB
+version: 0.1.0
+date-released: 2026-10-26
+authors:
+  - name: "Nazeeh (nazeeh111)"
+repository-code: "https://github.com/nazeeh111/AHEADDB"
+license: Apache-2.0
