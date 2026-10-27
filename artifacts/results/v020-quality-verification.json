@@ -1,0 +1,16 @@
+[
+  {
+    "dataset": "retail",
+    "prediction_rows": 144568,
+    "old_published_histogram_rows_reproduced": 28050,
+    "maximum_old_prediction_difference": 0.0,
+    "same_saved_ids_and_labels_across_all_backends": true
+  },
+  {
+    "dataset": "beijing",
+    "prediction_rows": 4800,
+    "old_published_histogram_rows_reproduced": 768,
+    "maximum_old_prediction_difference": 0.0,
+    "same_saved_ids_and_labels_across_all_backends": true
+  }
+]

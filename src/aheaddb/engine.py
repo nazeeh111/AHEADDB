@@ -62,6 +62,7 @@ class Engine:
                 "model_version": view.model_version, "context_key": view.context_key,
                 "preprocessing": Compiler.PREPROCESSING, "rows": len(view.predictions),
                 "diagnostics": view.model.diagnostics(self.contexts[view.context_key]),
+                "model_selection": view.model.selection,
                 "cache_key": digest([view.task.version, view.model_version, view.data_version,
                                      view.cutoff, view.context_key]),
                 "warnings": ["Predictions are estimates, not facts", "Input provenance is not a causal explanation"]}
@@ -79,10 +80,8 @@ class Engine:
             if table == schema.entity_table:
                 affected.update(delta)
             else:
-                e = next(e for e in schema.events if e.table == table)
                 for snap in [self.snapshot, new]:
-                    df = snap._tables[table]
-                    affected.update(df.loc[df[e.key].isin(delta), e.entity_key])
+                    affected.update(snap._row_owners[table].reindex(list(delta)).dropna())
         return affected, changed
 
     def refresh(self, new: Snapshot, cutoff: str | None = None, mode: str = "incremental") -> dict:
@@ -114,7 +113,8 @@ class Engine:
                 raise ValueError("Cutoff precedes model training")
             key = self._context_key(view.task, t)
             all_ids = compiler.entities(t)
-            force = mode == "full" or t != view.cutoff or view.model.version != view.model_version
+            model_version = view.model.version
+            force = mode == "full" or t != view.cutoff or model_version != view.model_version
             if mode == "cache" and source_changed:
                 force = True
             ids = all_ids if force else sorted((affected | (set(all_ids) - set(view.predictions.index))) & set(all_ids))
@@ -139,7 +139,7 @@ class Engine:
                 raise ValueError("Incomplete refreshed view")
             recomputed += len(ids)
             reused += len(all_ids) - len(ids)
-            pending[name] = View(view.task, view.model, t, view.model.version, key, new.version, result)
+            pending[name] = View(view.task, view.model, t, model_version, key, new.version, result)
         self.snapshot = new
         self.views = pending
         # Drop unreachable contexts on clock advancement; no unbounded old-window cache.

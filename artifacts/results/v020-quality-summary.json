@@ -1,0 +1,242 @@
+[
+  {
+    "dataset": "retail",
+    "task": "purchase_30d",
+    "period": "summer",
+    "evidence": "previously_exposed_retrospective",
+    "samples": 6456,
+    "selected": "robust",
+    "metrics": {
+      "roc_auc": {
+        "legacy": 0.7137946388365445,
+        "adaptive": 0.7164558179913157
+      },
+      "brier": {
+        "legacy": 0.16333848341122856,
+        "adaptive": 0.16248109583161438
+      },
+      "ece_5_bins": {
+        "legacy": 0.0032209407756850386,
+        "adaptive": 0.003349547413949667
+      }
+    }
+  },
+  {
+    "dataset": "retail",
+    "task": "purchase_30d",
+    "period": "autumn",
+    "evidence": "previously_exposed_retrospective",
+    "samples": 7569,
+    "selected": "robust",
+    "metrics": {
+      "roc_auc": {
+        "legacy": 0.6957893745677451,
+        "adaptive": 0.7011400016611747
+      },
+      "brier": {
+        "legacy": 0.18655777414602304,
+        "adaptive": 0.18585283529716565
+      },
+      "ece_5_bins": {
+        "legacy": 0.0591526159796678,
+        "adaptive": 0.058561216662517415
+      }
+    }
+  },
+  {
+    "dataset": "retail",
+    "task": "purchase_30d",
+    "period": "later_overlapping_november",
+    "evidence": "later_overlapping_exposed_outcomes",
+    "samples": 4046,
+    "selected": "histogram",
+    "metrics": {
+      "roc_auc": {
+        "legacy": 0.7118895900446895,
+        "adaptive": 0.7132504898290862
+      },
+      "brier": {
+        "legacy": 0.19894336499684193,
+        "adaptive": 0.1983697560776441
+      },
+      "ece_5_bins": {
+        "legacy": 0.0903030053757847,
+        "adaptive": 0.09066903660587892
+      }
+    }
+  },
+  {
+    "dataset": "retail",
+    "task": "gross_spend_30d",
+    "period": "summer",
+    "evidence": "previously_exposed_retrospective",
+    "samples": 6456,
+    "selected": "robust",
+    "metrics": {
+      "mae": {
+        "legacy": 227.04797392191588,
+        "adaptive": 206.23760838880236
+      },
+      "rmse": {
+        "legacy": 1233.5946420881614,
+        "adaptive": 1510.7939548584113
+      }
+    }
+  },
+  {
+    "dataset": "retail",
+    "task": "gross_spend_30d",
+    "period": "autumn",
+    "evidence": "previously_exposed_retrospective",
+    "samples": 7569,
+    "selected": "robust",
+    "metrics": {
+      "mae": {
+        "legacy": 245.9238646472469,
+        "adaptive": 242.35745695599383
+      },
+      "rmse": {
+        "legacy": 969.3437974409477,
+        "adaptive": 1257.5498196716908
+      }
+    }
+  },
+  {
+    "dataset": "retail",
+    "task": "gross_spend_30d",
+    "period": "later_overlapping_november",
+    "evidence": "later_overlapping_exposed_outcomes",
+    "samples": 4046,
+    "selected": "robust",
+    "metrics": {
+      "mae": {
+        "legacy": 250.1930913096326,
+        "adaptive": 260.2486036876262
+      },
+      "rmse": {
+        "legacy": 891.4375044495508,
+        "adaptive": 1191.5146900936247
+      }
+    }
+  },
+  {
+    "dataset": "beijing",
+    "task": "pm25_over_75_next_day",
+    "period": "2015",
+    "evidence": "previously_exposed_retrospective",
+    "samples": 216,
+    "selected": "baseline",
+    "metrics": {
+      "roc_auc": {
+        "legacy": 0.2516544117647059,
+        "adaptive": 0.5
+      },
+      "brier": {
+        "legacy": 0.4372905883874044,
+        "adaptive": 0.2382422553168403
+      },
+      "ece_5_bins": {
+        "legacy": 0.409367135338639,
+        "adaptive": 0.07103587962962965
+      }
+    }
+  },
+  {
+    "dataset": "beijing",
+    "task": "pm25_over_75_next_day",
+    "period": "2016",
+    "evidence": "previously_exposed_retrospective",
+    "samples": 168,
+    "selected": "baseline",
+    "metrics": {
+      "roc_auc": {
+        "legacy": 0.5167289021657954,
+        "adaptive": 0.5
+      },
+      "brier": {
+        "legacy": 0.28697244119483845,
+        "adaptive": 0.23721159877265252
+      },
+      "ece_5_bins": {
+        "legacy": 0.17864234597070847,
+        "adaptive": 0.0014600179694518878
+      }
+    }
+  },
+  {
+    "dataset": "beijing",
+    "task": "pm25_over_75_next_day",
+    "period": "later_2016_2017",
+    "evidence": "later_fixed_period",
+    "samples": 216,
+    "selected": "baseline",
+    "metrics": {
+      "roc_auc": {
+        "legacy": 0.5525412087912088,
+        "adaptive": 0.5
+      },
+      "brier": {
+        "legacy": 0.3105142594971731,
+        "adaptive": 0.25850127643980203
+      },
+      "ece_5_bins": {
+        "legacy": 0.2817444747955842,
+        "adaptive": 0.09404367053620771
+      }
+    }
+  },
+  {
+    "dataset": "beijing",
+    "task": "pm25_next_day",
+    "period": "2015",
+    "evidence": "previously_exposed_retrospective",
+    "samples": 216,
+    "selected": "histogram",
+    "metrics": {
+      "mae": {
+        "legacy": 61.19213789879801,
+        "adaptive": 30.93219460893475
+      },
+      "rmse": {
+        "legacy": 70.58302731054586,
+        "adaptive": 42.14652450240829
+      }
+    }
+  },
+  {
+    "dataset": "beijing",
+    "task": "pm25_next_day",
+    "period": "2016",
+    "evidence": "previously_exposed_retrospective",
+    "samples": 168,
+    "selected": "histogram",
+    "metrics": {
+      "mae": {
+        "legacy": 39.738592787590335,
+        "adaptive": 33.88977972432575
+      },
+      "rmse": {
+        "legacy": 50.46193509831461,
+        "adaptive": 46.27775249589754
+      }
+    }
+  },
+  {
+    "dataset": "beijing",
+    "task": "pm25_next_day",
+    "period": "later_2016_2017",
+    "evidence": "later_fixed_period",
+    "samples": 216,
+    "selected": "median",
+    "metrics": {
+      "mae": {
+        "legacy": 48.41919314737843,
+        "adaptive": 50.031891745585966
+      },
+      "rmse": {
+        "legacy": 64.11687738725486,
+        "adaptive": 66.5390758373284
+      }
+    }
+  }
+]

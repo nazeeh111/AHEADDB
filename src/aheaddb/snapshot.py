@@ -44,6 +44,10 @@ class Snapshot:
         # Compute once at ingestion. Refresh compares immutable row indexes rather
         # than repeatedly serializing and hashing the same source bytes.
         self._hashes = {k: self._compute_row_hashes(k) for k in self._tables}
+        self._event_positions = {e.table: self._tables[e.table].groupby(e.entity_key, sort=False).indices
+                                 for e in schema.events}
+        self._row_owners = {e.table: self._tables[e.table].set_index(e.key)[e.entity_key]
+                            for e in schema.events}
         self.version = digest({k: v.to_dict() for k, v in self._hashes.items()})
 
     @staticmethod
@@ -64,6 +68,16 @@ class Snapshot:
 
     def row_hashes(self, name: str) -> pd.Series:
         return self._hashes[name].copy()
+
+    def event_rows(self, name: str, ids: list[str] | None = None) -> pd.DataFrame:
+        """Internal immutable index selection; callers receive an independent frame."""
+        frame = self._tables[name]
+        if ids is None or len(ids) > len(self._event_positions[name]) // 4:
+            # Full/large queries group all owners then reindex the requested entities.
+            return frame.copy(deep=True)
+        positions = [self._event_positions[name][i] for i in set(ids) if i in self._event_positions[name]]
+        index = np.concatenate(positions) if positions else np.array([], dtype=np.intp)
+        return frame.iloc[index].copy(deep=True)
 
     def _compute_row_hashes(self, name: str) -> pd.Series:
         key = (self.schema.entity_key if name == self.schema.entity_table else

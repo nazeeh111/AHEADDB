@@ -26,7 +26,7 @@ class ProjectConfig(StrictModel):
     backtest_cutoffs: tuple[str, ...]
     data_as_of: str
     synthetic_demo: bool = False
-    backend_by_task: dict[str, Literal["baseline", "histogram"]] = Field(default_factory=dict)
+    backend_by_task: dict[str, Literal["baseline", "histogram", "robust", "linear", "median", "adaptive"]] = Field(default_factory=dict)
 
 
 class Project:
@@ -48,7 +48,7 @@ class Project:
         with self.lock:
             for task in self.tasks.values():
                 model = fit(self.engine.snapshot, task, list(self.config.training_cutoffs), self.config.training_as_of,
-                            self.config.backend_by_task.get(task.name, "histogram"))
+                            self.config.backend_by_task.get(task.name, "adaptive"))
                 self.engine.materialize(task, model, self.config.prediction_cutoff)
 
     def plan(self, task: str) -> dict:
