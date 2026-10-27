@@ -487,3 +487,46 @@ def test_cached_row_hash_indexes_are_defensive_and_not_rehashed_on_refresh(monke
     assert receipt["diff_scan_performed"] is True
     assert receipt["changed_source_rows"] == 1
     assert_reference(maintained, changed)
+
+
+@pytest.mark.parametrize('dtype,value', [(np.int64, 6_000_000_000_000_000_000),
+                                        (np.uint64, 10_000_000_000_000_000_000)])
+@pytest.mark.parametrize('operation', ['features', 'labels', 'binary_labels'])
+def test_large_integer_sums_do_not_wrap_before_float_conversion(dtype, value, operation):
+    data = tables(1)
+    data['events']['amount'] = np.full(len(data['events']), value, dtype=dtype)
+    snapshot = Snapshot(data, SCHEMA)
+    compiler = Compiler(snapshot)
+    if operation == 'features':
+        result = compiler.features(task(), CUTOFF).loc['0', 'events__amount__sum']
+        expected = float(3 * value)  # Jan6, Jan10, Jan14 inside the history window.
+    elif operation == 'labels':
+        result = compiler.labels(task(), CUTOFF, '2026-01-20').loc['0']
+        expected = float(2 * value)  # Jan16 and Jan17 inside the label window.
+    else:
+        spec = task(kind='binary').model_copy(update={
+            'outcome': Outcome(table='events', aggregation='sum', column='amount', threshold=1.5 * value)})
+        result = compiler.labels(spec, CUTOFF, '2026-01-20').loc['0']
+        expected = 1.0
+    assert result == pytest.approx(expected)
+    assert snapshot.table('events')['amount'].dtype == np.dtype(dtype)
+
+
+@pytest.mark.parametrize("dtype", [np.int64, "Int64"])
+@pytest.mark.parametrize("operation", ["features", "labels", "binary_labels"])
+def test_integer_sums_preserve_small_residual_after_large_cancellation(dtype, operation):
+    data = tables(1)
+    days = [6, 10, 14, 16, 16, 17]
+    data["events"] = pd.DataFrame({
+        "id": [str(i) for i in range(6)], "entity_id": ["0"] * 6,
+        "occurred_at": [f"2026-01-{day:02d}" for day in days],
+        "available_at": [f"2026-01-{day:02d}" for day in days],
+        "amount": pd.Series([2**60, 1, -(2**60)] * 2, dtype=dtype),
+    })
+    compiler = Compiler(Snapshot(data, SCHEMA))
+    if operation == "features":
+        actual = compiler.features(task(), CUTOFF).loc["0", "events__amount__sum"]
+    else:
+        spec = task(kind="binary") if operation == "binary_labels" else task()
+        actual = compiler.labels(spec, CUTOFF, "2026-01-20").loc["0"]
+    assert actual == 1.0

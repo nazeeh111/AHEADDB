@@ -7,8 +7,16 @@ from .snapshot import Snapshot, quote
 from .spec import Task, timestamp
 
 
+def _grouped_sum(frame: pd.DataFrame, entity_key: str, column: str) -> pd.Series:
+    values = frame[column]
+    if pd.api.types.is_integer_dtype(values.dtype):
+        # Python integers avoid fixed-width overflow and preserve cancellation.
+        values = values.astype(object)
+    return values.groupby(frame[entity_key]).sum()
+
+
 class Compiler:
-    PREPROCESSING = "aggregates-v1:count,sum,mean,missing,recency:utc:left-open"
+    PREPROCESSING = "aggregates-v2:count,sum,mean,missing,recency:utc:left-open:exact-integer-sum"
 
     def __init__(self, snapshot: Snapshot):
         self.snapshot = snapshot
@@ -56,8 +64,8 @@ class Compiler:
             last = groups[e.occurred_at].max().reindex(ids)
             result[f"{e.table}__recency"] = (t - last).dt.total_seconds().div(86400).fillna(task.history_days + 1)
             for c in e.values:
-                for agg in ["sum", "mean"]:
-                    result[f"{e.table}__{c}__{agg}"] = getattr(groups[c], agg)().reindex(ids).fillna(0)
+                result[f"{e.table}__{c}__sum"] = _grouped_sum(frame, e.entity_key, c).astype(float).reindex(ids).fillna(0)
+                result[f"{e.table}__{c}__mean"] = groups[c].mean().reindex(ids).fillna(0)
                 result[f"{e.table}__{c}__missing"] = groups[c].agg(lambda x: x.isna().sum()).reindex(ids).fillna(0)
         return result.astype(float)
 
@@ -79,7 +87,7 @@ class Compiler:
             y = group.size()
         else:
             assert task.outcome.column is not None
-            y = group[task.outcome.column].sum()
+            y = _grouped_sum(df, e.entity_key, task.outcome.column)
         y = y.reindex(self.entities(t), fill_value=0).astype(float)
         if task.kind == "binary":
             y = (y > task.outcome.threshold).astype(float)
