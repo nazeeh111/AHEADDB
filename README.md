@@ -100,13 +100,13 @@ Relational prediction, predictive SQL and incremental inference are established 
 | System | Relevant capability | Relationship to AHEADDB 0.1 |
 |---|---|---|
 | [Kumo Engine](https://github.com/NVIDIA/kumo-engine) | Current local engine, predictive queries and relational model runtime | Local prediction alone is no distinction; AHEADDB focuses on inspectable CPU tasks and bounded maintained views |
-| [RDBLearn](https://github.com/HKUSHXLab/rdblearn) / [FastDFS](https://github.com/HKUSHXLab/fastdfs) | Released relational feature pipeline plus estimators | Mature optional comparison, credited and actually executed |
+| [RDBLearn](https://github.com/HKUSHXLab/rdblearn) / [FastDFS](https://github.com/HKUSHXLab/fastdfs) | Released relational feature pipeline plus estimators | Optional comparison executed in the retained evaluation |
 | [RT-J](https://github.com/stanford-star/relational-transformer) | Released relational transformer/checkpoint workflow | GPU requirements exceed this Mac's route; not executed or advertised as supported |
 | [RelBench](https://github.com/stanford-star/relbench) / [RelArena](https://github.com/PriorLabs/relarena) | Relational tasks, benchmarking and prediction interfaces | Important evaluation context; our two normalized datasets are smaller and less relationally demanding |
 | [MindsDB](https://github.com/mindsdb/mindsdb) | Predictive SQL and AI/database integrations | Broader platform; this is a bounded local library with no agent framework |
 | InkStream / RIPPLE++ | Incremental graph prediction prior art | Do not establish novelty or correctness for our different dependency contract |
 
-[Source versions, current licenses, hardware and newer alternatives](docs/research.md) · [third-party research notices](docs/THIRD_PARTY_RESEARCH.md). The supplied arXiv 2601.12347 identifies RIPPLE++, not InkStream; both are credited separately.
+[Source versions, current licenses, hardware and newer alternatives](docs/research.md) · [third-party research notices](docs/THIRD_PARTY_RESEARCH.md).
 
 ## Reproduce and contribute
 
