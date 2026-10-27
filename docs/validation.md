@@ -4,7 +4,7 @@ Version 0.1.0 has separate evidence for core correctness, numerical quality, UI,
 
 ## Local checks
 
-- Final complete core/integration run: 48 passed, 7 skipped, 3 upstream deprecation warnings. Six skips are the separately executed FastDFS tests; one is the explicitly configured PostgreSQL service test. An additional actual Parquet round-trip and row-limit test passed after the complete run was collected.
+- Final complete core/integration run: 48 passed, 7 skipped, 3 upstream deprecation warnings. Six skips are the separately executed FastDFS tests; one is the explicitly configured PostgreSQL service test. Additional actual Parquet round-trip/row-limit and documented positional-demo/preservation controls passed after the complete run was collected.
 - Optional FastDFS: 6 tests passed in its isolated pinned environment. Public-data held-out entity/cutoff keys and labels align exactly with the core comparisons.
 - Independent core review: 44 test cases, including 30 generated mixed-update streams, temporal leakage, label maturity/embargo, cached-hash defense, transactional failure, model/preprocessing changes and all-mode agreement. See [review evidence and limits](core-review.md).
 - Ruff and mypy passed for the final source. JSON/CSV checks independently recompute reported metrics and compare held-out label alignment; synthetic refresh has 90 comparisons with exact reference agreement.
@@ -23,7 +23,7 @@ The capture used the same numerical computation as this release. Later source-in
 
 ## PostgreSQL and public release gates
 
-No user's database is contacted. CI provisions a fresh PostgreSQL 16 service, installs the optional adapter, checks bounded snapshot reads/transaction recovery, and deliberately attempts a persistent write inside its read-only transaction. The public release must wait for this gate and all other CI steps to pass. The local machine has no PostgreSQL server, so a local skip alone does not verify this connector.
+No user's database is contacted. The first public CI run passed 50 tests, including the real PostgreSQL checks, with six optional FastDFS skips. Its later CLI quickstart step exposed a positional-destination bug, which was fixed and regression-tested before release. CI provisions a fresh PostgreSQL 16 service, installs the optional adapter, checks bounded snapshot reads/transaction recovery, and deliberately attempts a persistent write inside its read-only transaction. The public release must wait for this gate and all other CI steps to pass. The local machine has no PostgreSQL server, so a local skip alone does not verify this connector.
 
 After publication, repository visibility, exact remote commit, workflow conclusion, versioned release, wheel/source/demo/results assets and public documentation links are verified separately. A clean clone/install/example/API check is part of delivery. Current remote evidence belongs in release notes and the final delivery receipt; do not infer it from local tests.
 

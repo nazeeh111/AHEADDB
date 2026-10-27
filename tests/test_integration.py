@@ -114,3 +114,14 @@ def test_parquet_matches_readonly_duckdb_snapshot(project, tmp_path):
     assert restored.version == project.engine.snapshot.version
     with pytest.raises(ValueError, match="row limit"):
         Snapshot.parquet(tables, project.config.schema_, max_rows=1)
+
+
+def test_documented_demo_destination_is_positional_and_preserved(tmp_path):
+    target = tmp_path / "documented-example"
+    runner = CliRunner()
+    result = runner.invoke(app, ["demo", str(target)])
+    assert result.exit_code == 0, result.output
+    original = (target / "shop.duckdb").read_bytes()
+    assert (target / "ahead.json").exists()
+    assert runner.invoke(app, ["demo", str(target)]).exit_code != 0
+    assert (target / "shop.duckdb").read_bytes() == original

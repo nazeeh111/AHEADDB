@@ -1,23 +1,6 @@
 {
-  "markdown_files": 10,
-  "local_errors": [
-    {
-      "file": "README.md",
-      "target": "assets/refresh.svg"
-    },
-    {
-      "file": "README.md",
-      "target": "docs/benchmarks.md"
-    },
-    {
-      "file": "README.md",
-      "target": "artifacts/results"
-    },
-    {
-      "file": "README.md",
-      "target": "docs/validation.md"
-    }
-  ],
+  "markdown_files": 12,
+  "local_errors": [],
   "remote": [
     {
       "url": "https://archive.ics.uci.edu/dataset/352/online+retail",
@@ -186,7 +169,8 @@
     },
     {
       "url": "https://github.com/nazeeh111/AHEADDB/actions/workflows/ci.yml/badge.svg",
-      "error": "HTTP Error 404: Not Found"
+      "status": 200,
+      "resolved": "https://github.com/nazeeh111/AHEADDB/actions/workflows/ci.yml/badge.svg"
     },
     {
       "url": "https://github.com/numpy/numpy/blob/main/LICENSE.txt",

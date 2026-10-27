@@ -14,7 +14,7 @@ app = typer.Typer(no_args_is_help=True, help="Local relational prediction and ma
 
 
 @app.command()
-def demo(destination: Path = Path("run/signaldesk")):
+def demo(destination: Path = typer.Argument(Path("run/signaldesk"))):
     """Create an original synthetic example in a fresh directory."""
     typer.echo(str(create_demo(destination)))
 
