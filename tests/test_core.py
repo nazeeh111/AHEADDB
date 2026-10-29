@@ -410,7 +410,6 @@ def test_project_backend_selection_and_unknown_task_rejection(tmp_path):
 
     import duckdb
     from sklearn.dummy import DummyRegressor
-    from sklearn.ensemble import HistGradientBoostingRegressor
 
     from aheaddb.project import Project
 
@@ -431,9 +430,9 @@ def test_project_backend_selection_and_unknown_task_rejection(tmp_path):
     project = Project(config_path)
     project.initialize()
     assert isinstance(project.engine.views["historical"].model.estimator, DummyRegressor)
-    assert isinstance(project.engine.views["learned"].model.estimator, HistGradientBoostingRegressor)
+    assert project.engine.views["learned"].model.selection["selected"] in {"baseline", "median", "histogram", "robust"}
     assert project.engine.views["historical"].model.backend == "baseline"
-    assert project.engine.views["learned"].model.backend == "histogram"
+    assert project.engine.views["learned"].model.backend == "adaptive"
     config["backend_by_task"] = {"historial": "baseline"}
     config_path.write_text(json.dumps(config))
     with pytest.raises(ValueError, match="unknown task name"):

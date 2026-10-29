@@ -1,0 +1,10 @@
+{
+  "version": "0.2.0",
+  "installed_wheel": true,
+  "predictions": 160,
+  "http_status": 200,
+  "backtest": true,
+  "selection": "persistence",
+  "refresh_rows": 2,
+  "reused_rows": 318
+}

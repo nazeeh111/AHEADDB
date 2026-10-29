@@ -1,0 +1,92 @@
+{
+  "errors": [],
+  "responses": [
+    {
+      "url": "http://127.0.0.1:8792/api/state",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:8792/api/predictions/return_14d",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:8792/api/predictions/revenue_14d",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:8792/api/provenance/return_14d/C0065",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:8792/api/refresh",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:8792/api/predictions/revenue_14d",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:8792/api/predictions/return_14d",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:8792/api/provenance/return_14d/C0065",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:8792/api/state",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:8792/api/predictions/return_14d",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:8792/api/predictions/revenue_14d",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:8792/api/provenance/return_14d/C0065",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:8792/api/plan/return_14d",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:8792/api/provenance/return_14d/C0116",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:8792/api/demo/change",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:8792/api/predictions/revenue_14d",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:8792/api/predictions/return_14d",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:8792/api/provenance/return_14d/C0116",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:8792/api/backtest/return_14d",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:8792/api/provenance/revenue_14d/C0116",
+      "status": 200
+    }
+  ],
+  "desktopOverflow": false,
+  "mobileOverflow": false,
+  "receipt": "Refresh completed\n1\nentities affected\n2\npredictions run\n318\npredictions reused\n\nReturn: 85.3% → 86.7%\nRevenue: 61 → 141\n\n24.2 ms refresh · 1 entity feature rows rebuilt. Timing includes source-diff discovery; not a benchmark.",
+  "recordedPlayback": true,
+  "keyboardFocus": "task",
+  "axeDesktop": [],
+  "axeMobile": []
+}

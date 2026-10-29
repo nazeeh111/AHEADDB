@@ -1,5 +1,6 @@
 # Maintained-view refresh measurements
 
+Historical v0.1 benchmark; [paired v0.2 results](v020-results.md).
 These are synthetic update stress tests, separate from the UCI prediction-quality experiments. The saved seed 19 stream has400entities, two fitted tasks and 10 scenarios. Each mode runs the same sequential immutable snapshots three times in a seeded shuffled mode order. Every output is compared against independent full feature construction plus model prediction. All 90mode/scenario/repeat comparisons agree exactly: maximum absolute prediction difference 0.
 
 ## Results

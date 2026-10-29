@@ -1,5 +1,6 @@
 # Public data experiments
 
+Historical v0.1 evaluation; [v0.2 comparisons and fixed confirmation](v020-results.md).
 The release reports executed predictions on two public UCI datasets. Downloaded source archives and generated DuckDB snapshots stay in ignored `.data/`. Saved aggregate metrics and prediction records are in `artifacts/results/public-*.json` and `.csv`. These experiments are separate from the synthetic update-stream stress tests.
 
 ## Sources and attribution
