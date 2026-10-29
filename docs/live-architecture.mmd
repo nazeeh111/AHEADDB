@@ -1,0 +1,37 @@
+flowchart LR
+  APP[External shop application] --> SDK[Typed Python HTTP SDK]
+  SDK --> API[Local v1 API]
+  API --> EDIT[Owned edit transaction]
+  subgraph PG[PostgreSQL: dedicated owned schema]
+    REV[Commit-ordered revision lock]
+    ROWS[Versioned source rows]
+    OUTBOX[Transactional outbox receipts]
+    JOBS[Durable per-view jobs]
+    SNAP[Immutable identified snapshots]
+    MODELS[Training recipes and snapshot identity]
+    GEN[Complete generation and pointers]
+    PROGRESS[Minimum published coverage]
+  end
+  EDIT --> REV
+  REV --> ROWS
+  REV --> OUTBOX
+  REV --> JOBS
+  JOBS --> PLAN[Budget / FIFO / full / debounce planner]
+  PLAN --> CLAIM[Claim: lease and increasing fence]
+  CLAIM --> SNAP
+  SNAP --> FEATURES[Shared compatible feature context]
+  MODELS --> FEATURES
+  FEATURES --> RET[Return probability model]
+  FEATURES --> REVENUE[Revenue estimate model]
+  RET --> PUBLISH[Conditional publication transaction]
+  REVENUE --> PUBLISH
+  PUBLISH --> GEN
+  PUBLISH --> PROGRESS
+  PUBLISH --> JOBS
+  API --> READ[Verify revision and definition under writer lock]
+  GEN --> READ
+  REV --> READ
+  READ --> FRESH[Fresh result or explicit stale/unknown opt-in]
+  FRESH --> SDK
+  LEDGER[External source-bound purge ledger] --> RESTORE[Offline restore with purge replay]
+  RESTORE --> ROWS

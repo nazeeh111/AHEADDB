@@ -1,4 +1,49 @@
-# AHEADDB
+# AHEADDB Live
+
+**Predicted features with an explicit source boundary.**
+
+AHEADDB Live wraps the existing Python statistical engine in an installable
+PostgreSQL prediction layer. Owned source edits, outbox receipts and refresh jobs
+commit together. Workers compute from identified snapshots and publish complete
+generations with lease fencing. A failed worker can recover its work; a response
+never becomes current merely because its publication timestamp is new.
+
+The typed Python SDK and versioned HTTP contract identify task, model,
+preprocessing, information cutoff, source coverage and generation. Current reads
+reject uncovered/stale/unknown results unless the caller explicitly opts in.
+Retained generations and stricter freshness bounds use the same checks.
+
+[Run the local application](docs/live-quickstart.md) ·
+[HTTP contract](contracts/v1/openapi.json) ·
+[Consistency and limits](docs/live-design.md) ·
+[Editable architecture](docs/live-architecture.mmd)
+
+SignalDesk Live serves customer-return and revenue-planning features over shared
+orders through the public HTTP SDK. Its browser hides expired receipts while
+source entry remains usable. The standalone developer example declares its own
+accounts/activity schema, evaluates temporal tasks, publishes views, edits source
+rows and consumes the acknowledged updated revision.
+
+```sh
+uv sync --frozen --extra live
+# Set AHEAD_LIVE_DSN to a dedicated owned PostgreSQL source first.
+uv run --no-sync ahead live demo
+uv run --no-sync ahead live worker
+# Separate terminals: ahead live serve, then python examples/live_desk/app.py
+```
+
+This release adds durability and explicit freshness, not a new statistical engine
+or a claim of better predictive quality. The refresh planner is an interpretable
+experiment against full rebuild, durable FIFO and debouncing. Measurements and
+release verification are being completed; efficiency superiority is not assumed.
+Production CDC/schema changes, authentication and public hosting are outside scope.
+
+## Existing engine, compatibility application and quality evidence
+
+The following material describes the preserved v0.2 numerical engine and its
+in-memory compatibility application. Its measurements are historical; the Live
+service and persistence contract are described above.
+
 
 **Give your app a prediction engine, not another chatbot.**
 
