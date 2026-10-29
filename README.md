@@ -122,4 +122,4 @@ uv run --no-sync python scripts/evaluate_public.py --dataset all
 
 Expensive public-data/FastDFS evaluations stay outside routine CI. CI separately exercises an actual disposable PostgreSQL 16 service. Optional dependency tests skip in the small core environment and are run explicitly for the release. See [verification evidence](docs/validation.md), [optional backend environment](docs/research.md), [security scope](SECURITY.md) and [license attribution](docs/licenses.md).
 
-Apache 2.0 source. UCI-derived evaluation records remain CC BY 4.0 with attribution. No upstream code/model weights are vendored. [LICENSE](LICENSE) · [NOTICE](NOTICE) · [data attribution](artifacts/results/NOTICE).
+Apache 2.0 source. UCI-derived evaluation records remain CC BY 4.0 with attribution. No upstream code/model weights are vendored. [LICENSE](LICENSE) · [data attribution](docs/data.md).

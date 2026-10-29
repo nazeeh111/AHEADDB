@@ -1,6 +1,6 @@
 # Licenses and attribution
 
-AHEADDB source is Apache 2.0, with the required license and NOTICE in the repository. No upstream ML checkpoint or code is copied into the source tree. Installing dependencies obtains separate distributions under their own terms. `uv.lock` records pinned distribution versions/hashes; it is not a replacement for upstream license files.
+AHEADDB source is Apache 2.0, with the full license in the repository. No upstream ML checkpoint or code is copied into the source tree. Installing dependencies obtains separate distributions under their own terms. `uv.lock` records pinned distribution versions/hashes; it is not a replacement for upstream license files.
 
 | Component | Upstream license | Role |
 |---|---|---|
@@ -20,4 +20,4 @@ AHEADDB source is Apache 2.0, with the required license and NOTICE in the reposi
 
 See [research attribution](THIRD_PARTY_RESEARCH.md) for inspected model projects and their separate licenses. The RT-J, RDBLearn, STEER, InkStream and RIPPLE papers/repositories are research references, not bundled runtimes. No pretrained model is included and no zero-shot transfer claim is made. Matplotlib charts are generated from saved results; Playwright/FFmpeg are capture tools, not product runtime dependencies.
 
-Public datasets and derived evaluation records retain CC BY 4.0; full attribution, changes, provenance hashes and assumptions are in [data.md](data.md). Generated synthetic data and application demo are AHEADDB project artifacts. The Python wheel/sdist includes this project's LICENSE/NOTICE; third-party wheels include their own license files. If redistributing a complete installed environment, retain all dependency licenses and notices as well.
+Public datasets and derived evaluation records retain CC BY 4.0; full attribution, changes, provenance hashes and assumptions are in [data.md](data.md). Generated synthetic data and application demo are AHEADDB project artifacts. The Python wheel/sdist includes this project's LICENSE; third-party wheels include their own license files. If redistributing a complete installed environment, retain all dependency licenses and notices as well.
