@@ -1,0 +1,163 @@
+{
+  "candidate": "0.3.0",
+  "status": "local correctness, complete frozen comparison and public branch installation/CI passed",
+  "core_sha256": {
+    "src/aheaddb/live/__init__.py": "b233f6af8cf12cfe8e3140e49558abeffdf29bdf07c8e835fa8d61fbc5adbe3a",
+    "src/aheaddb/live/api.py": "3957aaa62d00551b14e0867bd93b32b9140000ee4b70ce85567e83167e6ad8ff",
+    "src/aheaddb/live/client.py": "422d2a7d51053cc92bf9b7aa24fe8d04b607af4d7b8fc39f48c11f0609b21c91",
+    "src/aheaddb/live/contracts.py": "f7b4cf9d0ec989c6e6c69eb749399dcebfd0107d84281176939717cfea8b038f",
+    "src/aheaddb/live/maintenance.py": "275946c9c1c9938d130c24902eb51037896f564add79d3aaeaecd6b3304566cd",
+    "src/aheaddb/live/model.py": "f1aa6cba214a7bf411bc686797827cf58c3e5666905c10718f28cf5b266bc93d",
+    "src/aheaddb/live/planner.py": "243369b46e7b6238996692c90fb9ec5dcd3524d31c82acc4f30eeff4bd7462c1",
+    "src/aheaddb/live/store.py": "f9583a4e51bf7cb72812df8d07de7345e6250169332cedab9907f83aaa53c048",
+    "src/aheaddb/live/worker.py": "5bd65a3a67f99f3387069bd48894dd18860a5ae0fac794326451462c7645d1c5"
+  },
+  "full_suite": {
+    "passed": 144,
+    "failed": 0,
+    "skipped": 6,
+    "skip_reason": "optional FastDFS extra",
+    "seconds": 363.5,
+    "diagnostic_capture": true
+  },
+  "preserved_prior_failure": {
+    "passed": 143,
+    "failed": 1,
+    "http_status": 503,
+    "code": "source_coverage_unknown",
+    "test": "failed_jobs_count_toward_backlog_and_replacement_recovers",
+    "cause": "unreproduced",
+    "isolated_rerun": "passed",
+    "complete_diagnostic_rerun": "144 passed"
+  },
+  "targeted_identifier_and_concurrency_checks": {
+    "passed": 16,
+    "seconds": 68.58
+  },
+  "ruff": "passed",
+  "mypy_source_files": 22,
+  "native_faults": {
+    "actual_enospc": {
+      "actual_enospc": true,
+      "volume_capacity_bytes": 67067904,
+      "filler_bytes": 65433600,
+      "rollback_revision": 1,
+      "continued_revision": 2,
+      "continued_features": [
+        "return_14d",
+        "revenue_14d"
+      ]
+    },
+    "unclean_postgres": {
+      "backup_restore_verified_before_crash": true,
+      "backup_sha256": "8893f9b3cc99bf881010f09002b51d7915293760897449b41fcd6739e0d59835",
+      "postgres_unclean_stop": "immediate",
+      "http_outage_status": 503,
+      "acknowledged_revision_survived": 2,
+      "continued_revision": 3,
+      "independent_public_generation_agreement": true,
+      "benchmark_instrumentation": [
+        "track_commit_timestamp",
+        "track_io_timing",
+        "track_wal_io_timing"
+      ]
+    }
+  },
+  "independent_install": {
+    "editable": false,
+    "python_isolated": true,
+    "client_database_dsn": false,
+    "source_imports": false,
+    "developer_result": {
+      "synthetic": true,
+      "initial_revision": 1,
+      "changed_revision": 2,
+      "evaluations": [
+        {
+          "task": "renewal_14d",
+          "revision": 1,
+          "folds": 6,
+          "snapshot_id": "3f2332cd9c21452f427a1c29f6898af8f071681cdde4d5a0ded57d8bd2d097ff"
+        },
+        {
+          "task": "expected_value_14d",
+          "revision": 1,
+          "folds": 6,
+          "snapshot_id": "3f2332cd9c21452f427a1c29f6898af8f071681cdde4d5a0ded57d8bd2d097ff"
+        }
+      ],
+      "features": [
+        {
+          "task": "renewal_14d",
+          "before": 0.5784997878925253,
+          "after": 0.6327944360372108,
+          "source_id": "6367f1fd-57e5-46ba-8239-16cf920eec3e",
+          "covered_revision": 2,
+          "generation": "20402f39-b3e5-4a51-b122-281670cb1c96",
+          "model_version": "611d5739fa4e520fed205443382afe1e91d22e7472e3069fdc6f582ad1410606",
+          "cutoff": "2024-07-15 00:00:00+00:00",
+          "state": "fresh"
+        },
+        {
+          "task": "expected_value_14d",
+          "before": 53.23499999999999,
+          "after": 840.0,
+          "source_id": "6367f1fd-57e5-46ba-8239-16cf920eec3e",
+          "covered_revision": 2,
+          "generation": "20402f39-b3e5-4a51-b122-281670cb1c96",
+          "model_version": "662814b6e6d4be133362c054c3a12739ded192adc1eaeb0f9837a39ac7978099",
+          "cutoff": "2024-07-15 00:00:00+00:00",
+          "state": "fresh"
+        }
+      ],
+      "installation": {
+        "editable": false,
+        "python_isolated": true,
+        "client_database_dsn": false
+      }
+    }
+  },
+  "installed_worker_loss": {
+    "boundary": "compute_after",
+    "signal": "SIGKILL",
+    "acknowledged_source_revision": 2,
+    "older_generation_revision": 1,
+    "default_uncovered_http": 503,
+    "recovered_http": 200,
+    "both_states": "fresh",
+    "selected_values": [
+      0.5765352159080849,
+      315.0
+    ]
+  },
+  "ui": {
+    "desktop_inspected": true,
+    "mobile_viewport_width": 390,
+    "mobile_content_width": 390,
+    "all_form_fields_labeled": true,
+    "demo_seconds": 18.791667,
+    "actual_capture_frames": 21,
+    "demo_fully_decoded": true,
+    "idle_gaps_shortened_to_max_seconds": 3
+  },
+  "comparison": {
+    "complete": true,
+    "verified_cases": 90,
+    "expected_cases": 90,
+    "view_generations_checked": 25576,
+    "unique_publication_generations_checked": 12792,
+    "independent_prediction_comparisons": 1636864,
+    "protocol_sha256": "a0be8c5c6e531e97585a51357330d04161a1044f523fed1043beee566fff7de0"
+  },
+  "public_ci": {
+    "tested_commit": "61794316509b9b19f22f787baa7533cd0d8a7c61",
+    "push_run": 41321969625,
+    "pull_request_run": 41322060157,
+    "conclusion": "success",
+    "pytest_passed": 144,
+    "pytest_skipped": 6
+  },
+  "public_clone_execution": "passed: fresh HTTPS clone, empty dependency cache, non-editable install, isolated changed-input SDK flow",
+  "release_downloads": "recorded separately in versioned GitHub Release verification",
+  "confirmation_protocol_sha256": "a0be8c5c6e531e97585a51357330d04161a1044f523fed1043beee566fff7de0"
+}

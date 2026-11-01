@@ -1,16 +1,20 @@
 """Focused commands, deterministic project files, no background service required."""
 from __future__ import annotations
 
+import sys
 from pathlib import Path
 
 import typer
 
 from .compiler import Compiler
 from .demo import create_demo
+from .live_cli import app as live_app
 from .project import Project, json_text
 from .snapshot import Snapshot
 
 app = typer.Typer(no_args_is_help=True, help="Local relational prediction and maintained views.")
+
+app.add_typer(live_app, name="live")
 
 
 @app.command()
@@ -80,9 +84,14 @@ def provenance(entity: str, task: str = "return_14d", project: Path = Path("run/
 def main():
     try:
         app()
-    except (ValueError, KeyError, OSError) as exc:
-        typer.echo(f"AHEADDB: {exc}", err=True)
-        raise SystemExit(1) from exc
+    except Exception as exc:
+        if len(sys.argv) > 1 and sys.argv[1] == "live":
+            typer.echo(f"AHEADDB Live: {type(exc).__name__}; operation was not confirmed. Check source/worker status.", err=True)
+            raise SystemExit(1) from None
+        if isinstance(exc, (ValueError, KeyError, OSError)):
+            typer.echo(f"AHEADDB: {exc}", err=True)
+            raise SystemExit(1) from exc
+        raise
 
 
 if __name__ == "__main__":

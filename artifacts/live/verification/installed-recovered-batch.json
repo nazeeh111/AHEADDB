@@ -1,0 +1,13 @@
+{
+  "generation": "5374b921-4a12-43e6-87e4-cb77160a02dd",
+  "snapshot_id": "e6f42f2dea692dc0b3b7471a3840d39ed589b3704ac1b2854a92890519a036a6",
+  "revision": 2,
+  "views": [
+    "return_14d",
+    "revenue_14d"
+  ],
+  "seconds": 0.9697030830429867,
+  "prediction_rows": 80,
+  "feature_rows": 40,
+  "cache_restored": false
+}

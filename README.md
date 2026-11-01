@@ -1,4 +1,64 @@
-# AHEADDB
+# AHEADDB Live
+
+**Predicted features with an explicit source boundary.**
+
+AHEADDB Live wraps the existing Python statistical engine in an installable
+PostgreSQL prediction layer. Owned source edits, outbox receipts and refresh jobs
+commit together. Workers compute from identified snapshots and publish complete
+generations with lease fencing. A failed worker can recover its work; a response
+never becomes current merely because its publication timestamp is new.
+
+The typed Python SDK and versioned HTTP contract identify task, model,
+preprocessing, information cutoff, source coverage and generation. Current reads
+reject uncovered/stale/unknown results unless the caller explicitly opts in.
+Retained generations and stricter freshness bounds use the same checks.
+
+[Run the local application](docs/live-quickstart.md) ·
+[HTTP contract](contracts/v1/openapi.json) ·
+[Consistency and limits](docs/live-design.md) ·
+[Verification and fault matrix](docs/live-verification.md) ·
+[Measured workload findings](docs/live-results.md) ·
+[Editable architecture](docs/live-architecture.mmd)
+
+[![SignalDesk Live after installed worker recovery](assets/live/signaldesk.png)](assets/live/demo.mp4)
+
+SignalDesk Live serves customer-return and revenue-planning features over shared
+orders through the public HTTP SDK. Its browser hides expired receipts while
+source entry remains usable. The standalone developer example declares its own
+accounts/activity schema, evaluates temporal tasks, publishes views, edits source
+rows and consumes the acknowledged updated revision. [19-second installed-app
+recovery recording](assets/live/demo.mp4) · [mobile preview](assets/live/signaldesk-mobile.png).
+The recording uses actual source edits and a worker killed after computation,
+before publication; idle waits are shortened to at most three seconds.
+
+```sh
+uv sync --frozen --extra live
+# Set AHEAD_LIVE_DSN to a dedicated owned PostgreSQL source first.
+uv run --no-sync ahead live demo
+uv run --no-sync ahead live worker
+# Separate terminals: ahead live serve, then python examples/live_desk/app.py
+```
+
+This release adds durability and explicit freshness, not a new statistical engine
+or a claim of better predictive quality. The refresh planner is an interpretable
+experiment against full rebuild, durable FIFO and debouncing. Local verification
+passed 144 tests with six optional FastDFS skips, plus independent installed SDK
+and actual worker/database/storage fault checks. All 90 frozen workload cases
+passed, including 1,636,864 independent prediction comparisons. Budget planning
+lowered median deadline misses versus FIFO across the six workloads, but CPU
+gains were mixed and tight deadlines were often missed. Shared-host variation
+prevents a general speed claim. [Complete results and limits](docs/live-results.md).
+Public CI and a fresh non-editable public installation also passed. The
+[versioned release](https://github.com/nazeeh111/AHEADDB/releases/tag/v0.3.0)
+records publication and download verification separately.
+Production CDC/schema changes, authentication and public hosting are outside scope.
+
+## Existing engine, compatibility application and quality evidence
+
+The following material describes the preserved v0.2 numerical engine and its
+in-memory compatibility application. Its measurements are historical; the Live
+service and persistence contract are described above.
+
 
 **Give your app a prediction engine, not another chatbot.**
 

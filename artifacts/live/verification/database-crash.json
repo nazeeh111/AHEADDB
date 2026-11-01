@@ -1,0 +1,14 @@
+{
+  "backup_restore_verified_before_crash": true,
+  "backup_sha256": "8893f9b3cc99bf881010f09002b51d7915293760897449b41fcd6739e0d59835",
+  "postgres_unclean_stop": "immediate",
+  "http_outage_status": 503,
+  "acknowledged_revision_survived": 2,
+  "continued_revision": 3,
+  "independent_public_generation_agreement": true,
+  "benchmark_instrumentation": [
+    "track_commit_timestamp",
+    "track_io_timing",
+    "track_wal_io_timing"
+  ]
+}

@@ -1,0 +1,87 @@
+{
+  "repository": "nazeeh111/AHEADDB",
+  "tested_commit": "61794316509b9b19f22f787baa7533cd0d8a7c61",
+  "run_url": "https://github.com/nazeeh111/AHEADDB/actions/runs/41321969625",
+  "jobs": [
+    {
+      "id": 124893912367,
+      "name": "test",
+      "conclusion": "success",
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Initialize containers",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run astral-sh/setup-uv@v6",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run uv python install 3.12",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run uv sync --frozen --extra dev --extra mcp --extra live",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run uv run --no-sync ruff check src scripts tests examples/live_desk examples/live_developer.py",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run uv run --no-sync mypy src/aheaddb",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run uv run --no-sync pytest -q",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run uv build",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run uv run --no-sync ahead demo run/ci",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run uv run --no-sync ahead predict --project run/ci/ahead.json > /tmp/predictions.json",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run uv run --no-sync ahead backtest --project run/ci/ahead.json > /tmp/backtest.json",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run astral-sh/setup-uv@v6",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Stop containers",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ]
+    }
+  ],
+  "pytest_passed": 144,
+  "pytest_skipped": 6,
+  "skip_reason": "optional FastDFS extra",
+  "pull_request_run_url": "https://github.com/nazeeh111/AHEADDB/actions/runs/41322060157",
+  "pull_request_conclusion": "success"
+}

@@ -13,3 +13,13 @@ run/
 .DS_Store
 TASK_STATE.md
 .hypothesis/
+.venv
+
+# Raw task-local history and development traces; public verification is curated separately.
+artifacts/live/evidence/
+artifacts/live/benchmark/
+artifacts/live/benchmark-v1/
+artifacts/live/benchmark-final/
+
+# Freeze/run traces stay local; complete exact cases are bundled in verification/.
+artifacts/live/confirmation*/
