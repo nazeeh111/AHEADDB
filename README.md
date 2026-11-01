@@ -48,7 +48,9 @@ passed, including 1,636,864 independent prediction comparisons. Budget planning
 lowered median deadline misses versus FIFO across the six workloads, but CPU
 gains were mixed and tight deadlines were often missed. Shared-host variation
 prevents a general speed claim. [Complete results and limits](docs/live-results.md).
-Public release verification remains pending at this local candidate checkpoint.
+Public CI and a fresh non-editable public installation also passed. The
+[versioned release](https://github.com/nazeeh111/AHEADDB/releases/tag/v0.3.0)
+records publication and download verification separately.
 Production CDC/schema changes, authentication and public hosting are outside scope.
 
 ## Existing engine, compatibility application and quality evidence

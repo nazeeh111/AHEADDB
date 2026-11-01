@@ -64,6 +64,8 @@ def check(dist: Path) -> dict:
                 'examples/live_developer.py', 'examples/live_desk/app.py', 'examples/live_desk/index.html',
                 'scripts/benchmark_live.py', 'scripts/live_metrics.py', 'scripts/summarize_live.py',
                 'scripts/check_release.py', 'tests/live_reference.py']
+    required += ['artifacts/live/verification/public-ci.json',
+                 'artifacts/live/verification/public-install.json']
     prefix = f'aheaddb-{version}/'
     with tarfile.open(source) as archive:
         members = archive.getmembers()

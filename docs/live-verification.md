@@ -52,7 +52,15 @@ in 12,792 publication batches, with 1,636,864 independent prediction comparisons
 Every case reached the final acknowledged revision for all views; all 15 silence
 cases renewed coverage without a new refresh batch. The [measured findings](live-results.md)
 report mixed CPU results, missed deadlines and substantial repeated-control variation.
-Public source/CI/release verification remains a separate unfinished gate.
+A fresh public HTTPS checkout at `6179431` installed non-editably using an empty
+dependency cache. Its isolated public SDK walkthrough advanced both features
+from revision 1 to 2 without a client database setting or private project files.
+The expected-value feature changed from 53.235 to 840.0, with model/cutoff fixed.
+Both push and pull-request CI passed, including 144 tests and six optional skips.
+[Public installation receipt](../artifacts/live/verification/public-install.json) ·
+[CI steps](../artifacts/live/verification/public-ci.json).
+Final publication and asset-download verification are recorded with the
+[versioned release](https://github.com/nazeeh111/AHEADDB/releases/tag/v0.3.0).
 
 ## Independent numerical agreement
 

@@ -1,0 +1,55 @@
+{
+  "repository": "https://github.com/nazeeh111/AHEADDB",
+  "public_commit": "61794316509b9b19f22f787baa7533cd0d8a7c61",
+  "version": "0.3.0",
+  "fresh_public_https_clone": true,
+  "empty_dependency_cache": true,
+  "non_editable": true,
+  "site_packages_import": true,
+  "python_isolated": true,
+  "client_database_environment": false,
+  "private_project_files_or_models": false,
+  "developer_result": {
+    "synthetic": true,
+    "initial_revision": 1,
+    "changed_revision": 2,
+    "evaluations": [
+      {
+        "task": "renewal_14d",
+        "revision": 1,
+        "folds": 6,
+        "snapshot_id": "3f2332cd9c21452f427a1c29f6898af8f071681cdde4d5a0ded57d8bd2d097ff"
+      },
+      {
+        "task": "expected_value_14d",
+        "revision": 1,
+        "folds": 6,
+        "snapshot_id": "3f2332cd9c21452f427a1c29f6898af8f071681cdde4d5a0ded57d8bd2d097ff"
+      }
+    ],
+    "features": [
+      {
+        "task": "renewal_14d",
+        "before": 0.5784997878925253,
+        "after": 0.6327944360372108,
+        "source_id": "1f7c6f51-f1a7-4061-a46e-5a045e924e65",
+        "covered_revision": 2,
+        "generation": "997a7d29-7f6c-4f38-88a5-c804a7608052",
+        "model_version": "611d5739fa4e520fed205443382afe1e91d22e7472e3069fdc6f582ad1410606",
+        "cutoff": "2024-07-15 00:00:00+00:00",
+        "state": "fresh"
+      },
+      {
+        "task": "expected_value_14d",
+        "before": 53.23499999999999,
+        "after": 840.0,
+        "source_id": "1f7c6f51-f1a7-4061-a46e-5a045e924e65",
+        "covered_revision": 2,
+        "generation": "997a7d29-7f6c-4f38-88a5-c804a7608052",
+        "model_version": "662814b6e6d4be133362c054c3a12739ded192adc1eaeb0f9837a39ac7978099",
+        "cutoff": "2024-07-15 00:00:00+00:00",
+        "state": "fresh"
+      }
+    ]
+  }
+}
