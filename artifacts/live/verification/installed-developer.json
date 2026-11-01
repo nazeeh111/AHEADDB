@@ -1,0 +1,48 @@
+{
+  "synthetic": true,
+  "initial_revision": 1,
+  "changed_revision": 2,
+  "evaluations": [
+    {
+      "task": "renewal_14d",
+      "revision": 1,
+      "folds": 6,
+      "snapshot_id": "3f2332cd9c21452f427a1c29f6898af8f071681cdde4d5a0ded57d8bd2d097ff"
+    },
+    {
+      "task": "expected_value_14d",
+      "revision": 1,
+      "folds": 6,
+      "snapshot_id": "3f2332cd9c21452f427a1c29f6898af8f071681cdde4d5a0ded57d8bd2d097ff"
+    }
+  ],
+  "features": [
+    {
+      "task": "renewal_14d",
+      "before": 0.5784997878925253,
+      "after": 0.6327944360372108,
+      "source_id": "6367f1fd-57e5-46ba-8239-16cf920eec3e",
+      "covered_revision": 2,
+      "generation": "20402f39-b3e5-4a51-b122-281670cb1c96",
+      "model_version": "611d5739fa4e520fed205443382afe1e91d22e7472e3069fdc6f582ad1410606",
+      "cutoff": "2024-07-15 00:00:00+00:00",
+      "state": "fresh"
+    },
+    {
+      "task": "expected_value_14d",
+      "before": 53.23499999999999,
+      "after": 840.0,
+      "source_id": "6367f1fd-57e5-46ba-8239-16cf920eec3e",
+      "covered_revision": 2,
+      "generation": "20402f39-b3e5-4a51-b122-281670cb1c96",
+      "model_version": "662814b6e6d4be133362c054c3a12739ded192adc1eaeb0f9837a39ac7978099",
+      "cutoff": "2024-07-15 00:00:00+00:00",
+      "state": "fresh"
+    }
+  ],
+  "installation": {
+    "editable": false,
+    "python_isolated": true,
+    "client_database_dsn": false
+  }
+}

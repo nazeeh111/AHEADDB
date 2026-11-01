@@ -7,6 +7,7 @@ schema/CDC adapter is installed. SQL identifiers are composed, values are bound.
 from __future__ import annotations
 
 import json
+import math
 import re
 import time
 import uuid
@@ -134,6 +135,28 @@ def decode_snapshot(payload: dict) -> Snapshot:
             tables[name][column] = pd.to_datetime(tables[name][column], utc=True, format="ISO8601", errors="raise")
     return Snapshot(tables, schema)
 
+
+
+def identifier_columns(schema: Schema) -> dict[str, tuple[str, ...]]:
+    return {schema.entity_table: (schema.entity_key,),
+            **{event.table: (event.key, event.entity_key) for event in schema.events}}
+
+
+def canonical_identifier(value: Any) -> str:
+    if not isinstance(value, (str, int, float, bool)) or (isinstance(value, float) and not math.isfinite(value)):
+        raise ValueError("Identifiers must be non-null finite JSON scalars")
+    return str(value)
+
+
+def require_canonical_rows(rows: list[dict], schema: Schema) -> None:
+    columns = identifier_columns(schema)
+    for row in rows:
+        names = columns.get(row["table_name"])
+        payload = row["payload"]
+        if (not names or not isinstance(payload, dict)
+                or any(not isinstance(payload.get(name), str) for name in names)
+                or payload.get(names[0]) != row["row_key"]):
+            raise Conflict("Legacy identifiers require explicit offline migration; no source rows imported or removed")
 
 
 class Store:
@@ -300,7 +323,9 @@ class Store:
             if conn.execute("SELECT count(*) AS n FROM jobs WHERE state IN ('pending','running','failed')").fetchone()["n"] >= self.max_backlog:
                 raise Unavailable("Backlog limit reached; edit rolled back")
             schema = Schema.model_validate(meta["schema_doc"])
+            self._require_canonical_identifiers(conn, schema, current_only=True)
             keys = {schema.entity_table: schema.entity_key, **{e.table: e.key for e in schema.events}}
+            columns = identifier_columns(schema)
             revision = meta["revision"] + 1
             dependencies = []
             seen = set()
@@ -308,13 +333,17 @@ class Store:
                 if mutation.table not in keys or (mutation.table, mutation.key) in seen:
                     raise ValueError("Unknown table or duplicate row in transaction")
                 seen.add((mutation.table, mutation.key))
-                if mutation.row is not None and str(mutation.row.get(keys[mutation.table])) != mutation.key:
-                    raise ValueError("Mutation key differs from row primary key")
+                row = None if mutation.row is None else dict(mutation.row)
+                if row is not None:
+                    for name in columns[mutation.table]:
+                        row[name] = canonical_identifier(row.get(name))
+                    if row[keys[mutation.table]] != mutation.key:
+                        raise ValueError("Mutation key differs from row primary key")
                 old = conn.execute("UPDATE source_rows SET valid_to=%s WHERE table_name=%s AND row_key=%s "
                                    "AND valid_to IS NULL RETURNING payload", (revision, mutation.table, mutation.key)).fetchone()
-                if mutation.row is not None:
+                if row is not None:
                     conn.execute("INSERT INTO source_rows VALUES(%s,%s,%s,NULL,%s)",
-                                 (mutation.table, mutation.key, revision, Jsonb(mutation.row)))
+                                 (mutation.table, mutation.key, revision, Jsonb(row)))
                 dependencies.append({"table": mutation.table, "key": mutation.key,
                                      "operation": "delete" if mutation.row is None else "update" if old else "insert"})
             conn.execute("UPDATE meta SET revision=%s", (revision,))
@@ -469,14 +498,30 @@ class Store:
                          "AND j.revision=%s AND j.state IN ('failed','cancelled')", (name, meta['revision']))
             self._enqueue(conn, meta['revision'])
 
+    def _require_canonical_identifiers(self, conn, schema: Schema, *, current_only: bool = False) -> None:
+        scope = " AND valid_to IS NULL" if current_only else ""
+        for table, columns in identifier_columns(schema).items():
+            for name in dict.fromkeys(columns):
+                if conn.execute("SELECT 1 FROM source_rows WHERE table_name=%s" + scope +
+                                " AND jsonb_typeof(payload->%s) IS DISTINCT FROM 'string' LIMIT 1",
+                                (table, name)).fetchone():
+                    raise Conflict("Legacy identifiers require explicit offline migration; source preserved")
+            if conn.execute("SELECT 1 FROM source_rows WHERE table_name=%s" + scope +
+                            " AND payload->>%s IS DISTINCT FROM row_key LIMIT 1", (table, columns[0])).fetchone():
+                raise Conflict("Legacy identifiers require explicit offline migration; source preserved")
+
     def purge_entity(self, entity_id: str, *, _ledger_state: tuple[str, str, str, int] | None = None) -> int:
         """Irreversible owner request: erase retained input and all derived artifacts.
 
         All models are invalidated because training can depend on every entity.
         Existing backups need the same purge ledger replayed by their owner.
         """
+        if not isinstance(entity_id, str):
+            raise ValueError("Purge requires the canonical string entity ID")
         with self.connect() as conn, conn.transaction():
             meta = self._lock(conn)
+            schema = Schema.model_validate(meta["schema_doc"])
+            self._require_canonical_identifiers(conn, schema)
             if _ledger_state is not None:
                 source_id, previous_hash, new_hash, count = _ledger_state
                 if (meta["source_id"] != source_id or meta["ledger_hash"] != previous_hash
@@ -485,7 +530,6 @@ class Store:
                 conn.execute("UPDATE meta SET ledger_hash=%s,ledger_count=%s", (new_hash, count))
             else:
                 conn.execute("UPDATE meta SET unlogged_purge=true")
-            schema = Schema.model_validate(meta["schema_doc"])
             keys = {(schema.entity_table, entity_id)}
             for e in schema.events:
                 rows = conn.execute("SELECT DISTINCT row_key FROM source_rows WHERE table_name=%s AND payload->>%s=%s",

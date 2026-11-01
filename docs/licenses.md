@@ -1,6 +1,6 @@
 # Licenses and attribution
 
-AHEADDB source is Apache 2.0, with the required license and NOTICE in the repository. No upstream ML checkpoint or code is copied into the source tree. Installing dependencies obtains separate distributions under their own terms. `uv.lock` records pinned distribution versions/hashes; it is not a replacement for upstream license files.
+AHEADDB source is Apache 2.0, with the full license in the repository. No upstream ML checkpoint or code is copied into the source tree. Installing dependencies obtains separate distributions under their own terms. `uv.lock` records pinned distribution versions/hashes; it is not a replacement for upstream license files.
 
 | Component | Upstream license | Role |
 |---|---|---|
@@ -8,6 +8,10 @@ AHEADDB source is Apache 2.0, with the required license and NOTICE in the reposi
 | [NumPy](https://github.com/numpy/numpy/blob/main/LICENSE.txt) | BSD3-Clause | Numerical arrays |
 | [pandas](https://github.com/pandas-dev/pandas/blob/main/LICENSE) | BSD3-Clause | Temporal tables/aggregates |
 | [scikit-learn](https://github.com/scikit-learn/scikit-learn/blob/main/COPYING) | BSD3-Clause | Fitted CPU baselines/boosting/ExtraTrees |
+| [PostgreSQL](https://www.postgresql.org/about/licence/) | PostgreSQL License | Separately installed owned-source server; no server binary bundled |
+| [Psycopg](https://github.com/psycopg/psycopg/blob/master/LICENSE.txt) | LGPL 3.0 | Optional PostgreSQL client; binary extra separately distributes its client libraries |
+| [HTTPX](https://github.com/encode/httpx/blob/master/LICENSE.md) | BSD3-Clause | Local HTTP SDK |
+| [Joblib](https://github.com/joblib/joblib/blob/main/LICENSE.txt) | BSD3-Clause | Canonical numerical model-state hashing; no untrusted model loading |
 | [Pydantic](https://github.com/pydantic/pydantic/blob/main/LICENSE) | MIT | Explicit validated specifications |
 | [FastAPI](https://github.com/fastapi/fastapi/blob/master/LICENSE) | MIT | Local API |
 | [Starlette](https://github.com/encode/starlette/blob/master/LICENSE.md) | BSD3-Clause | HTTP implementation |
@@ -20,4 +24,10 @@ AHEADDB source is Apache 2.0, with the required license and NOTICE in the reposi
 
 See [research attribution](THIRD_PARTY_RESEARCH.md) for inspected model projects and their separate licenses. The RT-J, RDBLearn, STEER, InkStream and RIPPLE papers/repositories are research references, not bundled runtimes. No pretrained model is included and no zero-shot transfer claim is made. Matplotlib charts are generated from saved results; Playwright/FFmpeg are capture tools, not product runtime dependencies.
 
-Public datasets and derived evaluation records retain CC BY 4.0; full attribution, changes, provenance hashes and assumptions are in [data.md](data.md). Generated synthetic data and application demo are AHEADDB project artifacts. The Python wheel/sdist includes this project's LICENSE/NOTICE; third-party wheels include their own license files. If redistributing a complete installed environment, retain all dependency licenses and notices as well.
+Public datasets and derived evaluation records retain CC BY 4.0; full attribution, changes, provenance hashes and assumptions are in [data.md](data.md). Generated synthetic data and application demo are AHEADDB project artifacts. The Python wheel/sdist includes this project's LICENSE; third-party wheels include their own license files. If redistributing a complete installed environment, retain all dependency licenses and notices as well.
+
+The Live extra uses separately installed Psycopg binary/client distributions. Their
+[installation documentation](https://www.psycopg.org/psycopg3/docs/basic/install.html)
+describes the bundled client-library route and alternatives. This release ships
+AHEADDB source/wheels, not an entire PostgreSQL server or installed dependency
+environment. Retain upstream licenses when redistributing those components.

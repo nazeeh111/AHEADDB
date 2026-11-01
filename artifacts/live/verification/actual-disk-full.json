@@ -1,0 +1,11 @@
+{
+  "actual_enospc": true,
+  "volume_capacity_bytes": 67067904,
+  "filler_bytes": 65433600,
+  "rollback_revision": 1,
+  "continued_revision": 2,
+  "continued_features": [
+    "return_14d",
+    "revenue_14d"
+  ]
+}

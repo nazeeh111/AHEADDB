@@ -25,7 +25,9 @@ not a mutually atomic bundle; the application reports differing revisions.
 The app accepts only local origins, has bounded edit bodies and suppresses access
 logs containing customer IDs. It is a local example, without production auth.
 It sends no outreach, places no purchases and changes only the owned synthetic
-source. Full release quickstart and fresh-install verification remain pending.
+source. See the [release quickstart](../../docs/live-quickstart.md) and
+[verification record](../../docs/live-verification.md) for installed SDK and
+actual worker-loss checks. Public release verification is a separate gate.
 
 The browser expires its receipt after 60 seconds and hides values unless the
 older-result checkbox is selected. Returning to the tab checks elapsed monotonic

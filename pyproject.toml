@@ -23,6 +23,15 @@ fastdfs = ["fastdfs==0.2.1", "featuretools==1.31.0", "woodwork==0.31.0", "setupt
 ahead = "aheaddb.cli:main"
 ahead-mcp = "aheaddb.mcp:main"
 
+[tool.hatch.build.targets.sdist]
+# Linked worktrees have a .git file; select distributable roots explicitly.
+only-include = [
+  "src/aheaddb", "tests", "scripts", "examples", "agent-skill", "docs", "contracts", "assets",
+  "artifacts/results", "artifacts/validation", "artifacts/live/verification", ".github", ".gitignore",
+  "pyproject.toml", "uv.lock", "requirements-fastdfs.lock", "README.md", "LICENSE", "SECURITY.md",
+  "CITATION.cff",
+]
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 [tool.ruff]

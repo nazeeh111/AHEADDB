@@ -20,3 +20,6 @@ artifacts/live/evidence/
 artifacts/live/benchmark/
 artifacts/live/benchmark-v1/
 artifacts/live/benchmark-final/
+
+# Freeze/run traces stay local; complete exact cases are bundled in verification/.
+artifacts/live/confirmation*/

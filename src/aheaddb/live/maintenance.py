@@ -16,8 +16,8 @@ from pathlib import Path
 from psycopg import sql
 from psycopg.types.json import Jsonb
 
-from ..spec import digest
-from .store import Conflict, Store
+from ..spec import Schema, digest
+from .store import Conflict, Store, require_canonical_rows
 
 TABLES = ("meta", "source_rows", "outbox", "snapshots", "models", "views", "jobs", "generations", "costs")
 JSON_COLUMNS = {"schema_doc", "payload", "changes", "recipe", "runtime", "definition", "task", "answer"}
@@ -81,8 +81,15 @@ def _synchronize(store: Store, header: dict, records: list[dict]) -> None:
 
 
 def purge(store: Store, entity_id: str, ledger: Path) -> int:
+    if not isinstance(entity_id, str):
+        raise ValueError("Purge requires the canonical string entity ID")
     with _ledger(store, ledger) as (stream, header, records):
         _synchronize(store, header, records)
+        # Check before recording an irreversible intent. Legacy numeric storage
+        # can have ambiguous pandas ownership; never guess aliases or erase it.
+        with store.connect() as conn, conn.transaction():
+            meta = store._lock(conn)
+            store._require_canonical_identifiers(conn, Schema.model_validate(meta["schema_doc"]))
         record = {"entity_id": entity_id, "request_id": str(uuid.uuid4()),
                   "recorded_at": datetime.now(timezone.utc).isoformat()}
         stream.seek(0, os.SEEK_END)
@@ -99,6 +106,8 @@ def backup(store: Store, destination: Path, ledger: Path) -> str:
         _synchronize(store, header, records)
         with store.connect() as conn, conn.transaction():
             meta = store._lock(conn)
+            if meta["schema_doc"] is not None:
+                store._require_canonical_identifiers(conn, Schema.model_validate(meta["schema_doc"]))
             if (meta["unlogged_purge"] or meta["ledger_count"] != len(records)
                     or meta["ledger_hash"] != digest(records) or meta["source_id"] != header["source_id"]):
                 raise Conflict("Source purge history changed before backup")
@@ -137,6 +146,10 @@ def restore(store: Store, source: Path, ledger: Path) -> None:
     if not ledger.is_file() or ledger.is_symlink() or ledger.stat().st_mode & 0o077:
         raise Conflict("Restore requires the existing current owner-only purge ledger")
     backup_meta = tables["meta"][0]
+    if backup_meta["schema_doc"] is not None:
+        require_canonical_rows(tables["source_rows"], Schema.model_validate(backup_meta["schema_doc"]))
+    elif tables["source_rows"]:
+        raise Conflict("Source rows require a declared schema")
     if (backup_meta.get("unlogged_purge") or backup_meta.get("ledger_count") != payload["ledger_entries"]
             or backup_meta.get("ledger_hash") != payload["ledger_hash"]):
         raise Conflict("Backup lacks a bound committed purge history")

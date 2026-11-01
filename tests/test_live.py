@@ -69,9 +69,18 @@ def drain(store, policy="fifo"):
 
 
 def agreement(store):
+    import psycopg
+    app = create_live_app(store)
+    database_errors = []
+    original_handler = app.exception_handlers[psycopg.Error]
+    async def diagnose(request, exc):
+        # Task-local synthetic test evidence only. Public errors remain generic.
+        database_errors.append(f"{type(exc).__name__}: {exc}")
+        return await original_handler(request, exc)
+    app.add_exception_handler(psycopg.Error, diagnose)
     for task in demo_tasks():
-        response = TestClient(create_live_app(store)).get(f"/v1/views/{task.name}")
-        assert response.status_code == 200, response.text
+        response = TestClient(app).get(f"/v1/views/{task.name}")
+        assert response.status_code == 200, (response.text, database_errors)
         answer = Answer.model_validate(response.json())
         with store.connect() as conn:
             payload = conn.execute("SELECT payload FROM snapshots WHERE id=%s", (answer.snapshot_id,)).fetchone()["payload"]
@@ -564,3 +573,154 @@ def test_registration_round_trip_epoch_and_progress_are_truthful(live):
     assert live.status()['processed_revision'] == 0
     drain(live)
     agreement(live)
+
+
+@settings(max_examples=6, deadline=None, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@given(st.lists(st.tuples(st.integers(0, 3), st.integers(0, 3), st.integers(-20, 1000), st.booleans()),
+                min_size=3, max_size=9))
+def test_generated_concurrent_writers_and_coherent_snapshots(live, operations):
+    import threading
+    prefix = 'parallel-' + uuid.uuid4().hex + '-'
+    before = live.status()['revision']
+    barrier = threading.Barrier(4)
+
+    def writer(lane):
+        barrier.wait(timeout=30)
+        receipts = []
+        for index in range(lane, len(operations), 3):
+            key, owner, amount, delete = operations[index]
+            row_id = prefix + str(key)
+            transaction = (Edit(request_id=str(uuid.uuid4()), mutations=(
+                Mutation(table='orders', key=row_id, row=None),)) if delete else
+                edit(key=row_id, owner=f'C{owner:04d}', amount=amount))
+            revision = live.edit(transaction)
+            receipts.append((revision, row_id, None if delete else (f'C{owner:04d}', float(amount))))
+        return receipts
+
+    def reader():
+        barrier.wait(timeout=30)
+        return [live.snapshot() for _ in range(3)]
+
+    with ThreadPoolExecutor(4) as pool:
+        writers = [pool.submit(writer, lane) for lane in range(3)]
+        reads = pool.submit(reader)
+        receipts = sorted(row for future in writers for row in future.result())
+        captured = reads.result()
+    captured.append(live.snapshot())
+    assert [r[0] for r in receipts] == list(range(before + 1, before + len(operations) + 1))
+    current, expected = {}, {before: {}}
+    for revision, key, value in receipts:
+        if value is None:
+            current.pop(key, None)
+        else:
+            current[key] = value
+        expected[revision] = current.copy()
+    for snapshot_id, snapshot in captured:
+        with live.connect() as conn:
+            revision = conn.execute('SELECT revision FROM snapshots WHERE id=%s', (snapshot_id,)).fetchone()['revision']
+        rows = snapshot.table('orders')
+        actual = {r.id: (r.entity_id, float(r.amount)) for r in rows.itertuples() if r.id.startswith(prefix)}
+        assert actual == expected[revision]
+    drain(live, 'budget')
+    agreement(live)
+    assert live.status()['processed_revision'] == before + len(operations)
+
+
+@pytest.mark.parametrize('owner', [1, True, 1.0], ids=['integer', 'boolean', 'float'])
+@pytest.mark.parametrize('legacy_payload', [False, True], ids=['new-edit', 'legacy-edit'])
+def test_purge_and_restore_cover_scalar_identifiers(store, tmp_path, owner, legacy_payload):
+    import json
+
+    from psycopg.types.json import Jsonb
+
+    from aheaddb.live.maintenance import backup, purge, restore
+    from aheaddb.spec import digest
+    owner_id = str(owner)
+    tables = demo_tables(entities=2)
+    mapping = {'C0000': owner_id, 'C0001': 'other-owner'}
+    tables['entities']['entity_id'] = tables['entities']['entity_id'].replace(mapping)
+    tables['orders']['entity_id'] = tables['orders']['entity_id'].replace(mapping)
+    store.bootstrap(Snapshot(tables, demo_schema()))
+    store.edit(edit(key='scalar-owner-event', owner=owner))
+    with store.connect() as conn:
+        payload = conn.execute("SELECT payload FROM source_rows WHERE table_name='orders' "
+                               "AND row_key='scalar-owner-event'").fetchone()['payload']
+        assert payload['entity_id'] == owner_id and isinstance(payload['entity_id'], str)
+    ledger, saved = tmp_path / 'purges.jsonl', tmp_path / 'before.json'
+    backup(store, saved, ledger)
+    target = Store(store._dsn, 'test_scalar_restore_' + uuid.uuid4().hex[:10])
+    try:
+        if legacy_payload:
+            # Simulate a pre-release accepted database and backup. Ownership of
+            # numeric columns can be ambiguous, so reject rather than guess.
+            with store.connect() as conn:
+                conn.execute("UPDATE source_rows SET payload=jsonb_set(payload,'{entity_id}',%s) "
+                             "WHERE table_name='orders' AND row_key='scalar-owner-event'", (Jsonb(owner),))
+            document = json.loads(saved.read_text())
+            for row in document['payload']['tables']['source_rows']:
+                if row['row_key'] == 'scalar-owner-event':
+                    row['payload']['entity_id'] = owner
+            document['sha256'] = digest(document['payload'])
+            saved.write_text(json.dumps(document))
+            before = store.status()['revision']
+            intent_before = ledger.read_bytes()
+            with pytest.raises(Conflict, match='Legacy identifiers'):
+                purge(store, owner_id, ledger)
+            assert ledger.read_bytes() == intent_before
+            with pytest.raises(Conflict, match='Legacy identifiers'):
+                store.purge_entity(owner_id)
+            with pytest.raises(Conflict, match='Legacy identifiers'):
+                store.edit(edit(key='must-not-reinterpret-owners'))
+            with pytest.raises(Conflict, match='Legacy identifiers'):
+                backup(store, tmp_path / 'rejected.json', ledger)
+            assert not (tmp_path / 'rejected.json').exists()
+            assert store.status()['revision'] == before
+            with pytest.raises(Conflict, match='Legacy identifiers'):
+                restore(target, saved, ledger)
+            with target.connect() as conn:
+                assert conn.execute('SELECT to_regnamespace(%s) n', (target.namespace,)).fetchone()['n'] is None
+            with store.connect() as conn:
+                assert conn.execute("SELECT count(*) n FROM source_rows WHERE row_key='scalar-owner-event'").fetchone()['n'] == 1
+            return
+        purge(store, owner_id, ledger)
+        with store.connect() as conn:
+            assert conn.execute("SELECT count(*) n FROM source_rows WHERE row_key='scalar-owner-event'").fetchone()['n'] == 0
+        assert set(store.snapshot()[1].table('entities').entity_id) == {'other-owner'}
+        restore(target, saved, ledger)
+        assert set(target.snapshot()[1].table('entities').entity_id) == {'other-owner'}
+        with target.connect() as conn:
+            assert conn.execute("SELECT count(*) n FROM source_rows WHERE row_key='scalar-owner-event'").fetchone()['n'] == 0
+    finally:
+        with target.connect() as conn:
+            conn.execute(sql.SQL('DROP SCHEMA IF EXISTS {} CASCADE').format(sql.Identifier(target.namespace)))
+
+
+@pytest.mark.parametrize('owner', [None, {}, [], float('inf'), float('nan')],
+                         ids=['null', 'object', 'array', 'infinity', 'nan'])
+def test_invalid_live_identifier_rolls_back(store, owner):
+    store.bootstrap(Snapshot(demo_tables(entities=2), demo_schema()))
+    with pytest.raises(ValueError, match='Identifiers'):
+        store.edit(edit(key='invalid-owner', owner=owner))
+    assert store.status()['revision'] == 1
+    assert 'invalid-owner' not in set(store.snapshot()[1].table('orders').id)
+
+
+def test_legacy_identifier_in_retained_history_blocks_purge(store, tmp_path):
+    from psycopg.types.json import Jsonb
+
+    from aheaddb.live.maintenance import backup, purge
+    store.bootstrap(Snapshot(demo_tables(entities=2), demo_schema()))
+    store.edit(edit(key='moved-legacy-event'))
+    store.edit(edit(key='moved-legacy-event', owner='C0001'))
+    with store.connect() as conn:
+        conn.execute("UPDATE source_rows SET payload=jsonb_set(payload,'{entity_id}',%s) "
+                     "WHERE row_key='moved-legacy-event' AND valid_to IS NOT NULL", (Jsonb(True),))
+    before = store.status()['revision']
+    assert store.snapshot()[1].table('orders').set_index('id').loc['moved-legacy-event','entity_id'] == 'C0001'
+    with pytest.raises(Conflict, match='Legacy identifiers'):
+        purge(store, 'C0000', tmp_path / 'ledger.jsonl')
+    with pytest.raises(Conflict, match='Legacy identifiers'):
+        backup(store, tmp_path / 'rejected.json', tmp_path / 'ledger.jsonl')
+    assert store.status()['revision'] == before
+    with store.connect() as conn:
+        assert conn.execute("SELECT count(*) n FROM source_rows WHERE row_key='moved-legacy-event'").fetchone()['n'] == 2

@@ -1,6 +1,6 @@
 # AHEADDB Live quickstart
 
-Use Python3.12, uv and PostgreSQL15 or newer. Everything runs locally with the
+Use Python 3.12, uv and PostgreSQL 15 or newer. Everything runs locally with the
 existing CPU statistical engine. No API key, model download or paid service is
 needed. Live adds an owned PostgreSQL source and durable workers; the original
 library/local inspector remain available.
@@ -18,7 +18,7 @@ pg_ctl -D "$AHEAD_PG_WORK/data" -l "$AHEAD_PG_WORK/postgres.log" \
 export AHEAD_LIVE_DSN="postgresql://${USER}@127.0.0.1:55439/postgres"
 ```
 
-Choose a free local port if55439 is already in use. This creates only an isolated
+Choose a free local port if 55439 is already in use. This creates only an isolated
 synthetic development source. Ordinary application tables are never modified or
 automatically enrolled in CDC. Keep database credentials in your own connection
 configuration; do not put them in recipes, examples or source control.
@@ -54,7 +54,7 @@ check current estimates. Current reads fail while uncovered changes remain.
 Older values require the explicit checkbox. Restart the worker to recover and
 inspect the covered source revision. No outreach or purchases occur.
 
-This fixture uses a July15,2024 information cutoff and synthetic historical events.
+This fixture uses a July 15, 2024 information cutoff and synthetic historical events.
 Source verification and publication happen when you run the service. The cutoff
 stays fixed until you explicitly publish a replacement definition.
 
@@ -112,9 +112,9 @@ of later writes. Continuous WAL/PITR disaster recovery is outside this local lay
 
 ## Retention and recovery
 
-`ahead live retain --per-view 5` removes old generations while protecting active
+`uv run --no-sync ahead live retain --per-view 5` removes old generations while protecting active
 pointers, pending/failed source versions and training snapshots. Failed jobs count
-toward admission bounds. Correct the failure then `retry TASK`; a newer complete
+toward admission bounds. Correct the failure then `uv run --no-sync ahead live retry TASK`; a newer complete
 generation can supersede older pending work. Cancellation fences in-flight work.
 Schema changes require a new schema/task/model, not silent reinterpretation.
 
@@ -122,10 +122,17 @@ For portable backups, choose private paths and retain the external purge ledger:
 
 ```sh
 mkdir -p .runtime/backups
-ahead live backup .runtime/backups/private-backup.json .runtime/backups/private-purges.jsonl
-ahead live purge CUSTOMER_ID .runtime/backups/private-purges.jsonl
-ahead live restore .runtime/backups/private-backup.json .runtime/backups/private-purges.jsonl --namespace restored_source
+uv run --no-sync ahead live backup .runtime/backups/private-backup.json .runtime/backups/private-purges.jsonl
+uv run --no-sync ahead live purge CUSTOMER_ID .runtime/backups/private-purges.jsonl
+uv run --no-sync ahead live restore .runtime/backups/private-backup.json .runtime/backups/private-purges.jsonl --namespace restored_source
 ```
+
+Live stores identifiers as strings. Finite scalar edit IDs are normalized before
+storage; null/complex IDs are rejected. Pre-release sources/backups with raw
+numeric or boolean persisted IDs require an explicit offline ownership migration.
+Maintenance refuses them without deleting/importing rows, including legacy values
+in retained history. It does not guess equivalence between IDs such as `"1"` and
+`"1.0"`. Keep the original source/backup; that migration is outside this release.
 
 Backup creation preserves an existing file instead of overwriting it. Restore
 requires a fresh namespace and the current source-bound ledger; it applies purge
@@ -133,7 +140,7 @@ intent before importing rows. A purge invalidates every model/generation because
 training can depend on the entity, so refitting is required. Old ledger copies
 cannot prove later deletions. Restores are offline cutovers, not automatic purge
 propagation to other live copies. After checking the restored clock and boundary,
-use `acknowledge-clock` and re-establish required views. Do not expose a restored
+use `uv run --no-sync ahead live acknowledge-clock` and re-establish required views. Do not expose a restored
 source before completing this owner-controlled workflow.
 
 Stop the disposable cluster when finished:

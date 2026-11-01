@@ -16,13 +16,20 @@ Retained generations and stricter freshness bounds use the same checks.
 [Run the local application](docs/live-quickstart.md) ·
 [HTTP contract](contracts/v1/openapi.json) ·
 [Consistency and limits](docs/live-design.md) ·
+[Verification and fault matrix](docs/live-verification.md) ·
+[Measured workload findings](docs/live-results.md) ·
 [Editable architecture](docs/live-architecture.mmd)
+
+[![SignalDesk Live after installed worker recovery](assets/live/signaldesk.png)](assets/live/demo.mp4)
 
 SignalDesk Live serves customer-return and revenue-planning features over shared
 orders through the public HTTP SDK. Its browser hides expired receipts while
 source entry remains usable. The standalone developer example declares its own
 accounts/activity schema, evaluates temporal tasks, publishes views, edits source
-rows and consumes the acknowledged updated revision.
+rows and consumes the acknowledged updated revision. [19-second installed-app
+recovery recording](assets/live/demo.mp4) · [mobile preview](assets/live/signaldesk-mobile.png).
+The recording uses actual source edits and a worker killed after computation,
+before publication; idle waits are shortened to at most three seconds.
 
 ```sh
 uv sync --frozen --extra live
@@ -34,8 +41,14 @@ uv run --no-sync ahead live worker
 
 This release adds durability and explicit freshness, not a new statistical engine
 or a claim of better predictive quality. The refresh planner is an interpretable
-experiment against full rebuild, durable FIFO and debouncing. Measurements and
-release verification are being completed; efficiency superiority is not assumed.
+experiment against full rebuild, durable FIFO and debouncing. Local verification
+passed 144 tests with six optional FastDFS skips, plus independent installed SDK
+and actual worker/database/storage fault checks. All 90 frozen workload cases
+passed, including 1,636,864 independent prediction comparisons. Budget planning
+lowered median deadline misses versus FIFO across the six workloads, but CPU
+gains were mixed and tight deadlines were often missed. Shared-host variation
+prevents a general speed claim. [Complete results and limits](docs/live-results.md).
+Public release verification remains pending at this local candidate checkpoint.
 Production CDC/schema changes, authentication and public hosting are outside scope.
 
 ## Existing engine, compatibility application and quality evidence
@@ -158,13 +171,13 @@ Relational prediction, predictive SQL and incremental inference are established 
 | System | Relevant capability | Relationship to AHEADDB 0.2 |
 |---|---|---|
 | [Kumo Engine](https://github.com/NVIDIA/kumo-engine) | Current local engine, predictive queries and relational model runtime | Local prediction alone is no distinction; AHEADDB focuses on inspectable CPU tasks and bounded maintained views |
-| [RDBLearn](https://github.com/HKUSHXLab/rdblearn) / [FastDFS](https://github.com/HKUSHXLab/fastdfs) | Released relational feature pipeline plus estimators | Mature optional comparison, credited and actually executed |
+| [RDBLearn](https://github.com/HKUSHXLab/rdblearn) / [FastDFS](https://github.com/HKUSHXLab/fastdfs) | Released relational feature pipeline plus estimators | Optional comparison executed in the retained evaluation |
 | [RT-J](https://github.com/stanford-star/relational-transformer) | Released relational transformer/checkpoint workflow | GPU requirements exceed this Mac's route; not executed or advertised as supported |
 | [RelBench](https://github.com/stanford-star/relbench) / [RelArena](https://github.com/PriorLabs/relarena) | Relational tasks, benchmarking and prediction interfaces | Important evaluation context; our two normalized datasets are smaller and less relationally demanding |
 | [MindsDB](https://github.com/mindsdb/mindsdb) | Predictive SQL and AI/database integrations | Broader platform; this is a bounded local library with no agent framework |
 | InkStream / RIPPLE++ | Incremental graph prediction prior art | Do not establish novelty or correctness for our different dependency contract |
 
-[Source versions, current licenses, hardware and newer alternatives](docs/research.md) · [third-party research notices](docs/THIRD_PARTY_RESEARCH.md). The supplied arXiv 2601.12347 identifies RIPPLE++, not InkStream; both are credited separately.
+[Source versions, current licenses, hardware and newer alternatives](docs/research.md) · [third-party research notices](docs/THIRD_PARTY_RESEARCH.md).
 
 ## Reproduce and contribute
 
@@ -182,4 +195,4 @@ uv run --no-sync python scripts/evaluate_public.py --dataset all
 
 Expensive public-data/FastDFS evaluations stay outside routine CI. CI separately exercises an actual disposable PostgreSQL 16 service. Optional dependency tests skip in the small core environment and are run explicitly for the release. See [current verification evidence](docs/v020-results.md), [optional backend environment](docs/research.md), [security scope](SECURITY.md) and [license attribution](docs/licenses.md).
 
-Apache 2.0 source. UCI-derived evaluation records remain CC BY 4.0 with attribution. No upstream code/model weights are vendored. [LICENSE](LICENSE) · [NOTICE](NOTICE) · [data attribution](artifacts/results/NOTICE).
+Apache 2.0 source. UCI-derived evaluation records remain CC BY 4.0 with attribution. No upstream code/model weights are vendored. [LICENSE](LICENSE) · [data attribution](docs/data.md).

@@ -1,10 +1,11 @@
-# AHEADDB Live contract (work in progress)
+# AHEADDB Live consistency contract
 
 Live is an optional PostgreSQL owned-source prediction layer around the existing
 AHEADDB statistical engine. The original library, local API and numerical models
 remain available. Install the `live` extra for the durable service and HTTP SDK.
-Release gates and results are still pending; this document describes the current
-implementation, not a completed reliability certification.
+This document defines the implemented consistency boundary. The
+[verification record](live-verification.md) separates executed local checks,
+workload measurements and remaining release gates; none is a reliability certification.
 
 ## Source ownership and coherent boundaries
 
@@ -20,6 +21,20 @@ Revisions therefore follow the serialization of committed owned edits. Request
 IDs, job sequence IDs, event timestamps and allocation order are never source
 progress cursors. Aborted transactions do not advance the revision. The same
 request ID and exact contents return the same receipt; conflicting contents fail.
+
+Live persists primary and foreign keys as strings. Source edits convert finite
+JSON scalar identifiers with Python's `str` rule before storage (`1` → `"1"`,
+`true` → `"True"`, `1.0` → `"1.0"`); null, array, object and nonfinite identifiers
+are rejected. Bootstrap persists the validated Snapshot's string identifiers.
+This prevents later pandas column inference from changing an unchanged row's
+owner. Request deduplication still compares the exact submitted edit contents.
+
+Pre-release databases/backups containing non-string persisted identifiers need an
+explicit offline ownership migration. Live rejects edits over noncanonical current
+rows and rejects purge/backup/restore when any retained identifier is noncanonical.
+It preserves the source and refuses import rather than guessing that `"1"` and
+`"1.0"` identify the same entity. The current release does not provide that legacy
+migration. Normal purge/restore continues for canonical sources and backups.
 
 A job names a source revision. Version intervals reconstruct precisely that
 revision, including deletions and owner moves. The claim transaction records an
