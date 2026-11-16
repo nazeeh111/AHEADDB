@@ -38,6 +38,15 @@ The JSON task never contains executable Python or arbitrary SQL. `Compiler.plan(
 
 A context key contains schema, history window, exact cutoff and preprocessing version. Tasks with the same context may reuse **task-independent aggregates**. They never reuse task-conditioned neural activations. A prediction view is identified by task, model/preprocessing, data version and cutoff. Model identity includes fitted estimator state, training provenance, schema, ordered feature columns and sklearn version.
 
+Integer sums use Python integer accumulation in history windows, nested recent
+windows and labels, preventing fixed-width wrap and preserving cancellation.
+Binary labels compare the integer result to the declared threshold before float
+conversion. Public model features and regression labels remain floating point,
+so large exact sums can still round at that boundary. Floating-point inputs keep
+their existing aggregation behavior. This changes the preprocessing identity;
+Live model recipes from the previous compiler refuse reload until an explicit
+replacement is registered under the new runtime.
+
 On refresh, AHEADDB hashes every declared source row by stable primary key using SHA256 and compares old and new snapshots. Any changed event invalidates both its old and new entity owners, including foreign-key moves and deletions. New rows invalidate owners even if the row was not previously selected. Added/deleted entities alter the view's population. Events outside the current window still conservatively invalidate their owners. This trades some avoidable work for simple, auditable correctness.
 
 Each shared context is updated once, then each affected model runs independently. Proven unchanged results are carried into the **new data-version view**, with a newly derived cache key. A data-version change never authorizes blind cache reuse. Ordinary caching in the benchmark invalidates the whole view on source-version changes. Clock advancement, preprocessing changes and model changes trigger full prediction recomputation. Clock/preprocessing changes rebuild contexts. A schema change is rejected and requires a new engine plus retraining. Refresh commits views only after every computation succeeds. Unreachable old-window contexts are dropped.

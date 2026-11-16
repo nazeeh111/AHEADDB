@@ -104,13 +104,29 @@ fail. Expiring windows are handled by advancing the declared cutoff, not by sile
 changing the task on wall-clock ticks. Provenance describes invalidation/input
 membership, never causal effects.
 
-A worker claims bounded jobs with a lease and per-view monotonic fence. Publication
-checks every lease, fence, definition and purge epoch, then atomically writes the
+A worker claims bounded jobs with a lease and per-view monotonic fence. `once()`
+renews the entire claimed group during computation, at one third of the lease
+interval. Renewal and publication share one ownership check under the revision
+lock: every lease must still be live and every fence, definition and purge epoch
+must match, with a known clock. Renewal changes only the lease expiry; it does not
+increase attempts or advance source coverage. An invalid member prevents renewal
+of the whole group. Publication then atomically writes the
 complete selected generation, pointers, job completion/supersession and minimum
 consumer progress. An older source revision cannot replace a newer publication.
 Expired/cancelled workers are fenced. Retried computation may repeat; only
 publication is idempotent at this transaction boundary. There is no universal
 exactly-once external-effect claim.
+
+The renewal thread stops and joins before publication or error handling. A failed
+renewal rejects the computed result. Process death stops renewals, so another
+worker can reclaim after the last lease expires. `max_run_seconds` bounds renewal
+and acceptance of computation using the process monotonic clock; it defaults to
+900 seconds (maximum 86400). At that limit renewal stops, and a late result cannot
+publish. A hung Python/native computation is not forcibly interrupted; its last
+lease can remain live for up to another lease interval, plus in-flight database
+operation time. End the worker process to release its CPU/memory. The low-level
+`claim()` / `compute()` / `publish()` API stays explicit: callers managing their
+own lifecycle must call `renew(claim)` before expiry or use `once()`.
 
 Views bundled into one generation publish mutually atomically. Separately
 requested latest views can return different generation/source revisions. Clients
@@ -130,11 +146,15 @@ are completed only when a covering newer source generation commits.
 
 Default bounds: 10,000 pending/running jobs (projected transaction size checked),
 128 views, 100,000 source rows/64 MiB stored source payload, three attempts per job,
-30-second leases (maximum 300), four cached engine groups and 128 cached models.
+30-second renewable leases (maximum 300), 900-second compute lifetime, four cached
+engine groups and 128 cached models.
 Backpressure rejects the whole source edit. Poison work becomes failed, keeps
 coverage stale, and needs correction/retry or a covering later valid revision.
-Limits are safety bounds, not measured throughput guarantees. A single slow model
-can exceed a non-renewed lease; choose an appropriate bounded lease or fail safely.
+Limits are safety bounds, not measured throughput guarantees. Choose a lease long
+enough for normal database round trips and scheduling pauses. A process pause,
+database outage or model holding the Python interpreter lock can still prevent
+timely renewal; the worker then fails safely. Increasing the compute lifetime
+allows longer work without increasing the ordinary dead-worker lease delay.
 
 Retention protects active pointers and job source versions. Purging an entity
 removes all retained versions of its events, including moved events, and invalidates

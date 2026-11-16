@@ -3,7 +3,10 @@ from __future__ import annotations
 
 import time
 import uuid
+from contextlib import contextmanager
 from dataclasses import dataclass
+from threading import Event, Thread
+from typing import Iterator
 
 from psycopg.types.json import Jsonb
 
@@ -28,11 +31,12 @@ class Claim:
 
 class Worker:
     def __init__(self, store: Store, policy: Policy = "budget", lease_seconds: float = 30,
-                 max_attempts: int = 3, fault=None):
-        if not 0 < lease_seconds <= 300 or not 1 <= max_attempts <= 10:
+                 max_attempts: int = 3, fault=None, *, max_run_seconds: float = 900):
+        if not 0 < lease_seconds <= 300 or not 1 <= max_attempts <= 10 or not 0 < max_run_seconds <= 86400:
             raise ValueError("Invalid worker bounds")
         self.store, self.policy = store, policy
         self.lease_seconds, self.max_attempts = lease_seconds, max_attempts
+        self.max_run_seconds = max_run_seconds
         self.fault = fault or (lambda boundary: None)
         self._engines: dict[str, Engine] = {}
         self._models: dict = {}
@@ -132,28 +136,68 @@ class Worker:
         self.fault("compute_after")
         return answers, receipt
 
+    def _validate_claim(self, conn, claim: Claim, meta: dict) -> None:
+        """Caller holds the revision lock through renewal or publication commit."""
+        if meta["clock_unknown"] or meta["purge_epoch"] != claim.purge_epoch:
+            raise Conflict("Clock/purge epoch changed; publication fenced")
+        for job in claim.jobs:
+            row = conn.execute("SELECT j.state,j.token,j.lease_until,v.fence,v.definition_hash,v.generation "
+                               "FROM jobs j JOIN views v ON v.name=j.view_name WHERE j.id=%s FOR UPDATE OF j,v",
+                               (job["id"],)).fetchone()
+            if (not row or row["state"] != "running" or row["token"] != job["token"]
+                    or row["fence"] != job["token"] or row["definition_hash"] != job["definition_hash"]
+                    or row["lease_until"] <= meta["now"]):
+                raise Conflict("Expired, cancelled or replaced worker; publication fenced")
+            current = conn.execute("SELECT revision FROM generations WHERE id=%s AND view_name=%s",
+                                   (row["generation"], job["view_name"])).fetchone()
+            if current and current["revision"] > job["revision"]:
+                raise Conflict("Older work cannot overwrite a newer generation")
+
+    def renew(self, claim: Claim) -> None:
+        """Extend every still-owned lease atomically; never revive expired work."""
+        with self.store.connect() as conn, conn.transaction():
+            meta = self.store._lock(conn)
+            self._validate_claim(conn, claim, meta)
+            conn.execute("UPDATE jobs SET lease_until=clock_timestamp()+(%s * interval '1 second') "
+                         "WHERE id=ANY(%s)", (self.lease_seconds, [job["id"] for job in claim.jobs]))
+
+    @contextmanager
+    def _keep_lease(self, claim: Claim) -> Iterator[None]:
+        """One renewal writer per attempt, stopped before publication or failure."""
+        stop = Event()
+        failures: list[Exception] = []
+        deadline = time.monotonic() + self.max_run_seconds
+
+        def renew_until_stopped() -> None:
+            try:
+                while not stop.wait(min(self.lease_seconds / 3, max(0, deadline - time.monotonic()))):
+                    if time.monotonic() >= deadline:
+                        raise TimeoutError("Worker run budget exceeded; lease renewal stopped")
+                    self.renew(claim)
+            except Exception as error:
+                # The main thread reads this only after join. No DB connection,
+                # model cache or exception handling is shared with computation.
+                failures.append(error)
+
+        thread = Thread(target=renew_until_stopped, name="ahead-lease-renewal", daemon=True)
+        thread.start()
+        try:
+            yield
+        finally:
+            stop.set()
+            thread.join()
+        if failures:
+            raise failures[0]
+        if time.monotonic() >= deadline:
+            raise TimeoutError("Worker run budget exceeded; publication fenced")
+
     def publish(self, claim: Claim, answers: dict[str, Answer], receipt: dict, seconds: float) -> None:
         self.fault("publish_before_transaction")
         with self.store.connect() as conn, conn.transaction():
             meta = self.store._lock(conn)
-            if meta["clock_unknown"] or meta["purge_epoch"] != claim.purge_epoch:
-                raise Conflict("Clock/purge epoch changed; publication fenced")
+            self._validate_claim(conn, claim, meta)
             if set(answers) != {j["view_name"] for j in claim.jobs}:
                 raise Conflict("Incomplete generation")
-            # Check every member before writing any result. One transaction includes
-            # predictions, view pointers, dedup states and min consumer progress.
-            for job in claim.jobs:
-                row = conn.execute("SELECT j.state,j.token,j.lease_until,v.fence,v.definition_hash,v.generation "
-                                   "FROM jobs j JOIN views v ON v.name=j.view_name WHERE j.id=%s FOR UPDATE OF j,v",
-                                   (job["id"],)).fetchone()
-                if (not row or row["state"] != "running" or row["token"] != job["token"]
-                        or row["fence"] != job["token"] or row["definition_hash"] != job["definition_hash"]
-                        or row["lease_until"] <= meta["now"]):
-                    raise Conflict("Expired, cancelled or replaced worker; publication fenced")
-                current = conn.execute("SELECT revision FROM generations WHERE id=%s AND view_name=%s",
-                                       (row["generation"], job["view_name"])).fetchone()
-                if current and current["revision"] > job["revision"]:
-                    raise Conflict("Older work cannot overwrite a newer generation")
             for job in claim.jobs:
                 answer = answers[job["view_name"]].model_copy(update={"published_at": str(meta["now"])})
                 if (answer.snapshot_id != claim.snapshot_id or answer.coverage.revision != job["revision"]
@@ -180,7 +224,8 @@ class Worker:
         if claim is None:
             return None
         try:
-            answers, receipt = self.compute(claim)
+            with self._keep_lease(claim):
+                answers, receipt = self.compute(claim)
             seconds = time.perf_counter() - start
             self.publish(claim, answers, receipt, seconds)
             return {"generation": next(iter(answers.values())).generation, "snapshot_id": claim.snapshot_id,

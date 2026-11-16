@@ -46,10 +46,12 @@ def demo(namespace: str = "ahead_live", entities: Annotated[int, typer.Option(mi
 
 @app.command()
 def worker(namespace: str = "ahead_live", policy: Literal["full", "fifo", "debounce", "budget"] = "budget",
-           once: bool = False):
-    """Run one bounded worker, reclaiming expired leases. No daemon installation."""
+           once: bool = False,
+           lease_seconds: Annotated[float, typer.Option(min=0.001, max=300)] = 30,
+           max_run_seconds: Annotated[float, typer.Option(min=0.001, max=86400)] = 900):
+    """Run with renewable leases and a bounded compute lifetime. No daemon installation."""
     from .live import Worker
-    worker = Worker(_store(namespace), policy)
+    worker = Worker(_store(namespace), policy, lease_seconds=lease_seconds, max_run_seconds=max_run_seconds)
     while True:
         try:
             receipt = worker.once()

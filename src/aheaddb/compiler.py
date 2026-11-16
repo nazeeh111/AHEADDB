@@ -7,8 +7,16 @@ from .snapshot import Snapshot, quote
 from .spec import Task, timestamp
 
 
+def _grouped_sum(frame: pd.DataFrame, entity_key: str, column: str) -> pd.Series:
+    values = frame[column]
+    if pd.api.types.is_integer_dtype(values.dtype):
+        # Preserve integer cancellation and prevent fixed-width overflow.
+        values = values.astype(object)
+    return values.groupby(frame[entity_key], sort=False).sum()
+
+
 class Compiler:
-    PREPROCESSING = "aggregates-v2:recent1,7,30:last,std,trend:utc:left-open:stable-time-key"
+    PREPROCESSING = "aggregates-v3:recent1,7,30:last,std,trend:utc:left-open:stable-time-key:exact-integer-sum"
 
     def __init__(self, snapshot: Snapshot):
         self.snapshot = snapshot
@@ -60,8 +68,9 @@ class Compiler:
             last = groups[e.occurred_at].max().reindex(ids)
             columns[f"{e.table}__recency"] = (t - last).dt.total_seconds().div(86400).fillna(task.history_days + 1)
             for c in e.values:
-                for agg in ["sum", "mean"]:
-                    columns[f"{e.table}__{c}__{agg}"] = getattr(groups[c], agg)().reindex(ids).fillna(0)
+                columns[f"{e.table}__{c}__sum"] = (
+                    _grouped_sum(frame, e.entity_key, c).astype(float).reindex(ids).fillna(0))
+                columns[f"{e.table}__{c}__mean"] = groups[c].mean().reindex(ids).fillna(0)
                 columns[f"{e.table}__{c}__missing"] = count - groups[c].count().reindex(ids, fill_value=0)
                 columns[f"{e.table}__{c}__std"] = groups[c].std(ddof=0).reindex(ids).fillna(0)
                 # groupby.last skips nulls; the missing-count feature preserves that limitation.
@@ -71,11 +80,13 @@ class Compiler:
             for days in (1, 7, 30):
                 if days >= task.history_days:
                     continue
-                recent = frame.loc[frame[e.occurred_at] > t - pd.Timedelta(days=days)].groupby(e.entity_key, sort=False)
+                recent_frame = frame.loc[frame[e.occurred_at] > t - pd.Timedelta(days=days)]
+                recent = recent_frame.groupby(e.entity_key, sort=False)
                 columns[f"{e.table}__recent{days}__count"] = recent.size().reindex(ids, fill_value=0)
                 for c in e.values:
-                    for agg in ("sum", "mean"):
-                        columns[f"{e.table}__recent{days}__{c}__{agg}"] = getattr(recent[c], agg)().reindex(ids).fillna(0)
+                    columns[f"{e.table}__recent{days}__{c}__sum"] = (
+                        _grouped_sum(recent_frame, e.entity_key, c).astype(float).reindex(ids).fillna(0))
+                    columns[f"{e.table}__recent{days}__{c}__mean"] = recent[c].mean().reindex(ids).fillna(0)
         return pd.DataFrame(columns, index=index).astype(float)
 
     def labels(self, task: Task, cutoff: str | pd.Timestamp, as_of: str | pd.Timestamp) -> pd.Series:
@@ -96,11 +107,11 @@ class Compiler:
             y = group.size()
         else:
             assert task.outcome.column is not None
-            y = group[task.outcome.column].sum()
-        y = y.reindex(self.entities(t), fill_value=0).astype(float)
+            y = _grouped_sum(df, e.entity_key, task.outcome.column)
+        y = y.reindex(self.entities(t), fill_value=0)
         if task.kind == "binary":
-            y = (y > task.outcome.threshold).astype(float)
-        return y.rename("target")
+            y = y.gt(task.outcome.threshold)
+        return y.astype(float).rename("target")
 
     def provenance(self, task: Task, cutoff: str, entity_id: str) -> dict:
         t = timestamp(cutoff)

@@ -118,6 +118,24 @@ toward admission bounds. Correct the failure then `uv run --no-sync ahead live r
 generation can supersede older pending work. Cancellation fences in-flight work.
 Schema changes require a new schema/task/model, not silent reinterpretation.
 
+On the current development checkout, workers renew their leases while computing.
+Use a short recovery lease independently of the maximum time allowed for a slow
+refresh:
+
+```sh
+uv run --no-sync ahead live worker --lease-seconds 30 --max-run-seconds 900
+```
+
+The defaults are shown above. A crashed worker becomes reclaimable after its last
+lease expires. A healthy slow refresh can keep ownership up to its compute budget.
+After that budget, renewal stops and its result is rejected. This does not kill
+stuck Python/native code; stop that worker process if it keeps consuming resources.
+The lease must cover ordinary scheduling and database delays. Cancellation,
+definition changes, clock uncertainty and purge still fence old work. Python
+callers get the same lifecycle with `Worker(store, lease_seconds=30,
+max_run_seconds=900).once()`. Manual claim/compute/publish callers must explicitly
+renew live claims. These options are not part of the historical v0.3.0 tag above.
+
 For portable backups, choose private paths and retain the external purge ledger:
 
 ```sh

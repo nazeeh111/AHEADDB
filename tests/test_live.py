@@ -6,6 +6,8 @@ import os
 import time
 import uuid
 from concurrent.futures import ThreadPoolExecutor
+from threading import Event
+from threading import enumerate as enumerate_threads
 
 import numpy as np
 import pytest
@@ -195,6 +197,186 @@ def test_expired_worker_fenced_and_cancelled(live):
     live.cancel(claim.jobs[0]["view_name"])
     with pytest.raises(Conflict):
         worker.publish(claim, answers, receipt, 0.1)
+
+
+def test_slow_worker_renews_bundle_without_reclaim(live):
+    revision = live.edit(edit(key="slow-valid-work"))
+    computed, release = Event(), Event()
+
+    def hold(point):
+        if point == "compute_after":
+            computed.set()
+            assert release.wait(20)
+
+    worker = Worker(live, "fifo", lease_seconds=0.6, fault=hold)
+    with ThreadPoolExecutor(1) as pool:
+        future = pool.submit(worker.once)
+        try:
+            assert computed.wait(20)
+            time.sleep(1.4)  # More than two leases, while valid computed work is held.
+            assert Worker(Store(live._dsn, live.namespace), "fifo").claim() is None
+            with live.connect() as conn:
+                jobs = conn.execute("SELECT attempts,lease_until>clock_timestamp() valid FROM jobs "
+                                    "WHERE state='running'").fetchall()
+            assert len(jobs) == 2 and all(j == {"attempts": 1, "valid": True} for j in jobs)
+            with pytest.raises(Unavailable, match="Committed"):
+                live.read("return_14d")
+        finally:
+            release.set()
+        result = future.result(timeout=20)
+    assert result["revision"] == revision
+    assert live.read("return_14d").generation == live.read("revenue_14d").generation
+    assert live.status()["processed_revision"] == revision
+    assert not any(t.name == "ahead-lease-renewal" for t in enumerate_threads())
+    agreement(live)
+
+
+def test_manual_renew_preserves_attempt_identity_and_source_boundary(live):
+    revision = live.edit(edit(key="manual-renew"))
+    worker = Worker(live, "fifo")
+    claim = worker.claim()
+    assert claim is not None and len(claim.jobs) == 2
+    with live.connect() as conn:
+        before = conn.execute("SELECT id,token,attempts,snapshot_id,lease_until FROM jobs WHERE state='running' "
+                              "ORDER BY id").fetchall()
+    live.edit(edit(key="newer-than-claim"))
+    worker.renew(claim)
+    worker.renew(claim)
+    with live.connect() as conn:
+        after = conn.execute("SELECT id,token,attempts,snapshot_id,lease_until FROM jobs WHERE state='running' "
+                             "ORDER BY id").fetchall()
+    for old, new in zip(before, after, strict=True):
+        assert new.pop("lease_until") > old.pop("lease_until")
+        assert new == old
+    answers, receipt = worker.compute(claim)
+    worker.publish(claim, answers, receipt, 0.1)
+    answer = live.read("return_14d", allow_stale=True)
+    assert answer.coverage.revision == revision
+    assert answer.coverage.current_revision == revision + 1 and answer.coverage.state == "stale"
+    with pytest.raises(Conflict):
+        worker.renew(claim)  # Completed work is not resurrected.
+    drain(live)
+    agreement(live)
+
+
+@pytest.mark.parametrize("invalidation", ["expired", "cancelled", "definition", "purge", "clock"])
+def test_renewal_rejects_invalid_claim_atomically(live, invalidation):
+    live.edit(edit(key="invalidated-claim"))
+    worker = Worker(live, "fifo")
+    claim = worker.claim()
+    assert claim is not None and len(claim.jobs) == 2
+    last = claim.jobs[-1]
+    if invalidation == "expired":
+        with live.connect() as conn:
+            conn.execute("UPDATE jobs SET lease_until=clock_timestamp()-interval '1 second' WHERE id=%s", (last["id"],))
+    elif invalidation == "cancelled":
+        live.cancel(last["view_name"])
+    elif invalidation == "definition":
+        live.publish_view(ViewDefinition(**{**last["definition"], "cutoff": "2024-07-16"}))
+    elif invalidation == "purge":
+        live.purge_entity("C0000")
+    else:
+        with live.connect() as conn:
+            conn.execute("UPDATE meta SET clock_unknown=true")
+    with live.connect() as conn:
+        before = conn.execute("SELECT id,lease_until FROM jobs ORDER BY id").fetchall()
+    with pytest.raises(Conflict, match="fenced"):
+        worker.renew(claim)
+    with live.connect() as conn:
+        after = conn.execute("SELECT id,lease_until FROM jobs ORDER BY id").fetchall()
+    assert after == before  # Even the still-valid first group member is untouched.
+
+
+def test_runtime_budget_releases_hung_work_and_fences_late_result(live):
+    live.edit(edit(key="hung-computation"))
+    computed, release = Event(), Event()
+
+    def hold(point):
+        if point == "compute_after":
+            computed.set()
+            assert release.wait(20)
+
+    worker = Worker(live, "fifo", lease_seconds=0.4, max_run_seconds=0.8, fault=hold)
+    with ThreadPoolExecutor(1) as pool:
+        future = pool.submit(worker.once)
+        try:
+            assert computed.wait(20)
+            time.sleep(1.5)  # Runtime budget plus the last lease has elapsed.
+            replacement = Worker(Store(live._dsn, live.namespace), "fifo").once()
+            assert replacement and not future.done()
+        finally:
+            release.set()
+        with pytest.raises(TimeoutError, match="budget"):
+            future.result(timeout=20)
+    assert live.read("return_14d").generation == replacement["generation"]
+    assert not any(t.name == "ahead-lease-renewal" for t in enumerate_threads())
+    agreement(live)
+
+
+def test_renewal_failure_cannot_publish_and_stops_background_work(live, monkeypatch):
+    live.edit(edit(key="renewal-failure"))
+    failed, release = Event(), Event()
+
+    def hold(point):
+        if point == "compute_after":
+            assert failed.wait(20)
+            assert release.wait(20)
+
+    worker = Worker(live, "fifo", lease_seconds=0.6, fault=hold)
+
+    def unavailable(claim):
+        failed.set()
+        raise ConnectionError("synthetic renewal outage")
+
+    monkeypatch.setattr(worker, "renew", unavailable)
+    with ThreadPoolExecutor(1) as pool:
+        future = pool.submit(worker.once)
+        try:
+            assert failed.wait(20)
+        finally:
+            release.set()
+        with pytest.raises(ConnectionError, match="renewal outage"):
+            future.result(timeout=20)
+    assert live.read("return_14d", allow_stale=True).coverage.state == "stale"
+    assert not any(t.name == "ahead-lease-renewal" for t in enumerate_threads())
+    drain(live)
+    agreement(live)
+
+
+def test_abrupt_loss_stops_renewal_and_recovers_without_forcing_expiry(live, tmp_path):
+    import subprocess
+    import sys
+
+    live.edit(edit(key="dead-renewing-worker"))
+    ready = tmp_path / "computed"
+    script = '''
+import os,time
+from pathlib import Path
+from aheaddb.live import Store,Worker
+store=Store(os.environ['AHEAD_TEST_POSTGRES'],os.environ['AHEAD_TEST_NAMESPACE'])
+def hold(point):
+    if point=='compute_after':
+        Path(os.environ['AHEAD_TEST_READY']).touch()
+        time.sleep(60)
+Worker(store,'fifo',lease_seconds=0.6,fault=hold).once()
+'''
+    with subprocess.Popen([sys.executable, "-c", script], env={**os.environ,
+            "AHEAD_TEST_NAMESPACE": live.namespace, "AHEAD_TEST_READY": str(ready)}) as process:
+        try:
+            deadline = time.monotonic() + 20
+            while not ready.exists() and time.monotonic() < deadline and process.poll() is None:
+                time.sleep(0.05)
+            assert ready.exists()
+            time.sleep(1.4)
+            assert Worker(live, "fifo").claim() is None
+            process.kill()
+            process.wait(timeout=10)
+        finally:
+            if process.poll() is None:
+                process.kill()
+                process.wait(timeout=10)
+    drain(Store(live._dsn, live.namespace))
+    agreement(live)
 
 
 def test_poison_attempts_backpressure(live):
