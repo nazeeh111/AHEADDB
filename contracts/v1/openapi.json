@@ -384,6 +384,87 @@
         "title": "Event",
         "type": "object"
       },
+      "GroupAnswer": {
+        "additionalProperties": false,
+        "properties": {
+          "answers": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/Answer"
+            },
+            "maxProperties": 8,
+            "minProperties": 2,
+            "title": "Answers",
+            "type": "object"
+          },
+          "api_version": {
+            "const": "v1",
+            "default": "v1",
+            "title": "Api Version",
+            "type": "string"
+          },
+          "generation": {
+            "title": "Generation",
+            "type": "string"
+          }
+        },
+        "required": [
+          "generation",
+          "answers"
+        ],
+        "title": "GroupAnswer",
+        "type": "object"
+      },
+      "GroupRead": {
+        "additionalProperties": false,
+        "properties": {
+          "allow_stale": {
+            "default": false,
+            "title": "Allow Stale",
+            "type": "boolean"
+          },
+          "generation": {
+            "anyOf": [
+              {
+                "maxLength": 128,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Generation"
+          },
+          "max_age_seconds": {
+            "anyOf": [
+              {
+                "exclusiveMinimum": 0.0,
+                "maximum": 86400.0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Max Age Seconds"
+          },
+          "names": {
+            "items": {
+              "pattern": "^[a-zA-Z][a-zA-Z0-9_-]{0,63}$",
+              "type": "string"
+            },
+            "maxItems": 8,
+            "minItems": 2,
+            "title": "Names",
+            "type": "array"
+          }
+        },
+        "required": [
+          "names"
+        ],
+        "title": "GroupRead",
+        "type": "object"
+      },
       "JobCount": {
         "additionalProperties": false,
         "properties": {
@@ -1162,6 +1243,84 @@
           }
         },
         "summary": "Status"
+      }
+    },
+    "/v1/view-groups/read": {
+      "post": {
+        "operationId": "read_group_v1_view_groups_read_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GroupRead"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GroupAnswer"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "413": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Request Entity Too Large"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unprocessable Entity"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Service Unavailable"
+          }
+        },
+        "summary": "Read Group"
       }
     },
     "/v1/views": {

@@ -1,9 +1,9 @@
 """Version 1 wire contracts. Only data, never executable model artifacts."""
 from __future__ import annotations
 
-from typing import Literal
+from typing import Annotated, Literal
 
-from pydantic import Field
+from pydantic import Field, model_validator
 
 from ..spec import Schema, StrictModel, Task
 
@@ -58,6 +58,42 @@ class Answer(StrictModel):
     published_at: str
     publication_time_semantics: Literal["transaction_clock_lower_bound"] = "transaction_clock_lower_bound"
     predictions: dict[str, float]
+
+
+def publication_boundary(answer: Answer) -> tuple[str, str, str, str, int, str, str]:
+    """Facts shared by one worker publication, before per-view freshness checks."""
+    return (answer.generation, answer.snapshot_id, answer.data_version, answer.coverage.source_id,
+            answer.coverage.revision, answer.coverage.observed_at, answer.published_at)
+
+
+class GroupRead(StrictModel):
+    names: tuple[Annotated[str, Field(pattern=r"^[a-zA-Z][a-zA-Z0-9_-]{0,63}$")], ...] = Field(
+        min_length=2, max_length=8,
+    )
+    generation: str | None = Field(default=None, min_length=1, max_length=128)
+    max_age_seconds: float | None = Field(default=None, gt=0, le=86400)
+    allow_stale: bool = False
+
+    @model_validator(mode="after")
+    def distinct_names(self) -> GroupRead:
+        if len(set(self.names)) != len(self.names):
+            raise ValueError("A group requires distinct view names")
+        return self
+
+
+class GroupAnswer(StrictModel):
+    api_version: Literal["v1"] = "v1"
+    generation: str
+    answers: dict[str, Answer] = Field(min_length=2, max_length=8)
+
+    @model_validator(mode="after")
+    def coherent_answers(self) -> GroupAnswer:
+        if (len({publication_boundary(a) for a in self.answers.values()}) != 1
+                or len({a.coverage.current_revision for a in self.answers.values()}) != 1
+                or any(a.generation != self.generation or a.task.name != name
+                       for name, a in self.answers.items())):
+            raise ValueError("Grouped answers must describe the same generation and source observation")
+        return self
 
 
 class Bootstrap(StrictModel):

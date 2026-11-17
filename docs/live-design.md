@@ -129,9 +129,20 @@ operation time. End the worker process to release its CPU/memory. The low-level
 own lifecycle must call `renew(claim)` before expiry or use `once()`.
 
 Views bundled into one generation publish mutually atomically. Separately
-requested latest views can return different generation/source revisions. Clients
-must inspect the returned boundary; cross-view latest reads are not a mutually
-atomic API. Retained reads never silently fall forward to a different generation.
+requested latest views can return different generation/source revisions.
+`POST /v1/view-groups/read` reads two to eight distinct named views under the
+same owned revision lock used by publishing, source edits and retention. Under
+PostgreSQL's default [Read Committed isolation](https://www.postgresql.org/docs/16/transaction-iso.html#XACT-READ-COMMITTED),
+successive statements can observe commits; the revision lock serializes these
+Live operations through the end of each transaction. A latest grouped read
+requires every current pointer to share a generation. A pinned read requires
+every requested view to be retained in the specified generation. Neither mode
+substitutes another generation. Every answer shares the generation ID,
+snapshot, data version, source revision, observation time and publication time.
+The worker rejects reuse of a retained generation ID. Coverage is assessed
+against one clock and source observation and each view's freshness budget. An unavailable member
+fails the entire read, except that callers may explicitly opt into stale or
+unknown coverage for complete groups.
 
 ## Planner and bounds
 

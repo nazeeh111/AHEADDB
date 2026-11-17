@@ -46,20 +46,19 @@ class App(BaseHTTPRequestHandler):
             allow_stale = parse_qs(path.query).get("allow_stale") == ["true"]
             try:
                 with Client() as client:
-                    answers = [client.read(name, max_age_seconds=60, allow_stale=allow_stale)
-                               for name in ("return_14d", "revenue_14d")]
-                    status = client.status()
-                # Separate reads can race a source edit. The later status is
-                # additional evidence: never advertise coverage older than it.
-                current_generations = {view["name"]: view["generation"] for view in status["views"]}
-                covers_head = not status["clock_unknown"] and all(
-                    (a.coverage.source_id, a.coverage.revision) == (status["source_id"], status["revision"])
-                    and current_generations.get(a.task.name) == a.generation for a in answers)
+                    group = client.read_group(("return_14d", "revenue_14d"),
+                                              max_age_seconds=60, allow_stale=allow_stale)
+                    answers = [group.answers["return_14d"], group.answers["revenue_14d"]]
+                # The group carries one source observation; each member's
+                # freshness includes its definition epoch at that observation.
+                covers_head = all(answer.coverage.state == "fresh" for answer in answers)
                 if not covers_head and not allow_stale:
-                    raise Unavailable("The source or view changed after the feature reads")
+                    raise Unavailable("The group does not cover the current source and view definitions")
+                status = {"source_id": answers[0].coverage.source_id,
+                          "revision": answers[0].coverage.current_revision,
+                          "clock_unknown": any(answer.coverage.state == "unknown" for answer in answers)}
                 return self.reply(200, {"features": [a.model_dump(mode="json") for a in answers], "status": status,
-                                       "covers_observed_head": covers_head,
-                                       "same_source_boundary": len({(a.coverage.source_id, a.coverage.revision) for a in answers}) == 1})
+                                       "covers_observed_head": covers_head, "same_source_boundary": True})
             except Unavailable:
                 return self.reply(503, {"error": "Current estimates are unavailable. A refresh may be pending or the service may be offline."})
             except Exception:

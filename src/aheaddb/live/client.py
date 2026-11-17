@@ -13,6 +13,8 @@ from .contracts import (
     EditReceipt,
     EvaluationReport,
     EvaluationRequest,
+    GroupAnswer,
+    GroupRead,
     ModelReceipt,
     ModelRecipe,
     Status,
@@ -57,6 +59,16 @@ class Client:
         if max_age_seconds is not None:
             params["max_age_seconds"] = max_age_seconds
         return Answer.model_validate(self._request("GET", f"/v1/views/{quote(name, safe='')}", params=params))
+
+    def read_group(self, names: tuple[str, ...] | list[str], *, generation: str | None = None,
+                   max_age_seconds: float | None = None, allow_stale: bool = False) -> GroupAnswer:
+        query = GroupRead.model_validate({"names": names, "generation": generation,
+                                          "max_age_seconds": max_age_seconds, "allow_stale": allow_stale})
+        group = GroupAnswer.model_validate(self._request("POST", "/v1/view-groups/read",
+                                                         json=query.model_dump(mode="json")))
+        if set(group.answers) != set(query.names) or (generation is not None and group.generation != generation):
+            raise Unavailable("Live service returned a different group than requested")
+        return group
 
     def bootstrap(self, source: Bootstrap) -> int:
         return EditReceipt.model_validate(self._request("POST", "/v1/source/bootstrap",

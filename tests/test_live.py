@@ -5,7 +5,7 @@ from __future__ import annotations
 import os
 import time
 import uuid
-from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import ThreadPoolExecutor, TimeoutError
 from threading import Event
 from threading import enumerate as enumerate_threads
 
@@ -15,6 +15,7 @@ from fastapi.testclient import TestClient
 from hypothesis import HealthCheck, given, settings
 from hypothesis import strategies as st
 from live_reference import reference_features
+from pydantic import ValidationError
 
 pytest.importorskip("psycopg")
 from psycopg import sql
@@ -23,6 +24,7 @@ from aheaddb import Snapshot
 from aheaddb.demo import demo_schema, demo_tables, demo_tasks
 from aheaddb.live import Answer, Edit, ModelRecipe, Mutation, Store, Unavailable, ViewDefinition, Worker
 from aheaddb.live.api import create_live_app
+from aheaddb.live.contracts import GroupAnswer, GroupRead
 from aheaddb.live.store import Conflict, decode_snapshot, encode_snapshot
 
 
@@ -416,6 +418,130 @@ def test_definition_change_and_purge_retention(live):
     with live.connect() as conn:
         assert conn.execute("SELECT count(*) n FROM models").fetchone()["n"] == 0
         assert conn.execute("SELECT count(*) n FROM source_rows WHERE payload->>'entity_id'='C0000'").fetchone()["n"] == 0
+
+
+GROUP_NAMES = ("return_14d", "revenue_14d")
+
+
+def test_group_read_requires_one_generation_and_explicit_staleness(live):
+    query = GroupRead(names=GROUP_NAMES)
+    group = live.read_group(query)
+    assert tuple(group.answers) == GROUP_NAMES
+    assert {answer.generation for answer in group.answers.values()} == {group.generation}
+    assert {answer.coverage.state for answer in group.answers.values()} == {"fresh"}
+
+    definition = next(v["definition"] for v in live.status()["views"] if v["name"] == GROUP_NAMES[0])
+    live.publish_view(ViewDefinition(**{**definition, "cutoff": "2024-07-16"}))
+    # Registration changed one definition at the same source revision
+    # without moving any publication pointer. The old group cannot look fresh.
+    assert {view["generation"] for view in live.status()["views"]} == {group.generation}
+    with pytest.raises(Unavailable, match="definition"):
+        live.read_group(query)
+    stale = live.read_group(GroupRead(names=GROUP_NAMES, allow_stale=True))
+    assert stale.generation == group.generation
+    assert [answer.coverage.state for answer in stale.answers.values()] == ["stale", "fresh"]
+    drain(live)
+    assert len({live.read(name).generation for name in GROUP_NAMES}) == 2
+    with pytest.raises(Unavailable, match="share a published generation"):
+        live.read_group(GroupRead(names=GROUP_NAMES, allow_stale=True))
+    with pytest.raises(Unavailable, match="contain every"):
+        live.read_group(GroupRead(names=GROUP_NAMES, generation=live.read(GROUP_NAMES[0]).generation))
+    with pytest.raises(Unavailable, match="definition"):
+        live.read_group(GroupRead(names=GROUP_NAMES, generation=group.generation))
+    retained = live.read_group(GroupRead(names=GROUP_NAMES, generation=group.generation, allow_stale=True))
+    assert retained.generation == group.generation
+    assert retained.answers[GROUP_NAMES[0]].coverage.state == "stale"
+    assert retained.answers[GROUP_NAMES[1]].coverage.state == "fresh"
+    live.retain(1)
+    with pytest.raises(Unavailable, match="contain every"):
+        live.read_group(GroupRead(names=GROUP_NAMES, generation=group.generation, allow_stale=True))
+
+
+def test_group_read_rejects_inconsistent_publication_metadata(live):
+    query = GroupRead(names=GROUP_NAMES)
+    group = live.read_group(query)
+    for keys in (("snapshot_id",), ("data_version",), ("published_at",), ("coverage", "observed_at")):
+        payload = group.model_dump()
+        target = payload["answers"][GROUP_NAMES[0]]
+        if len(keys) == 2:
+            target = target[keys[0]]
+        target[keys[-1]] += "-different"
+        with pytest.raises(ValidationError, match="same generation and source observation"):
+            GroupAnswer.model_validate(payload)
+
+    with live.connect() as conn:
+        conn.execute("UPDATE generations SET answer=jsonb_set(answer, '{published_at}', to_jsonb(%s::text)) "
+                     "WHERE id=%s AND view_name=%s", ("2024-01-01T00:00:00Z", group.generation, GROUP_NAMES[0]))
+    response = TestClient(create_live_app(live)).post("/v1/view-groups/read", json={"names": GROUP_NAMES})
+    assert response.status_code == 503
+    assert response.json()["code"] == "unavailable"
+
+
+def test_worker_refuses_reusing_generation_across_separate_publications(live):
+    definitions = {item["name"]: item["definition"] for item in live.status()["views"]}
+    for name in GROUP_NAMES:
+        cutoff = "2024-07-16" if name == GROUP_NAMES[0] else "2024-07-17"
+        live.publish_view(ViewDefinition(**{**definitions[name], "cutoff": cutoff}))
+    worker = Worker(live, "fifo")
+    first = worker.once()
+    assert first is not None
+    claim = worker.claim()
+    assert claim is not None
+    answers, receipt = worker.compute(claim)
+    assert len(answers) == 1
+    assert all(live.read(name, allow_stale=True).generation != first["generation"] for name in answers)
+    reused = {name: answer.model_copy(update={"generation": first["generation"]})
+              for name, answer in answers.items()}
+    with pytest.raises(Conflict, match="already published"):
+        worker.publish(claim, reused, receipt, 0.1)
+    assert {v["generation"] for v in live.status()["views"]} != {first["generation"]}
+    worker.publish(claim, answers, receipt, 0.1)
+
+
+def test_group_read_observes_concurrent_publication_as_a_unit(live):
+    query = GroupRead(names=GROUP_NAMES)
+    old = live.read_group(query)
+    revision = live.edit(edit())
+    before_commit, release = Event(), Event()
+
+    def hold(point):
+        if point == "publish_before_commit":
+            before_commit.set()
+            assert release.wait(5)
+
+    with ThreadPoolExecutor(2) as pool:
+        writer = pool.submit(Worker(live, "fifo", lease_seconds=30, fault=hold).once)
+        try:
+            assert before_commit.wait(5)
+            reader = pool.submit(live.read_group, query)
+            with pytest.raises(TimeoutError):
+                reader.result(timeout=0.1)
+        finally:
+            release.set()
+        assert writer.result(timeout=5)
+        group = reader.result(timeout=5)
+
+    assert group.generation != old.generation
+    assert {answer.generation for answer in group.answers.values()} == {group.generation}
+    assert {answer.coverage.revision for answer in group.answers.values()} == {revision}
+
+
+def test_http_group_read_admits_only_complete_distinct_bounded_names(live):
+    client = TestClient(create_live_app(live))
+    path = "/v1/view-groups/read"
+    response = client.post(path, json={"names": GROUP_NAMES})
+    assert response.status_code == 200
+    result = response.json()
+    assert set(result["answers"]) == set(GROUP_NAMES)
+    assert {answer["generation"] for answer in result["answers"].values()} == {result["generation"]}
+    for names in ([], [GROUP_NAMES[0]], [GROUP_NAMES[0]] * 2, [f"v{i}" for i in range(9)], ["good", "!bad"]):
+        assert client.post(path, json={"names": names}).status_code == 422
+    assert client.post(path, json={"names": [GROUP_NAMES[0], "unknown"]}).status_code == 503
+    assert client.post(path, json={"names": GROUP_NAMES, "generation": "missing"}).status_code == 503
+    live.edit(edit())
+    assert client.post(path, json={"names": GROUP_NAMES}).status_code == 503
+    stale = client.post(path, json={"names": GROUP_NAMES, "allow_stale": True}).json()
+    assert {answer["coverage"]["state"] for answer in stale["answers"].values()} == {"stale"}
 
 
 def test_http_version_host_origin_and_contract(live):
