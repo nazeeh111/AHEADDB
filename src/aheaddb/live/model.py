@@ -9,13 +9,14 @@ import pandas
 import sklearn
 from joblib.hashing import NumpyHasher
 
-from .. import compiler, modeling
+from .. import compiler, modeling, snapshot
 from ..compiler import Compiler
 from ..modeling import FittedModel
 from ..spec import digest
 
 _CODE_IDENTITY = {"compiler_code": digest(Path(compiler.__file__).read_text()),
                   "modeling_code": digest(Path(modeling.__file__).read_text()),
+                  "snapshot_code": digest(Path(snapshot.__file__).read_text()),
                   "live_model_code": digest(Path(__file__).read_text())}
 
 

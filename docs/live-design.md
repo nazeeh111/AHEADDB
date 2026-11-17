@@ -180,3 +180,19 @@ already supports point-in-time feature retrieval. Live does not claim those idea
 as new. Its bounded experiment is maintaining this existing statistical engine's
 entity predictions through owned-source edits and worker failure. Whether its
 planner improves end-to-end work or deadlines is an experimental question.
+
+
+### Lossless integer source transport
+
+Live snapshot JSON and the read-only PostgreSQL adapter reconstruct declared
+numeric columns before pandas dtype inference. Signed and unsigned 64-bit
+integers retain exact values with missing entries. A mixed integer/float column
+is refused if binary64 conversion would change any supplied integer. PostgreSQL
+`numeric`/decimal values retain the existing binary64 conversion contract.
+All-null wire columns carry missing values without a serialized pandas dtype.
+Already rounded historical payloads cannot recover their original integers.
+
+The pinned Live model runtime now includes snapshot-ingestion source identity.
+Models registered under an older runtime must be explicitly registered again;
+existing records and historical results are preserved. The v4 compiler and its
+preprocessing identity are unchanged by this source-transport correction.

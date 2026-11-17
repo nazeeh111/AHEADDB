@@ -22,7 +22,7 @@ from psycopg.types.json import Jsonb
 
 from ..compiler import Compiler
 from ..modeling import FittedModel, backtest, fit
-from ..snapshot import Snapshot
+from ..snapshot import Snapshot, numeric_column
 from ..spec import Schema, digest, timestamp
 from .contracts import (
     Answer,
@@ -119,7 +119,7 @@ def encode_snapshot(snapshot: Snapshot) -> dict:
 
 def decode_snapshot(payload: dict) -> Snapshot:
     schema = Schema.model_validate(payload["schema"])
-    tables = {name: pd.DataFrame(rows) for name, rows in payload["tables"].items()}
+    tables = {name: pd.DataFrame(rows, dtype=object) for name, rows in payload["tables"].items()}
     # Preserve declared columns even when a relation is empty.
     for event in schema.events:
         columns = [event.key, event.entity_key, event.occurred_at, event.available_at, *event.values]
@@ -127,7 +127,7 @@ def decode_snapshot(payload: dict) -> Snapshot:
             tables[event.table] = pd.DataFrame({c: pd.Series(dtype="float64" if c in event.values else "object")
                                                 for c in columns})
         for column in event.values:
-            tables[event.table][column] = pd.to_numeric(tables[event.table][column], errors="raise")
+            tables[event.table][column] = numeric_column(tables[event.table][column])
     if tables[schema.entity_table].empty:
         tables[schema.entity_table] = pd.DataFrame(columns=[schema.entity_key, schema.available_at])
     for name, columns in [(schema.entity_table, [schema.available_at]), *[(e.table, [e.occurred_at, e.available_at]) for e in schema.events]]:

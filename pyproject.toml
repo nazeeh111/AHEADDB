@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "aheaddb"
-version = "0.3.1.dev0"
+version = "0.3.1.dev1"
 description = "Durable relational predictions with explicit source coverage and freshness"
 readme = "README.md"
 requires-python = ">=3.12,<3.14"

@@ -1,0 +1,86 @@
+{
+  "product": "AHEADDB Live / SignalDesk Live",
+  "version": "0.3.1.dev1",
+  "compiler_preprocessing": "aggregates-v4:recent1,7,30:last,std,trend:utc:left-open:stable-time-key:exact-binary-sum:finite-admission",
+  "snapshot_ingestion_identity": "snapshot.py now participates in pinned model runtime",
+  "fixture": "Explicitly synthetic local shop,24customers,July15 2024 fixedinformationcutoff;privateownedUnix-onlyPostgreSQL16.2",
+  "installed_runtime": "Standardnoneditablewheel/Python3.13.11/pandas2.3.3/NumPy2.3.4/scikit-learn1.7.2;existingdependenciesreusedreadonly,noacquisition",
+  "native_recovery": "SourceAPIoffline\u2192saveintentbeforePOST\u2192same-tabreload\u2192customerandamountlocked/Retryavailable\u2192APIRestart\u2192nativeRetry\u2192onlyoneorder,source3to4/bothfresh",
+  "current_source_revision": 4,
+  "features": [
+    {
+      "task": "return_14d",
+      "model_version": "c491032be440bdbc49df62f673b42e7ae6061a74749225ba5b9614e6e66bfb7b",
+      "generation": "a870c6f3-4071-4d99-bf35-aa2ae94b9979",
+      "covered_revision": 4,
+      "cutoff": "2024-07-15 00:00:00+00:00",
+      "selected_customer": "C0000",
+      "value": 0.7004111222640368
+    },
+    {
+      "task": "revenue_14d",
+      "model_version": "0a849e7821369f7eea692cc2d70ffa52bf3de5d5769c6c7e1dccbd8c2b88fa51",
+      "generation": "a870c6f3-4071-4d99-bf35-aa2ae94b9979",
+      "covered_revision": 4,
+      "cutoff": "2024-07-15 00:00:00+00:00",
+      "selected_customer": "C0000",
+      "value": 525.0
+    }
+  ],
+  "software_checks": {
+    "Python": 214,
+    "optionalFastDFSskips": 6,
+    "Ruff": "passed",
+    "mypy_source_files": 22,
+    "shipped_handler_regression": "baselineRED/currentGREEN,includingpendingestimatehiding,store-before-send,same-tabreload/exactretry,distinctintent,422/409/mismatchedreceipt/storagefailuresandsavedcustomerdisplay"
+  },
+  "real_HTTP_controls": "Before:unconsumedresponse+retrycreatessecondorder2to3;after:originalreceipt2/source2;concurrentrepeats2/2;distinctintent3;conflictingbody409;API/app/PostgreSQLrestartpreservesoriginalreceipt2whilehead3",
+  "numeric_control": "Publishedbuildroundsnullable2**60+1beforeaggregationandreturns0;currentrestoresintegerexactlyandreturns1",
+  "viewports": [
+    320,
+    390,
+    1280
+  ],
+  "axe_A_AA": "Zero violations and zero incomplete checks in pending and recovered states at allthreewidths",
+  "keyboard": "Visible3pxfocusoutline",
+  "source_sha256": {
+    "src/aheaddb/compiler.py": "9c8849fd8d60613a2db1ff4f5e6ea26e684c1a0de16d2990fadc13ac621b3666",
+    "src/aheaddb/__init__.py": "de0bc893ac5eac8679acc1a054976ef01687fcab2813a96f84266d7bb35ebc3f",
+    "src/aheaddb/spec.py": "faa744d817732d7da4688591f6cae353349b1a2923d989b9641df4858b724272",
+    "src/aheaddb/api.py": "dbc807e53746777cdeeff04034363f8c429f4e6b2d34b562337660d78d653123",
+    "src/aheaddb/engine.py": "b04fe7b670a379da46fed1c0cdefca2b067236109ba43cba98ef869ec1e3d69d",
+    "src/aheaddb/cli.py": "d90f24f122e8e8eea4554936e59196cf629e8148260c5e725ca1977bb086f72a",
+    "src/aheaddb/mcp.py": "693c723c7a1b03a63d06ce3d1a06c3bdc34d213b4fe48af8e37ddde33acdfac1",
+    "src/aheaddb/live_cli.py": "dcb8e201c5acb06ffe3fa307c812712ab42d2956d8886414dc53b191add178ac",
+    "src/aheaddb/py.typed": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "src/aheaddb/fastdfs_backend.py": "306ae7eeb00810be38aa7ebefc491956bba012c4538c300ce0537f81a22e1bdf",
+    "src/aheaddb/demo.py": "6d7ceebfeb1a94bcc809d9760fab29e5a1f7f68f988e59f0ff9f2c05be9d1dc0",
+    "src/aheaddb/modeling.py": "f9ad831c652b143863c24a2767c56c46486751ac875d00e89b626ddaa5f5dbf4",
+    "src/aheaddb/project.py": "e1e6488df0d0ba2fe35cbd31b7e0e570fb9dd99fb75a77a0da7dbb857d5a5143",
+    "src/aheaddb/snapshot.py": "f96094a68f14558a7c528483c2291ac4b148295603b74ae3c9817b48888bca49",
+    "src/aheaddb/static/index.html": "694ae608625f3bdd13d28f3c878ee57272b755a9a37c17d36568cc56b83a1fed",
+    "src/aheaddb/live/worker.py": "1d2c561394b80800a42db480b0b108d5b8bd631e955e685e7a99012b02049c19",
+    "src/aheaddb/live/store.py": "4a8c4d0509582f0dfbdbd2c89aa41937e918e985194adc3753f45e63494ad4d7",
+    "src/aheaddb/live/planner.py": "243369b46e7b6238996692c90fb9ec5dcd3524d31c82acc4f30eeff4bd7462c1",
+    "src/aheaddb/live/maintenance.py": "275946c9c1c9938d130c24902eb51037896f564add79d3aaeaecd6b3304566cd",
+    "src/aheaddb/live/client.py": "422d2a7d51053cc92bf9b7aa24fe8d04b607af4d7b8fc39f48c11f0609b21c91",
+    "src/aheaddb/live/__init__.py": "b233f6af8cf12cfe8e3140e49558abeffdf29bdf07c8e835fa8d61fbc5adbe3a",
+    "src/aheaddb/live/model.py": "316cbfea8d442fe6d2572dbb65e550fca137f265a1b1fd4c58ad92491e73df73",
+    "src/aheaddb/live/api.py": "3957aaa62d00551b14e0867bd93b32b9140000ee4b70ce85567e83167e6ad8ff",
+    "src/aheaddb/live/contracts.py": "f7b4cf9d0ec989c6e6c69eb749399dcebfd0107d84281176939717cfea8b038f",
+    "examples/live_desk/app.py": "8f924e2deceda3bd323c61180d8cb68a6e23313d36ec4641c0636ea0585510d4",
+    "examples/live_desk/index.html": "4a52a661f355a5d545e6fbe8b8f9e6c792a411f6630f99d5b306754334f9cfad"
+  },
+  "captures": {
+    "v031-dev1-desktop.png": "8cffa941ba4d2aa702ce63da7b7fa294d757c97479d08591e136a19f50b7ba13",
+    "v031-dev1-mobile.png": "6c38596024bd6ac2639255ac3bfe411cc5e984f9d55b79054b6db60e8c7f1923",
+    "v031-dev1-pending-mobile.png": "2c82d23e572dfb7821de6a9da8b8b1f5bf20103cd4dfc792938251abaf081b0e"
+  },
+  "limits": [
+    "SyntheticCPUproductfixtures,notnewpredictivequality/throughputstudy",
+    "Noexactly-onceclaimacrosssourcereplacement;sametab/receiptretentionrequired",
+    "Oldalready-roundedpayloadscannotrecoverlostbits;oldermodelruntimeexplicitregistrationrequired",
+    "Historicalmodels/studies/recordingspreserved,notrerun/resealed",
+    "Freshindependentv2semanticagentunavailablequota;earliernumeric-onlyindependentreviewretained;newrootchecksattributed"
+  ]
+}

@@ -46,3 +46,30 @@ def test_postgres_consistent_bounded_readonly_snapshot():
             Snapshot.postgres(ReadonlyProbe(), schema)
         assert conn.execute("SELECT amount FROM ahead_events").fetchone()[0] == before
         conn.execute("DROP TABLE ahead_events,ahead_entities")
+
+
+def test_postgres_nullable_bigint_keeps_exact_source_values():
+    psycopg = pytest.importorskip("psycopg")
+    dsn = os.environ.get("AHEAD_TEST_POSTGRES")
+    if not dsn:
+        pytest.skip("No explicitly configured disposable PostgreSQL integration service")
+    schema = Schema(entity_table="integer_entities", events=(Event(table="integer_events", values=("amount",)),))
+    with psycopg.connect(dsn, autocommit=True) as conn:
+        conn.execute("CREATE TABLE integer_entities(entity_id text PRIMARY KEY, available_at timestamptz)")
+        conn.execute("CREATE TABLE integer_events(id text PRIMARY KEY, entity_id text, occurred_at timestamptz, "
+                     "available_at timestamptz, amount bigint)")
+        try:
+            conn.execute("INSERT INTO integer_entities VALUES ('a','2026-01-01')")
+            with conn.cursor() as cursor:
+                cursor.executemany("INSERT INTO integer_events VALUES (%s,'a','2026-01-02','2026-01-02',%s)",
+                                   [("1", 2**60 + 1), ("2", -(2**60)), ("3", None)])
+            snapshot = Snapshot.postgres(conn, schema)
+            values = snapshot.table("integer_events").sort_values("id").amount
+            assert values.iloc[0] == 2**60 + 1
+            assert values.iloc[1] == -(2**60)
+            assert values.isna().tolist() == [False, False, True]
+            assert str(values.dtype) == "Int64"
+            assert conn.info.transaction_status == psycopg.pq.TransactionStatus.IDLE
+            assert conn.execute("SELECT amount FROM integer_events WHERE id='1'").fetchone()[0] == 2**60 + 1
+        finally:
+            conn.execute("DROP TABLE integer_events,integer_entities")

@@ -11,6 +11,8 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import parse_qs, urlsplit
 
+import httpx
+
 from aheaddb.live import Edit, Mutation, Unavailable
 from aheaddb.live.client import Client
 
@@ -74,24 +76,34 @@ class App(BaseHTTPRequestHandler):
             if not 0 < size <= 4096:
                 raise ValueError("Invalid body size")
             body = json.loads(self.rfile.read(size))
-            if not isinstance(body.get("entity"), str) or len(body["entity"]) > 128:
+            if not isinstance(body, dict) or set(body) != {"request_id", "entity", "amount"}:
+                raise ValueError("Expected a complete saved order")
+            request_id = body["request_id"]
+            if not isinstance(request_id, str) or str(uuid.UUID(request_id)) != request_id:
+                raise ValueError("Expected a canonical request UUID")
+            if not isinstance(body.get("entity"), str) or not 0 < len(body["entity"]) <= 128:
                 raise ValueError("Choose a customer")
             # Explicit historical synthetic fixture: these are source edits today,
             # not a claim that the forecast information cutoff advances to today.
-            order = "LIVE-" + str(uuid.uuid4())
+            order = "LIVE-" + request_id
             amount = float(body.get("amount", 450))
             if not 0 < amount <= 10000:
                 raise ValueError("Amount must be in (0,10000]")
-            edit = Edit(request_id=str(uuid.uuid4()), mutations=(Mutation(table="orders", key=order, row={
+            edit = Edit(request_id=request_id, mutations=(Mutation(table="orders", key=order, row={
                 "id": order, "entity_id": body["entity"], "occurred_at": "2024-07-14T12:00:00Z",
                 "available_at": "2024-07-14T13:00:00Z", "amount": amount}),))
             with Client() as client:
                 revision = client.edit(edit)
-            return self.reply(200, {"revision": revision, "order": order})
+            return self.reply(200, {"revision": revision, "order": order, "request_id": request_id})
         except ValueError:
             return self.reply(422, {"error": "Choose a customer and a valid amount."})
+        except httpx.HTTPStatusError as exc:
+            if exc.response.status_code in {409, 422}:
+                return self.reply(exc.response.status_code, {"error": "Saved order conflicts with an existing request." if exc.response.status_code == 409
+                                                           else "Order was rejected. Correct the customer or amount."})
+            return self.reply(503, {"error": "Order was not confirmed. Retry the saved order to recover its receipt."})
         except Exception:
-            return self.reply(503, {"error": "Order was not confirmed. Check the source API before retrying."})
+            return self.reply(503, {"error": "Order was not confirmed. Retry the saved order to recover its receipt."})
 
 
 if __name__ == "__main__":

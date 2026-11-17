@@ -1,7 +1,9 @@
 """Read-only, bounded source ingestion. Snapshots own defensive copies."""
 from __future__ import annotations
 
+from numbers import Integral
 from pathlib import Path
+from typing import Literal
 
 import duckdb
 import numpy as np
@@ -12,6 +14,32 @@ from .spec import Schema, digest
 
 def quote(identifier: str) -> str:
     return '"' + identifier.replace('"', '""') + '"'
+
+
+def numeric_column(values: pd.Series) -> pd.Series:
+    """Admit a source column without rounding supplied integer values.
+
+    Callers must construct record frames with dtype=object, before pandas can
+    coerce an integer plus a missing value into binary64.
+    """
+    present = values.dropna().tolist()
+    if present and all(isinstance(value, (bool, np.bool_)) for value in present):
+        return values.astype("boolean" if values.isna().any() else "bool")
+    if present and all(isinstance(value, Integral) for value in present):
+        low, high = min(present), max(present)
+        dtype: Literal["Int64", "int64", "UInt64", "uint64"]
+        if -(2**63) <= low and high < 2**63:
+            dtype = "Int64" if values.isna().any() else "int64"
+        elif 0 <= low and high < 2**64:
+            dtype = "UInt64" if values.isna().any() else "uint64"
+        else:
+            raise ValueError("Integer source column is not representable as int64/uint64")
+        return values.astype(dtype)
+    result = pd.to_numeric(values, errors="raise")
+    for original, converted in zip(values, result, strict=True):
+        if isinstance(original, Integral) and (pd.isna(converted) or int(converted) != int(original)):
+            raise ValueError("Mixed numeric source column would lose integer precision")
+    return result
 
 
 class Snapshot:
@@ -138,14 +166,14 @@ class Snapshot:
             connection.execute("SET LOCAL lock_timeout = '1000ms'")
             for name in [schema.entity_table, *(e.table for e in schema.events)]:
                 cursor = connection.execute(f"SELECT * FROM {quote(name)} LIMIT %s", [remaining + 1])
-                tables[name] = pd.DataFrame(cursor.fetchall(), columns=[c.name for c in cursor.description])
+                tables[name] = pd.DataFrame(cursor.fetchall(), columns=[c.name for c in cursor.description], dtype=object)
                 remaining -= len(tables[name])
                 if remaining < 0:
                     raise ValueError("Snapshot row limit exceeded")
         for event in schema.events:
             for col in event.values:
                 if col in tables[event.table]:
-                    tables[event.table][col] = pd.to_numeric(tables[event.table][col], errors="raise")
+                    tables[event.table][col] = numeric_column(tables[event.table][col])
         return cls(tables, schema, max_rows)
 
     def inspect(self) -> dict:

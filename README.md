@@ -11,14 +11,17 @@ results. The client can explicitly request an older result.
 [HTTP contract](contracts/v1/openapi.json) · [Consistency](docs/live-design.md) ·
 [Verification](docs/live-verification.md)
 
-![SignalDesk Live, both features recovered at the acknowledged source revision](assets/live/current-desktop.png)
+![SignalDesk Live, both features recovered at the acknowledged source revision](assets/live/v031-dev1-desktop.png)
 
 SignalDesk Live is the included shop-planning application. Choose a customer,
 record a synthetic order, and check return probability and expected revenue.
 If a worker stops, source entry stays available while uncovered estimates are
-hidden. The app also hides old estimates during an unconfirmed edit. No outreach
-or purchases occur. [Mobile capture](assets/live/current-mobile.png) ·
-[Capture provenance](assets/live/current-capture.json).
+hidden. The app saves each order before sending it. After a lost response or same-tab
+reload, **Retry saved order** recovers the original receipt; customer and amount
+stay fixed until confirmation. It hides estimates during an unconfirmed edit.
+[Pending-order view](assets/live/v031-dev1-pending-mobile.png). No outreach
+or purchases occur. [Mobile capture](assets/live/v031-dev1-mobile.png) ·
+[Capture provenance](assets/live/v031-dev1-capture.json).
 
 ## Run it locally
 
@@ -66,14 +69,16 @@ external CDC, automatic retraining, high availability or continuous WAL/PITR.
 
 ## Development compiler and historical evidence
 
-The current checkout is **0.3.1.dev0**. Its v4 compiler preserves large integer
+The current checkout is **0.3.1.dev1**. Its v4 compiler preserves large integer
 sums and representable floating-point cancellation, rejects non-finite inputs
 and true overflow, and distinguishes missing features from invalid labels.
-Its preprocessing identity changed. **Old model recipes refuse reload** until
+Nullable integers also survive JSON and PostgreSQL ingestion without float
+rounding; lossy mixed columns are refused. Snapshot-ingestion code is part of
+the pinned model runtime. **Old model recipes refuse reload** until
 explicitly refitted; retain the previous source and backup for migration.
 [Exact numerical semantics](docs/architecture.md).
 
-Current root checks passed 130 core/adapter tests and 62 PostgreSQL Live integration cases,
+Current root checks passed 150 core/adapter tests and 64 PostgreSQL Live integration cases,
 plus Ruff and mypy. The shipped browser handler has a separate pending/unconfirmed
 edit regression. These checks establish bounded software behavior, not forecast
 quality. [Current verification and limits](docs/live-verification.md).

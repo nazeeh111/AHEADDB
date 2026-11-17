@@ -54,6 +54,16 @@ check current estimates. Current reads fail while uncovered changes remain.
 Older values require the explicit checkbox. Restart the worker to recover and
 inspect the covered source revision. No outreach or purchases occur.
 
+SignalDesk saves an order's request identity, customer and amount in this tab
+before sending it. If the response is lost, **Retry saved order** recovers the
+same durable receipt instead of adding another order. Customer and amount stay
+fixed until confirmation; reloading the same tab preserves the pending request.
+A confirmed second order receives a new identity, even for the same amount.
+Keep the tab open until confirmation: closing it removes session storage.
+Unavailable browser storage prevents a new submission. Reconcile pending work
+before replacing/restoring the owned source; retries require its retained receipt
+history and are not an exactly-once guarantee across source replacement.
+
 This fixture uses a July 15, 2024 information cutoff and synthetic historical events.
 Source verification and publication happen when you run the service. The cutoff
 stays fixed until you explicitly publish a replacement definition.

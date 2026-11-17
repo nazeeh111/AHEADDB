@@ -5,9 +5,9 @@ coverage around the preserved statistical engine. It does not establish producti
 CDC correctness, a general exactly-once system or a predictive-quality improvement.
 The [consistency contract](live-design.md) defines the boundary being tested.
 
-## Current development checks (0.3.1.dev0)
+## Current development checks (0.3.1.dev1)
 
-The current v4 compiler passed 130 core/adapter tests and all 62 PostgreSQL
+The current v4 compiler passed 150 core/adapter tests and all 64 PostgreSQL
 integration cases against a fresh, isolated PostgreSQL 16.2 Unix-socket fixture.
 Six optional FastDFS checks were skipped. Ruff passed the CI selection; mypy
 checked 22 source files. Small synthetic CPU
@@ -23,6 +23,30 @@ remaining visible after an unconfirmed order. The submit handler now hides
 estimates before sending the edit; its regression fails on the previous handler
 and passes with the fix. Known customers remain available for source entry.
 
+The nullable-integer wire control additionally reproduced `2**60 + 1` being
+rounded before aggregation on the previous published build, yielding zero for
+`[2**60 + 1, -2**60, null]`. Current JSON reconstruction preserves the original
+integer and returns one. Both record adapters share this admission boundary;
+unsupported mixed precision is refused before source edits commit.
+
+A real local HTTP control sent an order and closed its client without reading
+the response. Retrying the same body created a second order on the previous
+application (revision 2 to 3). The current app recovers the original revision-2
+receipt; concurrent repeats also return 2. A distinct order reaches revision 3,
+and changed content under the original identity returns 409. The original
+receipt remains 2 after API/app and PostgreSQL restart, with source head 3.
+This is bounded idempotence within one owned source and retained receipt history,
+not an exactly-once guarantee across source replacement.
+
+The current browser regression exercises persistence before send, same-tab
+reload/retry, confirmed new intent, definitive rejection, conflict, mismatched
+receipt, unavailable/corrupt storage and pending display. Browser transport and
+storage in that Node check are controlled fixtures; real database/HTTP receipts
+above are separate. Native controls also verify the API-offline saved intent and
+same-tab reload path. The saved customer remains visible while estimates are
+offline, and customer/amount stay locked until receipt confirmation.
+
+Snapshot-ingestion identity also fences older model runtimes.
 The v4 preprocessing identity intentionally rejects older model recipes. No
 historical model, frozen study or benchmark was refitted, rerun or resealed.
 Current captures and their runtime provenance are linked from the README.

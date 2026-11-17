@@ -906,3 +906,54 @@ def test_legacy_identifier_in_retained_history_blocks_purge(store, tmp_path):
     assert store.status()['revision'] == before
     with store.connect() as conn:
         assert conn.execute("SELECT count(*) n FROM source_rows WHERE row_key='moved-legacy-event'").fetchone()['n'] == 2
+
+
+def test_nullable_integer_transport_and_lossy_edit_rollback(store):
+    from test_snapshot_numeric_roundtrip import source, task
+
+    from aheaddb import Compiler
+
+    original = source([2**60 + 1, -(2**60), None], "Int64")
+    store.bootstrap(original)
+    restored = store.snapshot()[1]
+    assert Compiler(restored).features(task(), "2026-02-01").loc["a", "events__amount__sum"] == 1
+    assert restored.version == original.version
+    before = store.status()["revision"]
+    request = "numeric-transport-retry"
+
+    def mutation(amount):
+        return Edit(request_id=request, mutations=(Mutation(table="events", key="new", row={
+            "id": "new", "entity_id": "a", "occurred_at": "2026-01-31",
+            "available_at": "2026-01-31", "amount": amount}),))
+
+    with pytest.raises(ValueError, match="lose integer precision"):
+        store.edit(mutation(0.5))
+    assert store.status()["revision"] == before
+    with store.connect() as conn:
+        assert conn.execute("SELECT count(*) n FROM outbox WHERE request_id=%s", (request,)).fetchone()["n"] == 0
+        assert conn.execute("SELECT count(*) n FROM source_rows WHERE row_key='new'").fetchone()["n"] == 0
+    revision = store.edit(mutation(2))
+    assert revision == before + 1
+    assert store.edit(mutation(2)) == revision
+    current = store.snapshot()[1]
+    assert Compiler(current).features(task(), "2026-02-01").loc["a", "events__amount__sum"] == 3
+    with store.connect() as conn:
+        assert conn.execute("SELECT count(*) n FROM outbox WHERE request_id=%s", (request,)).fetchone()["n"] == 1
+
+
+def test_snapshot_ingestion_runtime_identity_fences_older_models(live):
+    from psycopg.types.json import Jsonb
+
+    from aheaddb.live.model import runtime_versions
+
+    versions = runtime_versions()
+    assert "snapshot_code" in versions
+    model_id = live.status()["views"][0]["definition"]["model_id"]
+    legacy = {key: value for key, value in versions.items() if key != "snapshot_code"}
+    with live.connect() as conn:
+        conn.execute("UPDATE models SET runtime=%s WHERE id=%s", (Jsonb(legacy), model_id))
+    with pytest.raises(Conflict, match="Pinned model runtime differs"):
+        live.load_model(model_id)
+    with live.connect() as conn:
+        conn.execute("UPDATE models SET runtime=%s WHERE id=%s", (Jsonb(versions), model_id))
+    assert live.load_model(model_id).task.name in {task.name for task in demo_tasks()}

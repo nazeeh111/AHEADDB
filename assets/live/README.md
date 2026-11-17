@@ -1,7 +1,8 @@
 # Capture generations
 
-`current-desktop.png`, `current-mobile.png` and `current-capture.json` describe
-the development v4 compiler. The recording below is preserved historical v0.3.0
+`v031-dev1-desktop.png`, `v031-dev1-mobile.png`, `v031-dev1-pending-mobile.png`
+and `v031-dev1-capture.json` describe development 0.3.1.dev1. The earlier
+`current-*` files preserve the separately verified dev0 captures. The recording below is preserved historical v0.3.0
 evidence, not a current compiler run.
 
 # Genuine local workflow recording
