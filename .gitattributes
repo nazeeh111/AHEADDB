@@ -1,0 +1,3 @@
+/docs/presentation/synthetic-backup.json -text -eol
+/docs/presentation/synthetic-purges.jsonl -text -eol
+/docs/presentation/evidence.zip -text -eol

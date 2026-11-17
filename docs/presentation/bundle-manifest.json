@@ -1,0 +1,78 @@
+{
+  "source_revision": "72f6fc8f956749940c933ea92c0913d54110bbdb",
+  "external_runtime": "Install the pinned repository live extra; no application code or dependencies are embedded. Restore requires owner-only ledger permissions.",
+  "files": {
+    "README.md": {
+      "bytes": 4902,
+      "sha256": "bb8dca07a92e60c88850d1b3147332d69c82f9b3b6c5d0aaf849729ef27eb92c"
+    },
+    "browser-journey.json": {
+      "bytes": 2250,
+      "sha256": "243ea9b88d4225fec76005cd60c6ab221cdd0bc17c8cff645b709329ae0d3828"
+    },
+    "capture-provenance.json": {
+      "bytes": 1017,
+      "sha256": "88241d550518304b8d71ce08d2ae5a1d761bd6f7d29a4b9ec830ed68284ed014"
+    },
+    "coverage-mobile.html": {
+      "bytes": 4137,
+      "sha256": "1dc8d0645ce3f5b3b7a2ad4ffbdd08913e46795b3e18e01111ae2ce8830765e6"
+    },
+    "coverage-mobile.png": {
+      "bytes": 91209,
+      "sha256": "5887410c6a9c6973a70934a55f778cd43517507eeb1abe2446eae8e50e829fb2"
+    },
+    "coverage-mobile.svg": {
+      "bytes": 3844,
+      "sha256": "3465408612be50bb74873dbe25038658c9a276cd82801ebfd30cd122715b05bc"
+    },
+    "coverage.html": {
+      "bytes": 4123,
+      "sha256": "e3e9c64823d5e3769992313d976963c3c890697272b1d9fb219f986d6688a243"
+    },
+    "coverage.png": {
+      "bytes": 86547,
+      "sha256": "ecf3f029a1ae72cdf0748b2d149bd0bce055f37c2fb6f4905a6c3e0aac1921b7"
+    },
+    "coverage.svg": {
+      "bytes": 3829,
+      "sha256": "8bf895cc93c8277f69ab3ef5b6669a173e49b68350deec85f2b6306f2456e536"
+    },
+    "figure-manifest.json": {
+      "bytes": 1820,
+      "sha256": "cf795b17cc213fc5f5815b2fec83708a9acc63ca6879013740191f602e6c867c"
+    },
+    "journey.json": {
+      "bytes": 18986,
+      "sha256": "b7b1b58820d870edcf44fa0604f882817477124cd9183dfd82105c5927225251"
+    },
+    "recovered-desktop.png": {
+      "bytes": 171471,
+      "sha256": "53c24bca238e4b0c3573c9a8248fcd3d29af1a1439e74579ed3cea3bacd7c702"
+    },
+    "recovered-mobile.png": {
+      "bytes": 71067,
+      "sha256": "bd154d0d6497cff6b1e97ddc28e47d8060b6f76c028d677e2db6a9c9c489f981"
+    },
+    "render.py": {
+      "bytes": 3990,
+      "sha256": "624c714285ac30c9fe904de8432001b65e0864ed21dfa2020cd6f90309ae3dc3"
+    },
+    "replay.py": {
+      "bytes": 4287,
+      "sha256": "97323ad6824118cfc526d6621644b7cc0aa7a70f60aa4bf8b176d8dc56553ddb"
+    },
+    "synthetic-backup.json": {
+      "bytes": 310539,
+      "sha256": "42cb8687e3be2dcf864a61661abc596bdae19a734cffbc6e7e12fc5ca075df88"
+    },
+    "synthetic-purges.jsonl": {
+      "bytes": 91,
+      "sha256": "49319b0405b8f2e977e0c670f800e49d744008ffd07a4426f8ee10a1407d38c0"
+    },
+    "worker-wait.png": {
+      "bytes": 155258,
+      "sha256": "a3e442cd727bd0aee7b368530d711a21de144bd3af5f056a5133720786b38bb7"
+    }
+  }
+}
