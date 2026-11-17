@@ -19,6 +19,7 @@ import psycopg
 from psycopg import sql
 from psycopg.rows import dict_row
 from psycopg.types.json import Jsonb
+from pydantic import ValidationError
 
 from ..compiler import Compiler
 from ..modeling import FittedModel, backtest, fit
@@ -30,6 +31,8 @@ from .contracts import (
     Edit,
     EvaluationReport,
     EvaluationRequest,
+    GroupAnswer,
+    GroupRead,
     ModelRecipe,
     ViewDefinition,
 )
@@ -449,30 +452,65 @@ class Store:
             row = conn.execute("SELECT * FROM generations WHERE id=%s AND view_name=%s", (selected, name)).fetchone()
             if not row:
                 raise Unavailable("No retained published generation")
-            raw = row["answer"]
-            if row["revision"] == meta["revision"] and row["definition_hash"] == view["definition_hash"] and not meta["clock_unknown"]:
-                # This is fresh *source evidence*: while holding the writer's
-                # revision lock, the committed owned source is still exactly the
-                # generation's immutable source state. Publication time is unchanged.
-                raw["coverage"]["source_as_of"] = str(meta["now"])
-            age = (meta["now"] - timestamp(raw["coverage"]["source_as_of"]).to_pydatetime()).total_seconds()
-            budget = min(max_age_seconds, view["definition"]["freshness_seconds"]) if max_age_seconds is not None else view["definition"]["freshness_seconds"]
-            reason = None
-            state: Literal["fresh", "stale", "unknown"] = "fresh"
-            if meta["clock_unknown"] or age < 0:
-                state, reason, age = "unknown", "Clock discontinuity; operator acknowledgement and refresh required", None
-            elif row["definition_hash"] != view["definition_hash"]:
-                state, reason = "stale", "View definition/model/cutoff has changed"
-            elif row["revision"] < meta["revision"]:
-                state, reason = "stale", "Committed source changes are not covered"
-            elif age > budget:
-                state, reason = "stale", "Source observation exceeds freshness budget"
-            if state != "fresh" and not allow_stale:
-                raise Unavailable(reason)
-            raw["coverage"] = Coverage(source_id=meta["source_id"], state=state, revision=row["revision"], current_revision=meta["revision"],
-                                       source_as_of=raw["coverage"]["source_as_of"],
-                                       observed_at=raw["coverage"]["observed_at"], age_seconds=age, reason=reason).model_dump()
-            return Answer.model_validate(raw)
+            return self._read_answer(meta, view, row, max_age_seconds, allow_stale)
+
+    def read_group(self, query: GroupRead) -> GroupAnswer:
+        """Read a complete published group at one owned source observation."""
+        with self.connect() as conn, conn.transaction():
+            meta = self._lock(conn)
+            views = {row["name"]: row for row in conn.execute(
+                "SELECT * FROM views WHERE name=ANY(%s)", (list(query.names),),
+            ).fetchall()}
+            if len(views) != len(query.names):
+                raise Unavailable("One or more grouped views are unknown or purged")
+            selected = query.generation
+            if selected is None:
+                latest = {view["generation"] for view in views.values()}
+                if None in latest or len(latest) != 1:
+                    raise Unavailable("Latest grouped views do not share a published generation")
+                selected = latest.pop()
+            rows = {row["view_name"]: row for row in conn.execute(
+                "SELECT * FROM generations WHERE id=%s AND view_name=ANY(%s)",
+                (selected, list(query.names)),
+            ).fetchall()}
+            if len(rows) != len(query.names):
+                raise Unavailable("Requested generation does not contain every grouped view")
+            answers = {
+                name: self._read_answer(meta, views[name], rows[name], query.max_age_seconds, query.allow_stale)
+                for name in query.names
+            }
+            try:
+                return GroupAnswer(generation=selected, answers=answers)
+            except ValidationError as exc:
+                raise Unavailable("Stored answers do not share a publication boundary") from exc
+
+    @staticmethod
+    def _read_answer(meta: dict, view: dict, row: dict,
+                     max_age_seconds: float | None, allow_stale: bool) -> Answer:
+        raw = row["answer"]
+        if row["revision"] == meta["revision"] and row["definition_hash"] == view["definition_hash"] and not meta["clock_unknown"]:
+            # This is fresh *source evidence*: while holding the writer's
+            # revision lock, the committed owned source is still exactly the
+            # generation's immutable source state. Publication time is unchanged.
+            raw["coverage"]["source_as_of"] = str(meta["now"])
+        age = (meta["now"] - timestamp(raw["coverage"]["source_as_of"]).to_pydatetime()).total_seconds()
+        budget = min(max_age_seconds, view["definition"]["freshness_seconds"]) if max_age_seconds is not None else view["definition"]["freshness_seconds"]
+        reason = None
+        state: Literal["fresh", "stale", "unknown"] = "fresh"
+        if meta["clock_unknown"] or age < 0:
+            state, reason, age = "unknown", "Clock discontinuity; operator acknowledgement and refresh required", None
+        elif row["definition_hash"] != view["definition_hash"]:
+            state, reason = "stale", "View definition/model/cutoff has changed"
+        elif row["revision"] < meta["revision"]:
+            state, reason = "stale", "Committed source changes are not covered"
+        elif age > budget:
+            state, reason = "stale", "Source observation exceeds freshness budget"
+        if state != "fresh" and not allow_stale:
+            raise Unavailable(reason)
+        raw["coverage"] = Coverage(source_id=meta["source_id"], state=state, revision=row["revision"], current_revision=meta["revision"],
+                                   source_as_of=raw["coverage"]["source_as_of"],
+                                   observed_at=raw["coverage"]["observed_at"], age_seconds=age, reason=reason).model_dump()
+        return Answer.model_validate(raw)
 
     def status(self) -> dict:
         with self.connect() as conn, conn.transaction():

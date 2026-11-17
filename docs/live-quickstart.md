@@ -114,9 +114,21 @@ coverage only after checking the owned source revision under its writer lock.
 The `published_at` wall clock is a lower bound from inside the publication
 transaction, explicitly identified by `publication_time_semantics`.
 
-Separate latest-view reads are not mutually atomic. Check source IDs/revisions
-before combining them; compatible views published in one generation share its
-transaction. After a write, require `coverage.revision >=` the edit receipt and
+Use the grouped SDK read when a decision combines views from the same publication:
+
+```python
+with Client() as client:
+    group = client.read_group(("return_14d", "revenue_14d"), max_age_seconds=30)
+    print(group.generation, group.answers["revenue_14d"].coverage.revision)
+```
+
+The grouped read raises `Unavailable` if the latest pointers disagree, a member
+is missing, or any answer fails the requested freshness contract. Pass
+`generation=...` to request a particular retained publication and
+`allow_stale=True` to explicitly inspect old or unknown coverage. The service
+does not search for another generation. Views published independently may
+never share a generation. Separate latest-view reads are still available.
+After a write, require `coverage.revision >=` the edit receipt and
 the same source ID. A restored old backup has its captured boundary, not knowledge
 of later writes. Continuous WAL/PITR disaster recovery is outside this local layer.
 

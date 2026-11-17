@@ -1,4 +1,4 @@
-"""The example must honor newer source evidence after its separate feature reads."""
+"""The example must render freshness from one complete grouped observation."""
 from __future__ import annotations
 
 import importlib.util
@@ -17,29 +17,25 @@ EXAMPLE = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(EXAMPLE)
 
 
-@pytest.mark.parametrize("change", ["none", "revision", "source", "definition", "clock"])
+@pytest.mark.parametrize("states", [
+    ("fresh", "fresh"), ("stale", "stale"), ("stale", "fresh"), ("unknown", "unknown"),
+])
 @pytest.mark.parametrize("allow_stale", [False, True])
-def test_later_status_controls_example_current_claim(monkeypatch, change, allow_stale):
+def test_example_current_claim_uses_group_coverage(monkeypatch, states, allow_stale):
     names = ("return_14d", "revenue_14d")
-    status = {"source_id": "owned-source", "revision": 1, "clock_unknown": False,
-              "views": [{"name": name, "generation": "batch"} for name in names]}
-    if change == "revision":
-        status["revision"] = 2
-    elif change == "source":
-        status["source_id"] = "replaced-source"
-    elif change == "definition":
-        status["views"][0]["generation"] = None
-    elif change == "clock":
-        status["clock_unknown"] = True
 
     class Client:
-        def read(self, name, **kwargs):
-            return SimpleNamespace(coverage=SimpleNamespace(source_id="owned-source", revision=1),
-                                   task=SimpleNamespace(name=name), generation="batch",
-                                   model_dump=lambda **kwargs: {"generation": "batch"})
-
-        def status(self):
-            return status
+        def read_group(self, requested, *, max_age_seconds, allow_stale):
+            assert requested == names
+            assert max_age_seconds == 60
+            answers = {
+                name: SimpleNamespace(
+                    coverage=SimpleNamespace(source_id="owned-source", current_revision=2, state=state),
+                    model_dump=lambda **kwargs: {"generation": "batch"},
+                )
+                for name, state in zip(names, states, strict=True)
+            }
+            return SimpleNamespace(answers=answers)
 
     @contextmanager
     def client():
@@ -53,9 +49,13 @@ def test_later_status_controls_example_current_claim(monkeypatch, change, allow_
     request.reply = lambda code, payload: result.append((code, payload))
     request.do_GET()
     code, payload = result[0]
-    assert code == (200 if change == "none" or allow_stale else 503)
+    current = states == ("fresh", "fresh")
+    assert code == (200 if current or allow_stale else 503)
     if code == 200:
-        assert payload["covers_observed_head"] == (change == "none")
+        assert payload["covers_observed_head"] == current
+        assert payload["same_source_boundary"]
+        assert payload["status"] == {"source_id": "owned-source", "revision": 2,
+                                     "clock_unknown": "unknown" in states}
 
 
 def test_order_retry_uses_identical_durable_mutation_and_response(monkeypatch):

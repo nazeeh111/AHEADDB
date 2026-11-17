@@ -15,6 +15,8 @@ from .contracts import (
     ErrorResponse,
     EvaluationReport,
     EvaluationRequest,
+    GroupAnswer,
+    GroupRead,
     ModelReceipt,
     ModelRecipe,
     Status,
@@ -82,6 +84,10 @@ def create_live_app(store: Store) -> FastAPI:
     def read(name: str, generation: str | None = None,
              max_age_seconds: float | None = Query(None, gt=0, le=86400), allow_stale: bool = False):
         return store.read(name, generation=generation, max_age_seconds=max_age_seconds, allow_stale=allow_stale)
+
+    @app.post("/v1/view-groups/read", response_model=GroupAnswer)
+    def read_group(body: GroupRead):
+        return store.read_group(body)
 
     @app.post("/v1/source/bootstrap", response_model=EditReceipt)
     def bootstrap(body: Bootstrap):

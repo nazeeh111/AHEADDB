@@ -13,7 +13,7 @@ from psycopg.types.json import Jsonb
 from ..compiler import Compiler
 from ..engine import Engine
 from ..spec import Task, digest
-from .contracts import Answer, Coverage, ViewDefinition
+from .contracts import Answer, Coverage, ViewDefinition, publication_boundary
 from .planner import Candidate, Policy, choose, context_key
 from .store import Conflict, Store, decode_snapshot
 
@@ -198,9 +198,16 @@ class Worker:
             self._validate_claim(conn, claim, meta)
             if set(answers) != {j["view_name"] for j in claim.jobs}:
                 raise Conflict("Incomplete generation")
+            boundaries = {publication_boundary(answer) for answer in answers.values()}
+            if len(boundaries) != 1:
+                raise Conflict("Answers do not share one publication boundary")
+            generation = next(iter(answers.values())).generation
+            if not generation or conn.execute("SELECT 1 FROM generations WHERE id=%s LIMIT 1", (generation,)).fetchone():
+                raise Conflict("Generation ID is empty or already published")
             for job in claim.jobs:
                 answer = answers[job["view_name"]].model_copy(update={"published_at": str(meta["now"])})
                 if (answer.snapshot_id != claim.snapshot_id or answer.coverage.revision != job["revision"]
+                        or answer.coverage.source_id != claim.source_id or answer.coverage.observed_at != claim.observed_at
                         or answer.task.name != job["view_name"]):
                     raise Conflict("Generation metadata differs from claimed work")
                 conn.execute("INSERT INTO generations(id,view_name,revision,definition_hash,snapshot_id,answer) "
