@@ -38,7 +38,14 @@ class Client:
         except httpx.TransportError as exc:
             raise Unavailable("Live service unreachable; source coverage is unknown") from exc
         if response.status_code == 503:
-            raise Unavailable(response.json().get("detail", "Live service unavailable"))
+            message = "Live service unavailable; source coverage is unknown"
+            try:
+                body = response.json()
+            except ValueError:
+                body = None
+            if isinstance(body, dict) and isinstance(body.get("detail"), str) and body["detail"]:
+                message = body["detail"]
+            raise Unavailable(message)
         response.raise_for_status()
         return response.json()
 
