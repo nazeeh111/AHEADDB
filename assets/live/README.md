@@ -1,3 +1,9 @@
+# Capture generations
+
+`current-desktop.png`, `current-mobile.png` and `current-capture.json` describe
+the development v4 compiler. The recording below is preserved historical v0.3.0
+evidence, not a current compiler run.
+
 # Genuine local workflow recording
 
 `demo.mp4` is a capture of the actual SignalDesk Live browser application against

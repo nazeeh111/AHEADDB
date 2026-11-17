@@ -40,10 +40,17 @@ A context key contains schema, history window, exact cutoff and preprocessing ve
 
 Integer sums use Python integer accumulation in history windows, nested recent
 windows and labels, preventing fixed-width wrap and preserving cancellation.
-Binary labels compare the integer result to the declared threshold before float
-conversion. Public model features and regression labels remain floating point,
-so large exact sums can still round at that boundary. Floating-point inputs keep
-their existing aggregation behavior. This changes the preprocessing identity;
+Floating-point sums and means accumulate the exact binary values of the inputs
+before one final conversion. Population spread uses robust standard-library
+statistics rather than overflowing squared deviations. Missing feature values
+are skipped and counted; missing outcome values still refuse label construction.
+Binary labels compare the exact sum to the declared threshold before float
+conversion, even when the sum itself exceeds the binary64 range. Public features
+and regression labels remain floating point, so representable results can round
+at that boundary. Unrepresentable sums or derived features refuse with an error
+rather than becoming zero, NaN or infinity. Exact reduction adds CPU work compared
+with vectorized floating reductions; no new throughput claim is made.
+This is preprocessing v4 and changes the preprocessing identity;
 Live model recipes from the previous compiler refuse reload until an explicit
 replacement is registered under the new runtime.
 

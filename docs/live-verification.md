@@ -5,7 +5,34 @@ coverage around the preserved statistical engine. It does not establish producti
 CDC correctness, a general exactly-once system or a predictive-quality improvement.
 The [consistency contract](live-design.md) defines the boundary being tested.
 
-## Executed corrected-source checks
+## Current development checks (0.3.1.dev0)
+
+The current v4 compiler passed 130 core/adapter tests and all 62 PostgreSQL
+integration cases against a fresh, isolated PostgreSQL 16.2 Unix-socket fixture.
+Six optional FastDFS checks were skipped. Ruff passed the CI selection; mypy
+checked 22 source files. Small synthetic CPU
+fits in those tests are product fixtures, not a new predictive-quality study.
+An independent root check reproduced a representable sum of `1e308 + 1e308 - 1e308`
+returning `0.0` on the previous published compiler; v4 returns `1e308`.
+
+The installed Live application advanced from source revision 1 to 2 through its
+actual order form. With the worker stopped, default reads hid the older pair;
+explicit older mode labelled revision 1 against head 2. Restarting the worker
+recovered both features at revision 2. A real API outage also exposed old values
+remaining visible after an unconfirmed order. The submit handler now hides
+estimates before sending the edit; its regression fails on the previous handler
+and passes with the fix. Known customers remain available for source entry.
+
+The v4 preprocessing identity intentionally rejects older model recipes. No
+historical model, frozen study or benchmark was refitted, rerun or resealed.
+Current captures and their runtime provenance are linked from the README.
+
+## Historical v0.3.0 checks
+
+The following totals, native fault probes and workload measurements describe the
+frozen release. They do not validate the current v4 compiler.
+
+### Executed corrected-source checks
 
 The complete diagnostic suite passed **144 tests**, with six optional FastDFS
 checks skipped, in 363.50 seconds. Ruff passed and mypy checked 22 source files.
@@ -138,8 +165,8 @@ python3 -I scripts/summarize_live.py \
 
 The original [v0.2 temporal results](v020-results.md) retain chronological holdouts,
 mature-label rules, availability assumptions, historical and tabular baselines,
-calibration measures and negative development results. The numerical engine and
-those records are preserved. Live's synthetic shop and activity streams test
+calibration measures and negative development results. Those records are preserved; the current compiler has a different preprocessing
+identity and has not rerun that study. Live's synthetic shop and activity streams test
 integration, freshness and recovery; they cannot validate a business forecast.
 A successful durable refresh can still serve a poorly chosen task or model.
 
@@ -147,16 +174,20 @@ A successful durable refresh can still serve a poorly chosen task or model.
 
 This is one local API and one worker over bounded owned data. Source silence can
 renew coverage only after verifying that owned source; it cannot detect a missing
-external feed. Separate latest-view reads are not mutually atomic. Leases do not
-renew during an arbitrarily slow model fit. Recipe replay depends on matching
+external feed. Separate latest-view reads are not mutually atomic. Workers renew leases up to their explicit compute budget. Expired or fenced
+results cannot publish; stop a stuck worker process if it continues computing. Recipe replay depends on matching
 numerical/runtime identities. Backups are private data, and offline restoration
 requires the owner's current purge ledger. Authentication, external CDC, automatic
 rolling retraining, high availability and continuous WAL/PITR recovery are outside
 this version. See [security guidance](../SECURITY.md) before using a real source.
 
-## Local release archive check
+## Frozen-release archive check
 
-Before publishing, build into a fresh directory and audit the actual archive bytes:
+The following checker belongs to the frozen v0.3.0 release. It intentionally
+requires that study’s exact measured code and therefore refuses the changed
+v4 compiler. Do not reseal historical results to make it pass on development
+source. To audit the frozen release itself, check out v0.3.0, build into a fresh
+directory and inspect its actual archive bytes:
 
 ```sh
 uv build --out-dir .runtime/release-final

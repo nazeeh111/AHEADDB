@@ -74,7 +74,7 @@ def test_nullable_integer_features_preserve_missing_count_and_zero_sum(dtype):
     assert actual.loc["empty", "events__amount__missing"] == 0
 
 
-def test_float_sum_nan_fill_behavior_remains_compatible():
+def test_v4_float_sum_retains_representable_cancellation():
     actual = compiler_for([1e308, 1e308, -1e308], "float64").features(aggregate_task(), "2026-02-01")
     for prefix in ["events", "events__recent1", "events__recent7", "events__recent30"]:
-        assert actual.loc["seen", f"{prefix}__amount__sum"] == 0
+        assert actual.loc["seen", f"{prefix}__amount__sum"] == 1e308

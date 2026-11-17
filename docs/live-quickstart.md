@@ -1,6 +1,6 @@
 # AHEADDB Live quickstart
 
-Use Python 3.12, uv and PostgreSQL 15 or newer. Everything runs locally with the
+Use Python 3.12 or 3.13, uv and PostgreSQL 15 or newer. Everything runs locally with the
 existing CPU statistical engine. No API key, model download or paid service is
 needed. Live adds an owned PostgreSQL source and durable workers; the original
 library/local inspector remain available.
@@ -25,10 +25,10 @@ configuration; do not put them in recipes, examples or source control.
 
 ## Install and run the two-feature application
 
-The pinned release checkout includes the SDK example and lockfile:
+The current development checkout includes the SDK example and lockfile:
 
 ```sh
-git clone --branch v0.3.0 https://github.com/nazeeh111/AHEADDB.git
+git clone --branch main https://github.com/nazeeh111/AHEADDB.git
 cd AHEADDB
 uv sync --frozen --extra live
 uv run --no-sync ahead live demo
@@ -134,7 +134,7 @@ The lease must cover ordinary scheduling and database delays. Cancellation,
 definition changes, clock uncertainty and purge still fence old work. Python
 callers get the same lifecycle with `Worker(store, lease_seconds=30,
 max_run_seconds=900).once()`. Manual claim/compute/publish callers must explicitly
-renew live claims. These options are not part of the historical v0.3.0 tag above.
+renew live claims. The historical v0.3.0 tag predates these options and the v4 compiler.
 
 For portable backups, choose private paths and retain the external purge ledger:
 

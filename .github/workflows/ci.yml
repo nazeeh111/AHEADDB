@@ -30,6 +30,7 @@ jobs:
       - run: uv run --no-sync ruff check src scripts tests examples/live_desk examples/live_developer.py
       - run: uv run --no-sync mypy src/aheaddb
       - run: uv run --no-sync pytest -q
+      - run: node tests/live_desk.browser.mjs
       - run: uv build
       - run: uv run --no-sync ahead demo run/ci
       - run: uv run --no-sync ahead predict --project run/ci/ahead.json > /tmp/predictions.json

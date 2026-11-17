@@ -1,22 +1,58 @@
 """A bounded relational task compiler, shared by training and serving."""
 from __future__ import annotations
 
+import math
+import statistics
+from fractions import Fraction
+
+import numpy as np
 import pandas as pd
 
 from .snapshot import Snapshot, quote
 from .spec import Task, timestamp
 
 
+def _finite(value: int | float | Fraction) -> float:
+    """Admit only representable binary64 results, never mask arithmetic failure."""
+    try:
+        result = float(value)
+    except (OverflowError, ValueError) as exc:
+        raise ValueError("Numeric aggregate is not representable as finite binary64") from exc
+    if not math.isfinite(result):
+        raise ValueError("Numeric aggregate is not representable as finite binary64")
+    return result
+
+
+def _numeric_groups(frame: pd.DataFrame, entity_key: str, column: str):
+    for key, values in frame.groupby(entity_key, sort=False)[column]:
+        yield key, values.dropna().tolist()
+
+
+def _exact_sum(values: list) -> int | Fraction:
+    # Preserve both integer thresholds and exact binary floating input values.
+    total = sum((int(v) if isinstance(v, int) else Fraction.from_float(float(v))
+                 for v in values), 0)
+    return total
+
+
 def _grouped_sum(frame: pd.DataFrame, entity_key: str, column: str) -> pd.Series:
-    values = frame[column]
-    if pd.api.types.is_integer_dtype(values.dtype):
-        # Preserve integer cancellation and prevent fixed-width overflow.
-        values = values.astype(object)
-    return values.groupby(frame[entity_key], sort=False).sum()
+    return pd.Series({key: _exact_sum(values)
+                      for key, values in _numeric_groups(frame, entity_key, column)}, dtype=object)
+
+
+def _grouped_mean(frame: pd.DataFrame, entity_key: str, column: str) -> pd.Series:
+    return pd.Series({key: _finite(Fraction(_exact_sum(values)) / len(values)) if values else 0.0
+                      for key, values in _numeric_groups(frame, entity_key, column)}, dtype=float)
+
+
+def _grouped_std(frame: pd.DataFrame, entity_key: str, column: str) -> pd.Series:
+    # pstdev avoids overflow in squared deviations and uses population variance.
+    return pd.Series({key: _finite(statistics.pstdev(values)) if values else 0.0
+                      for key, values in _numeric_groups(frame, entity_key, column)}, dtype=float)
 
 
 class Compiler:
-    PREPROCESSING = "aggregates-v3:recent1,7,30:last,std,trend:utc:left-open:stable-time-key:exact-integer-sum"
+    PREPROCESSING = "aggregates-v4:recent1,7,30:last,std,trend:utc:left-open:stable-time-key:exact-binary-sum:finite-admission"
 
     def __init__(self, snapshot: Snapshot):
         self.snapshot = snapshot
@@ -69,10 +105,10 @@ class Compiler:
             columns[f"{e.table}__recency"] = (t - last).dt.total_seconds().div(86400).fillna(task.history_days + 1)
             for c in e.values:
                 columns[f"{e.table}__{c}__sum"] = (
-                    _grouped_sum(frame, e.entity_key, c).astype(float).reindex(ids).fillna(0))
-                columns[f"{e.table}__{c}__mean"] = groups[c].mean().reindex(ids).fillna(0)
+                    _grouped_sum(frame, e.entity_key, c).map(_finite).astype(float).reindex(ids).fillna(0))
+                columns[f"{e.table}__{c}__mean"] = _grouped_mean(frame, e.entity_key, c).reindex(ids, fill_value=0)
                 columns[f"{e.table}__{c}__missing"] = count - groups[c].count().reindex(ids, fill_value=0)
-                columns[f"{e.table}__{c}__std"] = groups[c].std(ddof=0).reindex(ids).fillna(0)
+                columns[f"{e.table}__{c}__std"] = _grouped_std(frame, e.entity_key, c).reindex(ids, fill_value=0)
                 # groupby.last skips nulls; the missing-count feature preserves that limitation.
                 latest = groups[c].last().reindex(ids).fillna(0)
                 columns[f"{e.table}__{c}__last"] = latest
@@ -85,9 +121,12 @@ class Compiler:
                 columns[f"{e.table}__recent{days}__count"] = recent.size().reindex(ids, fill_value=0)
                 for c in e.values:
                     columns[f"{e.table}__recent{days}__{c}__sum"] = (
-                        _grouped_sum(recent_frame, e.entity_key, c).astype(float).reindex(ids).fillna(0))
-                    columns[f"{e.table}__recent{days}__{c}__mean"] = recent[c].mean().reindex(ids).fillna(0)
-        return pd.DataFrame(columns, index=index).astype(float)
+                        _grouped_sum(recent_frame, e.entity_key, c).map(_finite).astype(float).reindex(ids).fillna(0))
+                    columns[f"{e.table}__recent{days}__{c}__mean"] = _grouped_mean(recent_frame, e.entity_key, c).reindex(ids, fill_value=0)
+        result = pd.DataFrame(columns, index=index).astype(float)
+        if not np.isfinite(result.to_numpy()).all():
+            raise ValueError("Derived feature is not representable as finite binary64")
+        return result
 
     def labels(self, task: Task, cutoff: str | pd.Timestamp, as_of: str | pd.Timestamp) -> pd.Series:
         self.validate(task)
@@ -111,7 +150,7 @@ class Compiler:
         y = y.reindex(self.entities(t), fill_value=0)
         if task.kind == "binary":
             y = y.gt(task.outcome.threshold)
-        return y.astype(float).rename("target")
+        return y.map(_finite).astype(float).rename("target")
 
     def provenance(self, task: Task, cutoff: str, entity_id: str) -> dict:
         t = timestamp(cutoff)
