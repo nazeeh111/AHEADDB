@@ -1,0 +1,25 @@
+{
+  "source_revision": "72f6fc8f956749940c933ea92c0913d54110bbdb",
+  "synthetic": true,
+  "browser_record": "browser-journey.json",
+  "capture_states": {
+    "worker-wait.png": "source3,covered2,normalreadsrefused",
+    "recovered-desktop.png": "source3,covered3,1280pxfullpage",
+    "recovered-mobile.png": "source3,covered3,fresh390x1100viewportafterfontsandtwoanimationframes"
+  },
+  "mobile_replaced_reason": "Initial resize/fullpage capture repeated viewport content; replaced by a successful freshpage viewport capture. No UI image editing or product source changes.",
+  "files": {
+    "worker-wait.png": {
+      "bytes": 155258,
+      "sha256": "a3e442cd727bd0aee7b368530d711a21de144bd3af5f056a5133720786b38bb7"
+    },
+    "recovered-desktop.png": {
+      "bytes": 171471,
+      "sha256": "53c24bca238e4b0c3573c9a8248fcd3d29af1a1439e74579ed3cea3bacd7c702"
+    },
+    "recovered-mobile.png": {
+      "bytes": 71067,
+      "sha256": "bd154d0d6497cff6b1e97ddc28e47d8060b6f76c028d677e2db6a9c9c489f981"
+    }
+  }
+}

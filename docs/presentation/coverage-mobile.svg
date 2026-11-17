@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="1160" viewBox="0 0 440 1160" role="img" aria-labelledby="coverage-mobile-title coverage-mobile-desc" font-family="Arial"><title id="coverage-mobile-title">AHEADDB source coverage across an order</title><desc id="coverage-mobile-desc">A synthetic order advances source revision one to two while current reads refuse the older generation until the worker publishes revision two.</desc><rect width="100%" height="100%" fill="#f4f0e8"/>
+<text x="32" y="40" font-size="12" font-weight="700" fill="#65685d">AHEADDB / A RECORDED SYNTHETIC JOURNEY</text>
+<text x="32" y="96" font-size="29" font-weight="700" fill="#292d2a">Committed is not covered.</text>
+<text x="32" y="132" font-size="16" font-weight="400" fill="#65685d">The worker must earn the next source revision.</text>
+<text x="32" y="205" font-size="22" font-weight="700" fill="#292d2a">01 / Current</text>
+<line x1="32" y1="227" x2="408" y2="227" stroke="#a29e92" stroke-width="1.5" stroke-dasharray=""/>
+<text x="32" y="268" font-size="16" font-weight="400" fill="#65685d">Source head</text>
+<text x="262" y="268" font-size="24" font-weight="700" fill="#292d2a">rev 1</text>
+<text x="32" y="308" font-size="16" font-weight="400" fill="#65685d">Generation covers</text>
+<text x="262" y="308" font-size="24" font-weight="700" fill="#292d2a">rev 1</text>
+<text x="32" y="358" font-size="21" font-weight="700" fill="#292d2a">Accepted current read</text>
+<text x="32" y="392" font-size="20" font-weight="400" fill="#292d2a">C0000 revenue: 97.3</text>
+<text x="32" y="424" font-size="14" font-weight="400" fill="#65685d">Same task, model and July 15 cutoff</text>
+<text x="32" y="475" font-size="22" font-weight="700" fill="#292d2a">02 / Order committed</text>
+<line x1="32" y1="497" x2="408" y2="497" stroke="#a29e92" stroke-width="1.5" stroke-dasharray=""/>
+<text x="32" y="538" font-size="16" font-weight="400" fill="#65685d">Source head</text>
+<text x="262" y="538" font-size="24" font-weight="700" fill="#292d2a">rev 2</text>
+<text x="32" y="578" font-size="16" font-weight="400" fill="#65685d">Generation covers</text>
+<text x="262" y="578" font-size="24" font-weight="700" fill="#a54228">rev 1</text>
+<text x="32" y="628" font-size="21" font-weight="700" fill="#a54228">Current read refused</text>
+<text x="32" y="662" font-size="20" font-weight="400" fill="#292d2a">Older opt-in: 97.3</text>
+<text x="32" y="694" font-size="14" font-weight="400" fill="#65685d">450-unit order; worker pending</text>
+<text x="32" y="745" font-size="22" font-weight="700" fill="#292d2a">03 / Worker recovered</text>
+<line x1="32" y1="767" x2="408" y2="767" stroke="#a29e92" stroke-width="1.5" stroke-dasharray=""/>
+<text x="32" y="808" font-size="16" font-weight="400" fill="#65685d">Source head</text>
+<text x="262" y="808" font-size="24" font-weight="700" fill="#292d2a">rev 2</text>
+<text x="32" y="848" font-size="16" font-weight="400" fill="#65685d">Generation covers</text>
+<text x="262" y="848" font-size="24" font-weight="700" fill="#292d2a">rev 2</text>
+<text x="32" y="898" font-size="21" font-weight="700" fill="#292d2a">Accepted current read</text>
+<text x="32" y="932" font-size="20" font-weight="400" fill="#292d2a">C0000 revenue: 315.0</text>
+<text x="32" y="964" font-size="14" font-weight="400" fill="#65685d">Same task, model and July 15 cutoff</text>
+<line x1="32" y1="1035" x2="408" y2="1035" stroke="#a29e92" stroke-width="1.5" stroke-dasharray=""/>
+<text x="32" y="1065" font-size="20" font-weight="700" fill="#292d2a">Freshness is source coverage,</text>
+<text x="32" y="1097" font-size="20" font-weight="700" fill="#292d2a">not the timestamp on an older result.</text>
+<text x="32" y="1132" font-size="11" font-weight="400" fill="#65685d">Synthetic shop units · persistence model · not forecast validation</text>
+</svg>

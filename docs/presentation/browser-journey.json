@@ -1,0 +1,51 @@
+{
+  "errors": [],
+  "blocked": [],
+  "synthetic": true,
+  "source_revision": "72f6fc8f956749940c933ea92c0913d54110bbdb",
+  "before": {
+    "message": "Both features were verified at this check.",
+    "revenue": "315",
+    "return": "53.6%",
+    "boundary": "Owned source head: revision 2Return feature: revision 2 · freshRevenue feature: revision 2 · freshReturn information cutoff: 2024-07-15 UTCRevenue information cutoff: 2024-07-15 UTCSource verified: 2026-11-17 10:42:49.201067+00:00",
+    "viewport": 1280,
+    "scroll": 1280
+  },
+  "uncovered": {
+    "message": "Current estimates are unavailable. A refresh may be pending or the service may be offline.",
+    "revenue": "Unavailable",
+    "return": "Unavailable",
+    "boundary": "Source coverage has not been verified. Previous estimates are hidden.",
+    "viewport": 1280,
+    "scroll": 1280
+  },
+  "explicit_older": {
+    "message": "Explicit older-result view: uncovered / uncovered. These estimates are not current.",
+    "revenue": "315",
+    "return": "53.6%",
+    "boundary": "Owned source head: revision 3Return feature: revision 2 · uncoveredRevenue feature: revision 2 · uncoveredReturn information cutoff: 2024-07-15 UTCRevenue information cutoff: 2024-07-15 UTCSource verified: 2026-11-17 10:41:46.708330+00:00",
+    "viewport": 1280,
+    "scroll": 1280
+  },
+  "after": {
+    "message": "Both features were verified at this check.",
+    "revenue": "420",
+    "return": "62.1%",
+    "boundary": "Owned source head: revision 3Return feature: revision 3 · freshRevenue feature: revision 3 · freshReturn information cutoff: 2024-07-15 UTCRevenue information cutoff: 2024-07-15 UTCSource verified: 2026-11-17 10:42:51.205737+00:00",
+    "viewport": 1280,
+    "scroll": 1280
+  },
+  "mobile": {
+    "message": "Both features were verified at this check.",
+    "revenue": "420",
+    "return": "62.1%",
+    "boundary": "Owned source head: revision 3Return feature: revision 3 · freshRevenue feature: revision 3 · freshReturn information cutoff: 2024-07-15 UTCRevenue information cutoff: 2024-07-15 UTCSource verified: 2026-11-17 10:42:51.205737+00:00",
+    "viewport": 390,
+    "scroll": 390
+  },
+  "invalid_form": {
+    "orders_sent": 0,
+    "valid": false
+  },
+  "pass": true
+}

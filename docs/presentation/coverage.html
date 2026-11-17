@@ -1,0 +1,37 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>AHEADDB coverage</title><style>body{margin:0}.diagram-container{overflow-x:auto}svg{display:block;min-width:1200px}</style><div class="diagram-container"><svg xmlns="http://www.w3.org/2000/svg" width="1200" height="740" viewBox="0 0 1200 740" role="img" aria-labelledby="coverage-title coverage-desc" font-family="Arial"><title id="coverage-title">AHEADDB source coverage across an order</title><desc id="coverage-desc">A synthetic order advances source revision one to two while current reads refuse the older generation until the worker publishes revision two.</desc><rect width="100%" height="100%" fill="#f4f0e8"/>
+<text x="32" y="40" font-size="16" font-weight="700" fill="#65685d">AHEADDB / A RECORDED SYNTHETIC JOURNEY</text>
+<text x="32" y="96" font-size="48" font-weight="700" fill="#292d2a">Committed is not covered.</text>
+<text x="32" y="132" font-size="23" font-weight="400" fill="#65685d">The worker must earn the next source revision.</text>
+<text x="32" y="225" font-size="22" font-weight="700" fill="#292d2a">01 / Current</text>
+<line x1="32" y1="247" x2="386" y2="247" stroke="#a29e92" stroke-width="1.5" stroke-dasharray=""/>
+<text x="32" y="288" font-size="16" font-weight="400" fill="#65685d">Source head</text>
+<text x="262" y="288" font-size="24" font-weight="700" fill="#292d2a">rev 1</text>
+<text x="32" y="328" font-size="16" font-weight="400" fill="#65685d">Generation covers</text>
+<text x="262" y="328" font-size="24" font-weight="700" fill="#292d2a">rev 1</text>
+<text x="32" y="378" font-size="21" font-weight="700" fill="#292d2a">Accepted current read</text>
+<text x="32" y="412" font-size="20" font-weight="400" fill="#292d2a">C0000 revenue: 97.3</text>
+<text x="32" y="444" font-size="16" font-weight="400" fill="#65685d">Same task, model and July 15 cutoff</text>
+<text x="422" y="225" font-size="22" font-weight="700" fill="#292d2a">02 / Order committed</text>
+<line x1="422" y1="247" x2="776" y2="247" stroke="#a29e92" stroke-width="1.5" stroke-dasharray=""/>
+<text x="422" y="288" font-size="16" font-weight="400" fill="#65685d">Source head</text>
+<text x="652" y="288" font-size="24" font-weight="700" fill="#292d2a">rev 2</text>
+<text x="422" y="328" font-size="16" font-weight="400" fill="#65685d">Generation covers</text>
+<text x="652" y="328" font-size="24" font-weight="700" fill="#a54228">rev 1</text>
+<text x="422" y="378" font-size="21" font-weight="700" fill="#a54228">Current read refused</text>
+<text x="422" y="412" font-size="20" font-weight="400" fill="#292d2a">Older opt-in: 97.3</text>
+<text x="422" y="444" font-size="16" font-weight="400" fill="#65685d">450-unit order; worker pending</text>
+<text x="812" y="225" font-size="22" font-weight="700" fill="#292d2a">03 / Worker recovered</text>
+<line x1="812" y1="247" x2="1166" y2="247" stroke="#a29e92" stroke-width="1.5" stroke-dasharray=""/>
+<text x="812" y="288" font-size="16" font-weight="400" fill="#65685d">Source head</text>
+<text x="1042" y="288" font-size="24" font-weight="700" fill="#292d2a">rev 2</text>
+<text x="812" y="328" font-size="16" font-weight="400" fill="#65685d">Generation covers</text>
+<text x="1042" y="328" font-size="24" font-weight="700" fill="#292d2a">rev 2</text>
+<text x="812" y="378" font-size="21" font-weight="700" fill="#292d2a">Accepted current read</text>
+<text x="812" y="412" font-size="20" font-weight="400" fill="#292d2a">C0000 revenue: 315.0</text>
+<text x="812" y="444" font-size="16" font-weight="400" fill="#65685d">Same task, model and July 15 cutoff</text>
+<line x1="32" y1="538" x2="1168" y2="538" stroke="#a29e92" stroke-width="1.5" stroke-dasharray=""/>
+<text x="32" y="568" font-size="28" font-weight="700" fill="#292d2a">Freshness is source coverage,</text>
+<text x="32" y="600" font-size="28" font-weight="700" fill="#292d2a">not the timestamp on an older result.</text>
+<text x="32" y="712" font-size="16" font-weight="400" fill="#65685d">Synthetic shop units · persistence model · not forecast validation</text>
+</svg>
+</div></html>

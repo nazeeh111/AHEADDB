@@ -1,0 +1,49 @@
+{
+  "source_revision": "72f6fc8f956749940c933ea92c0913d54110bbdb",
+  "meaning": "Recorded synthetic integration behavior; no predictive quality or physical claim. Values are synthetic shop units, fixed2024-07-15 information cutoff.",
+  "files": {
+    "journey.json": {
+      "bytes": 18986,
+      "sha256": "b7b1b58820d870edcf44fa0604f882817477124cd9183dfd82105c5927225251"
+    },
+    "synthetic-backup.json": {
+      "bytes": 310539,
+      "sha256": "42cb8687e3be2dcf864a61661abc596bdae19a734cffbc6e7e12fc5ca075df88"
+    },
+    "synthetic-purges.jsonl": {
+      "bytes": 91,
+      "sha256": "49319b0405b8f2e977e0c670f800e49d744008ffd07a4426f8ee10a1407d38c0"
+    },
+    "render.py": {
+      "bytes": 3990,
+      "sha256": "624c714285ac30c9fe904de8432001b65e0864ed21dfa2020cd6f90309ae3dc3"
+    },
+    "coverage.svg": {
+      "bytes": 3829,
+      "sha256": "8bf895cc93c8277f69ab3ef5b6669a173e49b68350deec85f2b6306f2456e536"
+    },
+    "coverage-mobile.svg": {
+      "bytes": 3844,
+      "sha256": "3465408612be50bb74873dbe25038658c9a276cd82801ebfd30cd122715b05bc"
+    },
+    "coverage.html": {
+      "bytes": 4123,
+      "sha256": "e3e9c64823d5e3769992313d976963c3c890697272b1d9fb219f986d6688a243"
+    },
+    "coverage-mobile.html": {
+      "bytes": 4137,
+      "sha256": "1dc8d0645ce3f5b3b7a2ad4ffbdd08913e46795b3e18e01111ae2ce8830765e6"
+    }
+  },
+  "raster_method": "Actual installed Chrome SVG element capture from matching static HTML; all30text nodes per variant verified as Arial and in bounds, no text overlaps.",
+  "raster_files": {
+    "coverage.png": {
+      "bytes": 86547,
+      "sha256": "ecf3f029a1ae72cdf0748b2d149bd0bce055f37c2fb6f4905a6c3e0aac1921b7"
+    },
+    "coverage-mobile.png": {
+      "bytes": 91209,
+      "sha256": "5887410c6a9c6973a70934a55f778cd43517507eeb1abe2446eae8e50e829fb2"
+    }
+  }
+}

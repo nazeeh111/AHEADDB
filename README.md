@@ -1,27 +1,29 @@
 # AHEADDB Live
 
-**Predictions that say which source they cover.**
+**A committed order is not yet a covered forecast.**
 
-A Python library and local PostgreSQL service for temporal predictions over
-relational data. Source edits and refresh jobs commit together. Workers publish
-complete, identified generations; current reads refuse uncovered, stale or unknown
-results. The client can explicitly request an older result.
+AHEADDB adds temporal predictions to a PostgreSQL source and makes their coverage explicit. Source edits and refresh jobs commit together. Workers publish complete generations; current reads refuse results that do not cover the source. An older result is available only when the caller asks for it.
 
-[Run the application](docs/live-quickstart.md) · [Python SDK](#use-the-library) ·
-[HTTP contract](contracts/v1/openapi.json) · [Consistency](docs/live-design.md) ·
-[Verification](docs/live-verification.md)
+[Run SignalDesk](docs/live-quickstart.md) · [Replay this example](docs/presentation/README.md) · [Python SDK](#use-the-library) · [HTTP contract](contracts/v1/openapi.json)
 
-![SignalDesk Live, both features recovered at the acknowledged source revision](assets/live/v031-dev1-desktop.png)
+<picture>
+  <source media="(max-width: 600px)" srcset="docs/presentation/coverage-mobile.png">
+  <img src="docs/presentation/coverage.png" alt="Recorded synthetic workflow: source and generation both cover revision 1; a 450-unit order commits revision 2 while current reads refuse generation1; after worker recovery generation2 is accepted. C0000 expected revenue changes from 97.3 to 315.0 synthetic shop units, with the same task, model and July 15 information cutoff.">
+</picture>
 
-SignalDesk Live is the included shop-planning application. Choose a customer,
-record a synthetic order, and check return probability and expected revenue.
-If a worker stops, source entry stays available while uncovered estimates are
-hidden. The app saves each order before sending it. After a lost response or same-tab
-reload, **Retry saved order** recovers the original receipt; customer and amount
-stay fixed until confirmation. It hides estimates during an unconfirmed edit.
-[Pending-order view](assets/live/v031-dev1-pending-mobile.png). No outreach
-or purchases occur. [Mobile capture](assets/live/v031-dev1-mobile.png) ·
-[Capture provenance](assets/live/v031-dev1-capture.json).
+The distinction is observable. In the [completed synthetic run](docs/presentation/journey.json), a **450-unit order** advances source revision **1→2**. Both current feature reads refuse the uncovered edit. Explicit older-result reads remain marked **stale**. The worker then publishes revision 2; C0000's expected-revenue output changes **97.3→315.0 synthetic shop units**, with task, model and July 15, 2024 cutoff fixed. These values demonstrate software integration, not forecasting accuracy.
+
+## One source boundary, visible recovery
+
+- **A receipt belongs to the source edit.** Retrying the same request recovers revision 2 without adding another order. An invalid orphan-customer edit leaves the source revision unchanged.
+- **A generation belongs to a covered revision.** A fresh Store instance reopens the same published generation. Separate latest-view reads still require comparing source IDs and revisions before combining them.
+- **A backup belongs to a captured boundary.** The data-only export reopens in a fresh namespace with its clock marked **unknown**. Restore does not claim knowledge of later writes or silently turn old coverage fresh. [Files, replay route and limits](docs/presentation/README.md).
+
+SignalDesk Live is the included shop-planning application. Choose a customer, record a synthetic order and inspect return probability and expected revenue. Source entry remains available when the worker is stopped, while current estimates are hidden. The application saves the request in this tab before sending; **Retry saved order** recovers a lost receipt and keeps customer/amount fixed until confirmation.
+
+[Actual recovered desktop](docs/presentation/recovered-desktop.png) · [Actual 390px phone](docs/presentation/recovered-mobile.png) · [Worker-wait capture](docs/presentation/worker-wait.png) · [Browser journey](docs/presentation/browser-journey.json)
+
+The captures show a separate real browser order advancing revision 2→3. No outreach, purchases, private records, external model or paid service is involved. The existing warm-paper SignalDesk interface is preserved.
 
 ## Run it locally
 

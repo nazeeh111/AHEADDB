@@ -1,0 +1,532 @@
+{
+  "source_revision": "72f6fc8f956749940c933ea92c0913d54110bbdb",
+  "synthetic": true,
+  "seed": 19,
+  "entities": 24,
+  "selected_entity": "C0000",
+  "order_amount": 450,
+  "cutoff": "2024-07-15",
+  "initial_status": {
+    "api_version": "v1",
+    "source_id": "a0fdecdc-00c7-4ad8-890e-96f75162765e",
+    "revision": 1,
+    "processed_revision": 1,
+    "clock_unknown": false,
+    "purge_epoch": 0,
+    "views": [
+      {
+        "name": "return_14d",
+        "definition": {
+          "cutoff": "2024-07-15 00:00:00+00:00",
+          "model_id": "c294277c4f811b10d9387197896cffa76548c183a93075f4c1d7501dd418195a",
+          "freshness_seconds": 60
+        },
+        "generation": "d5ead3b7-f60d-4615-962f-fc95cd96954c"
+      },
+      {
+        "name": "revenue_14d",
+        "definition": {
+          "cutoff": "2024-07-15 00:00:00+00:00",
+          "model_id": "a4475c3b15c6bc89705f865a8aad954ec891cf7795b72e4dc4fc2031720e3c7d",
+          "freshness_seconds": 60
+        },
+        "generation": "d5ead3b7-f60d-4615-962f-fc95cd96954c"
+      }
+    ],
+    "jobs": [
+      {
+        "state": "done",
+        "count": 2
+      }
+    ]
+  },
+  "before": {
+    "return_14d": {
+      "api_version": "v1",
+      "generation": "d5ead3b7-f60d-4615-962f-fc95cd96954c",
+      "task": {
+        "name": "return_14d",
+        "kind": "binary",
+        "outcome": {
+          "table": "orders",
+          "aggregation": "count",
+          "column": null,
+          "threshold": 0.0
+        },
+        "horizon_days": 14,
+        "history_days": 60,
+        "label_delay_days": 0,
+        "metric": "roc_auc"
+      },
+      "task_version": "4fcc3d8a39d877f84b43db912c31cc1c2dc71319dc55a04866aa557a24096ece",
+      "model_id": "c294277c4f811b10d9387197896cffa76548c183a93075f4c1d7501dd418195a",
+      "model_version": "9529de8d74383ce6af3964693df99e03800bc8c856792ba482ecb69359870601",
+      "preprocessing": "aggregates-v4:recent1,7,30:last,std,trend:utc:left-open:stable-time-key:exact-binary-sum:finite-admission",
+      "prediction_cutoff": "2024-07-15 00:00:00+00:00",
+      "snapshot_id": "f0d3d07a47d483ae6624ed74ea0cc543e7f1a1f0b44d4782b1d98803168fee01",
+      "data_version": "36774a1e21deee268f9679f4a0f2bdc5af81df6d468940ec593a7b263a25fe3e",
+      "coverage": {
+        "source_id": "a0fdecdc-00c7-4ad8-890e-96f75162765e",
+        "state": "fresh",
+        "revision": 1,
+        "current_revision": 1,
+        "source_as_of": "2026-11-17 10:41:46.660827+00:00",
+        "observed_at": "2026-11-17 10:41:46.567579+00:00",
+        "age_seconds": 0.0,
+        "reason": null
+      },
+      "published_at": "2026-11-17 10:41:46.654592+00:00",
+      "publication_time_semantics": "transaction_clock_lower_bound",
+      "predictions": {
+        "C0000": 0.43633105057177757,
+        "C0001": 0.7906703019530625,
+        "C0002": 0.8957255530408107,
+        "C0003": 0.8261956043047765,
+        "C0004": 0.9107014323332245,
+        "C0005": 0.6206015941337876,
+        "C0006": 0.5358812313100537,
+        "C0007": 0.6206015941337876,
+        "C0008": 0.7460571013964221,
+        "C0009": 0.9107014323332245,
+        "C0010": 0.5358812313100537,
+        "C0011": 0.43633105057177757,
+        "C0012": 0.32621987500397953,
+        "C0013": 0.7906703019530625,
+        "C0014": 0.8261956043047765,
+        "C0015": 0.7906703019530625,
+        "C0016": 0.8261956043047765,
+        "C0017": 0.6901229401257377,
+        "C0018": 0.32621987500397953,
+        "C0019": 0.6206015941337876,
+        "C0020": 0.32621987500397953,
+        "C0021": 0.8261956043047765,
+        "C0022": 0.9641040871529745,
+        "C0023": 0.6901229401257377
+      }
+    },
+    "revenue_14d": {
+      "api_version": "v1",
+      "generation": "d5ead3b7-f60d-4615-962f-fc95cd96954c",
+      "task": {
+        "name": "revenue_14d",
+        "kind": "regression",
+        "outcome": {
+          "table": "orders",
+          "aggregation": "sum",
+          "column": "amount",
+          "threshold": 0.0
+        },
+        "horizon_days": 14,
+        "history_days": 60,
+        "label_delay_days": 0,
+        "metric": "mae"
+      },
+      "task_version": "7abf7e7ddb05a1166af55f53619a9040bd57864f5cd4d17de15d10741ba83db4",
+      "model_id": "a4475c3b15c6bc89705f865a8aad954ec891cf7795b72e4dc4fc2031720e3c7d",
+      "model_version": "b75ab72dee873d7c272694d8fa5bffe00d47c27d63b6d6cd100d5c2da93454d3",
+      "preprocessing": "aggregates-v4:recent1,7,30:last,std,trend:utc:left-open:stable-time-key:exact-binary-sum:finite-admission",
+      "prediction_cutoff": "2024-07-15 00:00:00+00:00",
+      "snapshot_id": "f0d3d07a47d483ae6624ed74ea0cc543e7f1a1f0b44d4782b1d98803168fee01",
+      "data_version": "36774a1e21deee268f9679f4a0f2bdc5af81df6d468940ec593a7b263a25fe3e",
+      "coverage": {
+        "source_id": "a0fdecdc-00c7-4ad8-890e-96f75162765e",
+        "state": "fresh",
+        "revision": 1,
+        "current_revision": 1,
+        "source_as_of": "2026-11-17 10:41:46.662859+00:00",
+        "observed_at": "2026-11-17 10:41:46.567579+00:00",
+        "age_seconds": 0.0,
+        "reason": null
+      },
+      "published_at": "2026-11-17 10:41:46.654592+00:00",
+      "publication_time_semantics": "transaction_clock_lower_bound",
+      "predictions": {
+        "C0000": 97.3,
+        "C0001": 115.86866666666666,
+        "C0002": 124.91966666666669,
+        "C0003": 24.938666666666666,
+        "C0004": 236.628,
+        "C0005": 95.36800000000001,
+        "C0006": 125.881,
+        "C0007": 20.944000000000003,
+        "C0008": 48.565999999999995,
+        "C0009": 166.264,
+        "C0010": 101.00299999999999,
+        "C0011": 18.895333333333333,
+        "C0012": 20.636,
+        "C0013": 225.56333333333333,
+        "C0014": 20.776000000000003,
+        "C0015": 48.477333333333334,
+        "C0016": 191.42666666666668,
+        "C0017": 89.19166666666668,
+        "C0018": 29.218,
+        "C0019": 82.31066666666666,
+        "C0020": 13.181000000000001,
+        "C0021": 154.56,
+        "C0022": 465.1896666666667,
+        "C0023": 31.978333333333335
+      }
+    }
+  },
+  "edit_receipt": 2,
+  "pending_status": {
+    "api_version": "v1",
+    "source_id": "a0fdecdc-00c7-4ad8-890e-96f75162765e",
+    "revision": 2,
+    "processed_revision": 1,
+    "clock_unknown": false,
+    "purge_epoch": 0,
+    "views": [
+      {
+        "name": "return_14d",
+        "definition": {
+          "cutoff": "2024-07-15 00:00:00+00:00",
+          "model_id": "c294277c4f811b10d9387197896cffa76548c183a93075f4c1d7501dd418195a",
+          "freshness_seconds": 60
+        },
+        "generation": "d5ead3b7-f60d-4615-962f-fc95cd96954c"
+      },
+      {
+        "name": "revenue_14d",
+        "definition": {
+          "cutoff": "2024-07-15 00:00:00+00:00",
+          "model_id": "a4475c3b15c6bc89705f865a8aad954ec891cf7795b72e4dc4fc2031720e3c7d",
+          "freshness_seconds": 60
+        },
+        "generation": "d5ead3b7-f60d-4615-962f-fc95cd96954c"
+      }
+    ],
+    "jobs": [
+      {
+        "state": "done",
+        "count": 2
+      },
+      {
+        "state": "pending",
+        "count": 2
+      }
+    ]
+  },
+  "refusals": {
+    "return_14d": "Committed source changes are not covered",
+    "revenue_14d": "Committed source changes are not covered"
+  },
+  "explicit_older": {
+    "return_14d": {
+      "api_version": "v1",
+      "generation": "d5ead3b7-f60d-4615-962f-fc95cd96954c",
+      "task": {
+        "name": "return_14d",
+        "kind": "binary",
+        "outcome": {
+          "table": "orders",
+          "aggregation": "count",
+          "column": null,
+          "threshold": 0.0
+        },
+        "horizon_days": 14,
+        "history_days": 60,
+        "label_delay_days": 0,
+        "metric": "roc_auc"
+      },
+      "task_version": "4fcc3d8a39d877f84b43db912c31cc1c2dc71319dc55a04866aa557a24096ece",
+      "model_id": "c294277c4f811b10d9387197896cffa76548c183a93075f4c1d7501dd418195a",
+      "model_version": "9529de8d74383ce6af3964693df99e03800bc8c856792ba482ecb69359870601",
+      "preprocessing": "aggregates-v4:recent1,7,30:last,std,trend:utc:left-open:stable-time-key:exact-binary-sum:finite-admission",
+      "prediction_cutoff": "2024-07-15 00:00:00+00:00",
+      "snapshot_id": "f0d3d07a47d483ae6624ed74ea0cc543e7f1a1f0b44d4782b1d98803168fee01",
+      "data_version": "36774a1e21deee268f9679f4a0f2bdc5af81df6d468940ec593a7b263a25fe3e",
+      "coverage": {
+        "source_id": "a0fdecdc-00c7-4ad8-890e-96f75162765e",
+        "state": "stale",
+        "revision": 1,
+        "current_revision": 2,
+        "source_as_of": "2026-11-17 10:41:46.567579+00:00",
+        "observed_at": "2026-11-17 10:41:46.567579+00:00",
+        "age_seconds": 0.122636,
+        "reason": "Committed source changes are not covered"
+      },
+      "published_at": "2026-11-17 10:41:46.654592+00:00",
+      "publication_time_semantics": "transaction_clock_lower_bound",
+      "predictions": {
+        "C0000": 0.43633105057177757,
+        "C0001": 0.7906703019530625,
+        "C0002": 0.8957255530408107,
+        "C0003": 0.8261956043047765,
+        "C0004": 0.9107014323332245,
+        "C0005": 0.6206015941337876,
+        "C0006": 0.5358812313100537,
+        "C0007": 0.6206015941337876,
+        "C0008": 0.7460571013964221,
+        "C0009": 0.9107014323332245,
+        "C0010": 0.5358812313100537,
+        "C0011": 0.43633105057177757,
+        "C0012": 0.32621987500397953,
+        "C0013": 0.7906703019530625,
+        "C0014": 0.8261956043047765,
+        "C0015": 0.7906703019530625,
+        "C0016": 0.8261956043047765,
+        "C0017": 0.6901229401257377,
+        "C0018": 0.32621987500397953,
+        "C0019": 0.6206015941337876,
+        "C0020": 0.32621987500397953,
+        "C0021": 0.8261956043047765,
+        "C0022": 0.9641040871529745,
+        "C0023": 0.6901229401257377
+      }
+    },
+    "revenue_14d": {
+      "api_version": "v1",
+      "generation": "d5ead3b7-f60d-4615-962f-fc95cd96954c",
+      "task": {
+        "name": "revenue_14d",
+        "kind": "regression",
+        "outcome": {
+          "table": "orders",
+          "aggregation": "sum",
+          "column": "amount",
+          "threshold": 0.0
+        },
+        "horizon_days": 14,
+        "history_days": 60,
+        "label_delay_days": 0,
+        "metric": "mae"
+      },
+      "task_version": "7abf7e7ddb05a1166af55f53619a9040bd57864f5cd4d17de15d10741ba83db4",
+      "model_id": "a4475c3b15c6bc89705f865a8aad954ec891cf7795b72e4dc4fc2031720e3c7d",
+      "model_version": "b75ab72dee873d7c272694d8fa5bffe00d47c27d63b6d6cd100d5c2da93454d3",
+      "preprocessing": "aggregates-v4:recent1,7,30:last,std,trend:utc:left-open:stable-time-key:exact-binary-sum:finite-admission",
+      "prediction_cutoff": "2024-07-15 00:00:00+00:00",
+      "snapshot_id": "f0d3d07a47d483ae6624ed74ea0cc543e7f1a1f0b44d4782b1d98803168fee01",
+      "data_version": "36774a1e21deee268f9679f4a0f2bdc5af81df6d468940ec593a7b263a25fe3e",
+      "coverage": {
+        "source_id": "a0fdecdc-00c7-4ad8-890e-96f75162765e",
+        "state": "stale",
+        "revision": 1,
+        "current_revision": 2,
+        "source_as_of": "2026-11-17 10:41:46.567579+00:00",
+        "observed_at": "2026-11-17 10:41:46.567579+00:00",
+        "age_seconds": 0.124552,
+        "reason": "Committed source changes are not covered"
+      },
+      "published_at": "2026-11-17 10:41:46.654592+00:00",
+      "publication_time_semantics": "transaction_clock_lower_bound",
+      "predictions": {
+        "C0000": 97.3,
+        "C0001": 115.86866666666666,
+        "C0002": 124.91966666666669,
+        "C0003": 24.938666666666666,
+        "C0004": 236.628,
+        "C0005": 95.36800000000001,
+        "C0006": 125.881,
+        "C0007": 20.944000000000003,
+        "C0008": 48.565999999999995,
+        "C0009": 166.264,
+        "C0010": 101.00299999999999,
+        "C0011": 18.895333333333333,
+        "C0012": 20.636,
+        "C0013": 225.56333333333333,
+        "C0014": 20.776000000000003,
+        "C0015": 48.477333333333334,
+        "C0016": 191.42666666666668,
+        "C0017": 89.19166666666668,
+        "C0018": 29.218,
+        "C0019": 82.31066666666666,
+        "C0020": 13.181000000000001,
+        "C0021": 154.56,
+        "C0022": 465.1896666666667,
+        "C0023": 31.978333333333335
+      }
+    }
+  },
+  "recovery_jobs": [
+    {
+      "generation": "f268611c-4b0b-4b41-a59b-5a30b01575c4",
+      "snapshot_id": "b38271955ef61961758e20e0900d946aa4b49d4c28819cd0f11283dca0cc1046",
+      "revision": 2,
+      "views": [
+        "return_14d",
+        "revenue_14d"
+      ],
+      "seconds": 0.008171500001481036,
+      "mode": "incremental",
+      "discovery_seconds": 0.0015982920012902468,
+      "changed_source_rows": 1,
+      "diff_scan_performed": true,
+      "affected_entities": [
+        "C0000"
+      ],
+      "feature_rows": 1,
+      "prediction_rows": 2,
+      "reused_prediction_rows": 46,
+      "data_version": "37dc5b5653d0623cbd3f383e44e90dbfe1ff55c01820a2486a8d7988b37d3f2c"
+    }
+  ],
+  "after": {
+    "return_14d": {
+      "api_version": "v1",
+      "generation": "f268611c-4b0b-4b41-a59b-5a30b01575c4",
+      "task": {
+        "name": "return_14d",
+        "kind": "binary",
+        "outcome": {
+          "table": "orders",
+          "aggregation": "count",
+          "column": null,
+          "threshold": 0.0
+        },
+        "horizon_days": 14,
+        "history_days": 60,
+        "label_delay_days": 0,
+        "metric": "roc_auc"
+      },
+      "task_version": "4fcc3d8a39d877f84b43db912c31cc1c2dc71319dc55a04866aa557a24096ece",
+      "model_id": "c294277c4f811b10d9387197896cffa76548c183a93075f4c1d7501dd418195a",
+      "model_version": "9529de8d74383ce6af3964693df99e03800bc8c856792ba482ecb69359870601",
+      "preprocessing": "aggregates-v4:recent1,7,30:last,std,trend:utc:left-open:stable-time-key:exact-binary-sum:finite-admission",
+      "prediction_cutoff": "2024-07-15 00:00:00+00:00",
+      "snapshot_id": "b38271955ef61961758e20e0900d946aa4b49d4c28819cd0f11283dca0cc1046",
+      "data_version": "37dc5b5653d0623cbd3f383e44e90dbfe1ff55c01820a2486a8d7988b37d3f2c",
+      "coverage": {
+        "source_id": "a0fdecdc-00c7-4ad8-890e-96f75162765e",
+        "state": "fresh",
+        "revision": 2,
+        "current_revision": 2,
+        "source_as_of": "2026-11-17 10:41:46.748068+00:00",
+        "observed_at": "2026-11-17 10:41:46.708330+00:00",
+        "age_seconds": 0.0,
+        "reason": null
+      },
+      "published_at": "2026-11-17 10:41:46.742186+00:00",
+      "publication_time_semantics": "transaction_clock_lower_bound",
+      "predictions": {
+        "C0000": 0.5358812313100537,
+        "C0001": 0.7906703019530625,
+        "C0002": 0.8957255530408107,
+        "C0003": 0.8261956043047765,
+        "C0004": 0.9107014323332245,
+        "C0005": 0.6206015941337876,
+        "C0006": 0.5358812313100537,
+        "C0007": 0.6206015941337876,
+        "C0008": 0.7460571013964221,
+        "C0009": 0.9107014323332245,
+        "C0010": 0.5358812313100537,
+        "C0011": 0.43633105057177757,
+        "C0012": 0.32621987500397953,
+        "C0013": 0.7906703019530625,
+        "C0014": 0.8261956043047765,
+        "C0015": 0.7906703019530625,
+        "C0016": 0.8261956043047765,
+        "C0017": 0.6901229401257377,
+        "C0018": 0.32621987500397953,
+        "C0019": 0.6206015941337876,
+        "C0020": 0.32621987500397953,
+        "C0021": 0.8261956043047765,
+        "C0022": 0.9641040871529745,
+        "C0023": 0.6901229401257377
+      }
+    },
+    "revenue_14d": {
+      "api_version": "v1",
+      "generation": "f268611c-4b0b-4b41-a59b-5a30b01575c4",
+      "task": {
+        "name": "revenue_14d",
+        "kind": "regression",
+        "outcome": {
+          "table": "orders",
+          "aggregation": "sum",
+          "column": "amount",
+          "threshold": 0.0
+        },
+        "horizon_days": 14,
+        "history_days": 60,
+        "label_delay_days": 0,
+        "metric": "mae"
+      },
+      "task_version": "7abf7e7ddb05a1166af55f53619a9040bd57864f5cd4d17de15d10741ba83db4",
+      "model_id": "a4475c3b15c6bc89705f865a8aad954ec891cf7795b72e4dc4fc2031720e3c7d",
+      "model_version": "b75ab72dee873d7c272694d8fa5bffe00d47c27d63b6d6cd100d5c2da93454d3",
+      "preprocessing": "aggregates-v4:recent1,7,30:last,std,trend:utc:left-open:stable-time-key:exact-binary-sum:finite-admission",
+      "prediction_cutoff": "2024-07-15 00:00:00+00:00",
+      "snapshot_id": "b38271955ef61961758e20e0900d946aa4b49d4c28819cd0f11283dca0cc1046",
+      "data_version": "37dc5b5653d0623cbd3f383e44e90dbfe1ff55c01820a2486a8d7988b37d3f2c",
+      "coverage": {
+        "source_id": "a0fdecdc-00c7-4ad8-890e-96f75162765e",
+        "state": "fresh",
+        "revision": 2,
+        "current_revision": 2,
+        "source_as_of": "2026-11-17 10:41:46.750105+00:00",
+        "observed_at": "2026-11-17 10:41:46.708330+00:00",
+        "age_seconds": 0.0,
+        "reason": null
+      },
+      "published_at": "2026-11-17 10:41:46.742186+00:00",
+      "publication_time_semantics": "transaction_clock_lower_bound",
+      "predictions": {
+        "C0000": 315.0,
+        "C0001": 115.86866666666666,
+        "C0002": 124.91966666666669,
+        "C0003": 24.938666666666666,
+        "C0004": 236.628,
+        "C0005": 95.36800000000001,
+        "C0006": 125.881,
+        "C0007": 20.944000000000003,
+        "C0008": 48.565999999999995,
+        "C0009": 166.264,
+        "C0010": 101.00299999999999,
+        "C0011": 18.895333333333333,
+        "C0012": 20.636,
+        "C0013": 225.56333333333333,
+        "C0014": 20.776000000000003,
+        "C0015": 48.477333333333334,
+        "C0016": 191.42666666666668,
+        "C0017": 89.19166666666668,
+        "C0018": 29.218,
+        "C0019": 82.31066666666666,
+        "C0020": 13.181000000000001,
+        "C0021": 154.56,
+        "C0022": 465.1896666666667,
+        "C0023": 31.978333333333335
+      }
+    }
+  },
+  "invalid_edit_refusal": "Orphan foreign keys in orders",
+  "idempotent_retry_revision": 2,
+  "fresh_store_same_generation": true,
+  "backup_payload_digest": "c032aaa51d0e51029dd1514ec6b8e359478e44d9a4df7e22ead0aec1ec69998e",
+  "backup_existing_preserved": true,
+  "restore_status": {
+    "api_version": "v1",
+    "source_id": "a0fdecdc-00c7-4ad8-890e-96f75162765e",
+    "revision": 2,
+    "processed_revision": 2,
+    "clock_unknown": true,
+    "purge_epoch": 0,
+    "views": [
+      {
+        "name": "return_14d",
+        "definition": {
+          "cutoff": "2024-07-15 00:00:00+00:00",
+          "model_id": "c294277c4f811b10d9387197896cffa76548c183a93075f4c1d7501dd418195a",
+          "freshness_seconds": 60
+        },
+        "generation": "f268611c-4b0b-4b41-a59b-5a30b01575c4"
+      },
+      {
+        "name": "revenue_14d",
+        "definition": {
+          "cutoff": "2024-07-15 00:00:00+00:00",
+          "model_id": "a4475c3b15c6bc89705f865a8aad954ec891cf7795b72e4dc4fc2031720e3c7d",
+          "freshness_seconds": 60
+        },
+        "generation": "f268611c-4b0b-4b41-a59b-5a30b01575c4"
+      }
+    ],
+    "jobs": [
+      {
+        "state": "done",
+        "count": 4
+      }
+    ]
+  }
+}
