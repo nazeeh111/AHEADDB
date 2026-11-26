@@ -1,6 +1,6 @@
 # An order, the uncovered interval and recovery
 
-This completed local example uses current source `72f6fc8f956749940c933ea92c0913d54110bbdb`, Python 3.13.11 and the declared locked packages. PostgreSQL 16.2 ran in a new task-owned cluster with a Unix socket only. No existing database, credentials, private customer record, model download or paid service was used.
+The retained local example ran at source `72f6fc8f956749940c933ea92c0913d54110bbdb`, Python 3.13.11 and the declared locked packages. PostgreSQL 16.2 ran in a new task-owned cluster with a Unix socket only. No existing database, credentials, private customer record, model download or paid service was used.
 
 ## Read the result
 
@@ -22,6 +22,13 @@ Follow the [current repository quickstart](https://github.com/nazeeh111/AHEADDB/
 uv sync --frozen --extra live
 uv run --no-sync python docs/presentation/replay.py --output /tmp/ahead-replay-new
 ```
+
+Fresh `journey.json` files distinguish the original published reference commit
+from the current replay. `source_revision` is populated for a clean source-checkout
+import; a separately installed package or changed replay/runtime records `null`.
+The script SHA-256, installed distribution version and Python package source digest
+are recorded in either case. The package digest covers a compact sorted JSON map
+from relative `.py` paths to their SHA-256 digests.
 
 The output path must not exist. The script creates unique synthetic namespaces, executes source/edit/refusal/recovery and writes a fresh data-only backup and ledger. It does not connect to any source unless you supply its connection. It leaves its synthetic namespaces for inspection; destroy the disposable cluster when finished. UUIDs, generations, timestamps and backup digests vary per run. Compare the source revision, state transitions, fixed task/model/cutoff, and 97.3→315.0 values, rather than expecting identical run bytes.
 
