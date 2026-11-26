@@ -1,15 +1,52 @@
 from pathlib import Path
-import json,os,pwd,subprocess,tempfile,uuid,hashlib
+import argparse
+import hashlib
+import json
+import os
+import subprocess
+import uuid
+from importlib.metadata import version
+
+import aheaddb
 from aheaddb import Snapshot
 from aheaddb.demo import demo_tables,demo_schema,demo_tasks
 from aheaddb.live import Store,Worker,ModelRecipe,ViewDefinition,Edit,Mutation,Unavailable
 from aheaddb.live.maintenance import backup,restore
-import argparse
+
+def source_identity():
+    script = Path(__file__).resolve()
+    checkout = script.parents[2]
+    package = Path(aheaddb.__file__).resolve().parent
+    files = {path.relative_to(package).as_posix(): hashlib.sha256(path.read_bytes()).hexdigest()
+             for path in sorted(package.rglob("*.py"))}
+    evidence = {
+        "source_revision": None,
+        "reference_source_revision": "72f6fc8f956749940c933ea92c0913d54110bbdb",
+        "replay_sha256": hashlib.sha256(script.read_bytes()).hexdigest(),
+        "package_version": version("aheaddb"),
+        "package_python_sha256": hashlib.sha256(json.dumps(files, sort_keys=True, separators=(",", ":")).encode()).hexdigest(),
+    }
+    if package != checkout / "src/aheaddb" or not (checkout / ".git").exists():
+        return evidence
+    try:
+        head = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=checkout, text=True).strip()
+        paths = ["docs/presentation/replay.py", "src/aheaddb"]
+        changed = subprocess.check_output(["git", "status", "--porcelain", "--untracked-files=all", "--", *paths],
+                                          cwd=checkout, text=True)
+    except (OSError, subprocess.CalledProcessError):
+        return evidence
+    if not changed:
+        evidence["source_revision"] = head
+    return evidence
+
+
 parser=argparse.ArgumentParser(description="Replay synthetic source coverage in a fresh owned namespace")
 parser.add_argument('--output',type=Path,required=True)
-args=parser.parse_args();public=args.output.resolve();public.mkdir(mode=0o700,parents=True,exist_ok=False)
+args=parser.parse_args();public=args.output.resolve()
 dsn=os.environ.get('AHEAD_LIVE_DSN')
 if not dsn:raise SystemExit('Set AHEAD_LIVE_DSN to a dedicated disposable PostgreSQL source')
+identity=source_identity()
+public.mkdir(mode=0o700,parents=True,exist_ok=False)
 namespace='presentation_'+uuid.uuid4().hex[:12]
 store=Store(dsn,namespace);store.migrate();store.bootstrap(Snapshot(demo_tables(entities=24),demo_schema()))
 for task in demo_tasks():
@@ -37,5 +74,5 @@ assert hashlib.sha256(backupfile.read_bytes()).hexdigest()==oldhash
 restored=Store(dsn,namespace+'_restore');restore(restored,backupfile,ledger);restored_status=restored.status()
 try:restored.read('revenue_14d');raise AssertionError('unknown restored clock admitted')
 except Unavailable:pass
-record={'source_revision':'72f6fc8f956749940c933ea92c0913d54110bbdb','synthetic':True,'seed':19,'entities':24,'selected_entity':'C0000','order_amount':450,'cutoff':'2024-07-15','initial_status':initial,'before':before,'edit_receipt':revision,'pending_status':pending,'refusals':refusals,'explicit_older':older,'recovery_jobs':recovery_jobs,'after':after,'invalid_edit_refusal':invalid,'idempotent_retry_revision':revision,'fresh_store_same_generation':True,'backup_payload_digest':digest,'backup_existing_preserved':True,'restore_status':restored_status}
+record={**identity,'synthetic':True,'seed':19,'entities':24,'selected_entity':'C0000','order_amount':450,'cutoff':'2024-07-15','initial_status':initial,'before':before,'edit_receipt':revision,'pending_status':pending,'refusals':refusals,'explicit_older':older,'recovery_jobs':recovery_jobs,'after':after,'invalid_edit_refusal':invalid,'idempotent_retry_revision':revision,'fresh_store_same_generation':True,'backup_payload_digest':digest,'backup_existing_preserved':True,'restore_status':restored_status}
 (public/'journey.json').write_text(json.dumps(record,indent=2,default=str)+'\n');print(json.dumps({'pass':True,'revision':revision,'before':before['revenue_14d']['predictions']['C0000'],'after':after['revenue_14d']['predictions']['C0000'],'restored_clock_unknown':restored_status['clock_unknown']}))
